@@ -7,10 +7,11 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.smartmoviefinder.movie.entity.MovieEntity;
+import com.smartmoviefinder.movie.MovieEntity;
 
 
 
@@ -43,7 +44,7 @@ public class UserController {
 
 
     @GetMapping("/{id}")
-    public String getUserById(Long id) {
+    public String getUserById(@PathVariable Long id) {
         UserEntity user = userService.getUserById(id);
         if (user != null) {
             return "User found: " + user.getUsername();
@@ -54,7 +55,7 @@ public class UserController {
 
 
     @GetMapping("/username/{username}")
-    public String getUserByUsername(String username) {
+    public String getUserByUsername(@PathVariable String username) {
         UserEntity user = userService.getUserByUsername(username);
         if (user != null) {
             return "User found: " + user.getUsername();
@@ -69,26 +70,26 @@ public class UserController {
 
 
     @PostMapping
-    public UserEntity createUser(UserEntity user) {
+    public UserEntity createUser(@RequestBody UserEntity user) {
         return userService.createUser(user);
     }
 
 
     //Add watched movie
     @PostMapping("/{userId}/watched/{movieId}")
-    public void addWatchedMovie(Long userId, Long movieId) {
+    public void addWatchedMovie(@PathVariable Long userId, @PathVariable Long movieId) {
         userService.addWatchedMovie(userId, movieId);
     }
 
     //Add favorite genre
     @PostMapping("/{userId}/favorite-genre/{genreId}")
-    public void addFavoriteGenre(Long userId, Long genreId) {
+    public void addFavoriteGenre(@PathVariable Long userId, @PathVariable Long genreId) {
         userService.addFavoriteGenre(userId, genreId);
     }
 
     //Rate a movie
     @PostMapping("/{userId}/rate/{movieId}/{rating}")
-    public void rateMovie(Long userId, Long movieId, int rating) {
+    public void rateMovie(@PathVariable Long userId, @PathVariable Long movieId, @PathVariable int rating) {
         userService.rateMovie(userId, movieId, rating);
     }
 
@@ -102,17 +103,17 @@ public class UserController {
 
 
     @GetMapping("/exists/id/{id}")
-    public boolean userExistsById(Long id) {
+    public boolean userExistsById(@PathVariable Long id) {
         return userService.userExistsById(id);
     }
 
     @GetMapping("/exists/username/{username}")
-    public boolean userExistsByUsername(String username) {
+    public boolean userExistsByUsername(@PathVariable String username) {
         return userService.userExistsByUsername(username);
     }
 
     @GetMapping("/exists/email/{email}")
-    public boolean userExistsByEmail(String email) {    
+    public boolean userExistsByEmail(@PathVariable String email) {    
         return userService.userExistsByEmail(email);
     }
 
@@ -139,26 +140,26 @@ public class UserController {
 
     //Delete a user
     @DeleteMapping("/{id}")
-    public void deleteUser(Long id) {
+    public void deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
     }
 
 
     //Delete watched movie
     @DeleteMapping("/{userId}/watched/{movieId}")
-    public void deleteWatchedMovie(Long userId, Long movieId) {
+    public void deleteWatchedMovie(@PathVariable Long userId, @PathVariable Long movieId) {
         userService.deleteWatchedMovie(userId, movieId);
     }
 
     //Delete favorite genre
     @DeleteMapping("/{userId}/favorite-genre/{genreId}")
-    public void deleteFavoriteGenre(Long userId, Long genreId) {
+    public void deleteFavoriteGenre(@PathVariable Long userId, @PathVariable Long genreId) {
         userService.deleteFavoriteGenre(userId, genreId);
     }
 
     //Delete movie rating
     @DeleteMapping("/{userId}/rate/{movieId}")
-    public void deleteMovieRating(Long userId, Long movieId) {  
+    public void deleteMovieRating(@PathVariable Long userId, @PathVariable Long movieId) {  
         userService.deleteMovieRating(userId, movieId);
     }
 

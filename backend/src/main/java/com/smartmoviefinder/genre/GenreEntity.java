@@ -1,10 +1,11 @@
-package com.smartmoviefinder.movie.entity;
+package com.smartmoviefinder.genre;
 
 import jakarta.persistence.*;
 
 import java.util.HashSet;
 import java.util.Set;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.smartmoviefinder.user.UserEntity;
 
 @Entity
@@ -18,6 +19,7 @@ public class GenreEntity {
     @Column(nullable = false, unique = true)
     private String name;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "favoriteGenres")
     private Set<UserEntity> users = new HashSet<>();
 

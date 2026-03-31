@@ -7,9 +7,9 @@ import java.util.stream.Collectors;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.smartmoviefinder.movie.entity.GenreEntity;
-import com.smartmoviefinder.movie.entity.GenreRepository;
-import com.smartmoviefinder.movie.entity.MovieEntity;
+import com.smartmoviefinder.genre.GenreEntity;
+import com.smartmoviefinder.genre.GenreRepository;
+import com.smartmoviefinder.movie.MovieEntity;
 
 @Component
 public class UserService {

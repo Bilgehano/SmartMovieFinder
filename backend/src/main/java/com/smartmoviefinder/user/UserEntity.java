@@ -1,11 +1,13 @@
 package com.smartmoviefinder.user;
 
-import com.smartmoviefinder.movie.entity.GenreEntity;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
+
+import com.smartmoviefinder.genre.GenreEntity;
+
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
