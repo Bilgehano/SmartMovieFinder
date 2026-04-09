@@ -136,13 +136,7 @@ public class UserController {
     public List<String> getMovieRatings(@PathVariable Long userId) {
         return userService.getMovieRatings(userId);
     }
-
-
-    //Delete a user
-    @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable Long id) {
-        userService.deleteUser(id);
-    }
+    
 
 
     //Delete watched movie

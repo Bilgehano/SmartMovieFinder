@@ -46,6 +46,14 @@ public class UserEntity {
     )
     private Set<GenreEntity> favoriteGenres = new HashSet<>();
 
+    public String getUsername() {
+        return username;
+    }
+
+    public Set<GenreEntity> getFavoriteGenres() {
+        return favoriteGenres;
+    }
+
     public UserEntity(String username, String email, String passwordHash) {
         this.username = username;
         this.email = email;
