@@ -1,8 +1,10 @@
 package com.smartmoviefinder.user;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.smartmoviefinder.movie.MovieEntity;
+import com.smartmoviefinder.movie.MovieRatingEntity;
 
 
 
@@ -69,6 +72,27 @@ public class UserController {
 
 
 
+    @PostMapping("/register")
+    public ResponseEntity<?> register(@RequestBody Map<String, String> body) {
+        try {
+            UserEntity user = userService.register(body.get("username"), body.get("email"), body.get("password"));
+            return ResponseEntity.ok(user);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<?> login(@RequestBody Map<String, String> body) {
+        try {
+            UserEntity user = userService.login(body.get("username"), body.get("password"));
+            return ResponseEntity.ok(user);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+
     @PostMapping
     public UserEntity createUser(@RequestBody UserEntity user) {
         return userService.createUser(user);
@@ -76,9 +100,13 @@ public class UserController {
 
 
     //Add watched movie
-    @PostMapping("/{userId}/watched/{movieId}")
-    public void addWatchedMovie(@PathVariable Long userId, @PathVariable Long movieId) {
-        userService.addWatchedMovie(userId, movieId);
+    @PostMapping("/{userId}/watched")
+    public void addWatchedMovie(@PathVariable Long userId, @RequestBody Map<String, String> movieData) {
+        Long tmdbId = Long.parseLong(movieData.get("tmdbId"));
+        String title = movieData.get("title");
+        String posterPath = movieData.get("posterPath");
+        String releaseDate = movieData.get("releaseDate");
+        userService.addWatchedMovie(userId, tmdbId, title, posterPath, releaseDate);
     }
 
     //Add favorite genre
@@ -88,19 +116,14 @@ public class UserController {
     }
 
     //Rate a movie
-    @PostMapping("/{userId}/rate/{movieId}/{rating}")
-    public void rateMovie(@PathVariable Long userId, @PathVariable Long movieId, @PathVariable int rating) {
-        userService.rateMovie(userId, movieId, rating);
+    @PostMapping("/{userId}/rate/{rating}")
+    public void rateMovie(@PathVariable Long userId, @PathVariable int rating, @RequestBody Map<String, String> movieData) {
+        Long tmdbId = Long.parseLong(movieData.get("tmdbId"));
+        String title = movieData.get("title");
+        String posterPath = movieData.get("posterPath");
+        String releaseDate = movieData.get("releaseDate");
+        userService.rateMovie(userId, tmdbId, title, posterPath, releaseDate, rating);
     }
-
-
-
-
-
-
-
-
-
 
     @GetMapping("/exists/id/{id}")
     public boolean userExistsById(@PathVariable Long id) {
@@ -133,16 +156,16 @@ public class UserController {
 
     //Get movie ratings for a user
     @GetMapping("/{userId}/ratings")    
-    public List<String> getMovieRatings(@PathVariable Long userId) {
+    public List<MovieRatingEntity> getMovieRatings(@PathVariable Long userId) {
         return userService.getMovieRatings(userId);
     }
     
 
 
     //Delete watched movie
-    @DeleteMapping("/{userId}/watched/{movieId}")
-    public void deleteWatchedMovie(@PathVariable Long userId, @PathVariable Long movieId) {
-        userService.deleteWatchedMovie(userId, movieId);
+    @DeleteMapping("/{userId}/watched/{tmdbId}")
+    public void deleteWatchedMovie(@PathVariable Long userId, @PathVariable Long tmdbId) {
+        userService.deleteWatchedMovie(userId, tmdbId);
     }
 
     //Delete favorite genre
@@ -152,14 +175,9 @@ public class UserController {
     }
 
     //Delete movie rating
-    @DeleteMapping("/{userId}/rate/{movieId}")
-    public void deleteMovieRating(@PathVariable Long userId, @PathVariable Long movieId) {  
-        userService.deleteMovieRating(userId, movieId);
+    @DeleteMapping("/{userId}/rate/{tmdbId}")
+    public void deleteMovieRating(@PathVariable Long userId, @PathVariable Long tmdbId) {
+        userService.deleteMovieRating(userId, tmdbId);
     }
-
-
-
-
-
 
 }

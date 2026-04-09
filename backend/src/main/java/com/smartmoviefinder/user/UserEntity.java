@@ -7,7 +7,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.smartmoviefinder.genre.GenreEntity;
+import com.smartmoviefinder.movie.MovieEntity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.NoArgsConstructor;
@@ -30,6 +32,7 @@ public class UserEntity {
     private String email;
 
     @Column(nullable = false)
+    @JsonIgnore
     private String passwordHash;
 
     @Column(nullable = false)
@@ -44,7 +47,17 @@ public class UserEntity {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "genre_id")
     )
+    @JsonIgnore
     private Set<GenreEntity> favoriteGenres = new HashSet<>();
+
+    @ManyToMany
+    @JoinTable(
+            name = "user_watched_movies",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "movie_id")
+    )
+    @JsonIgnore
+    private Set<MovieEntity> watchedMovies = new HashSet<>();
 
     public String getUsername() {
         return username;
