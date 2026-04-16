@@ -1,7 +1,6 @@
 package com.smartmoviefinder.user;
 
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,25 +9,25 @@ import org.springframework.stereotype.Component;
 
 import com.smartmoviefinder.genre.GenreEntity;
 import com.smartmoviefinder.genre.GenreRepository;
-import com.smartmoviefinder.movie.MovieEntity;
 import com.smartmoviefinder.movie.MovieRatingEntity;
 import com.smartmoviefinder.movie.MovieRatingRepository;
-import com.smartmoviefinder.movie.MovieRepository;
+import com.smartmoviefinder.movie.WatchedMovieEntity;
+import com.smartmoviefinder.movie.WatchedMovieRepository;
 
 @Component
 public class UserService {
     private final UserRepository userRepository;
     private final GenreRepository genreRepository;
-    private final MovieRepository movieRepository;
+    private final WatchedMovieRepository watchedMovieRepository;
     private final MovieRatingRepository movieRatingRepository;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     @Autowired
     public UserService(UserRepository userRepository, GenreRepository genreRepository,
-                       MovieRepository movieRepository, MovieRatingRepository movieRatingRepository) {
+                       WatchedMovieRepository watchedMovieRepository, MovieRatingRepository movieRatingRepository) {
         this.userRepository = userRepository;
         this.genreRepository = genreRepository;
-        this.movieRepository = movieRepository;
+        this.watchedMovieRepository = watchedMovieRepository;
         this.movieRatingRepository = movieRatingRepository;
     }
 
@@ -103,11 +102,10 @@ public class UserService {
     public void addWatchedMovie(Long userId, Long tmdbId, String title, String posterPath, String releaseDate) {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
-        MovieEntity movie = findOrCreateMovie(tmdbId, title, posterPath, releaseDate);
-
-        user.getWatchedMovies().add(movie);
-        userRepository.save(user);
-    }   
+        if (!watchedMovieRepository.existsByUserIdAndTmdbId(userId, tmdbId)) {
+            watchedMovieRepository.save(new WatchedMovieEntity(user, tmdbId, title, posterPath, releaseDate));
+        }
+    }
 
 
     public void addFavoriteGenre(Long userId, Long genreId) {
@@ -126,27 +124,22 @@ public class UserService {
     public void rateMovie(Long userId, Long tmdbId, String title, String posterPath, String releaseDate, int rating) {
         UserEntity user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
-        MovieEntity movie = findOrCreateMovie(tmdbId, title, posterPath, releaseDate);
-
-        MovieRatingEntity existingRating = movieRatingRepository.findByUserIdAndMovieId(userId, movie.getId())
-                .orElse(null);
-
+        MovieRatingEntity existingRating = movieRatingRepository.existsByUserIdAndTmdbId(userId, tmdbId)
+                ? movieRatingRepository.findByUserIdAndTmdbId(userId, tmdbId).orElse(null)
+                : null;
         if (existingRating != null) {
             existingRating.setRating(rating);
             movieRatingRepository.save(existingRating);
         } else {
-            MovieRatingEntity newRating = new MovieRatingEntity(user, movie, rating);
-            movieRatingRepository.save(newRating);
+            movieRatingRepository.save(new MovieRatingEntity(user, tmdbId, title, posterPath, releaseDate, rating));
         }
     }
 
 
 
 
-    public List<MovieEntity> getWatchedMovies(Long userId) {
-        UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
-        return List.copyOf(user.getWatchedMovies());
+    public List<WatchedMovieEntity> getWatchedMovies(Long userId) {
+        return watchedMovieRepository.findByUserId(userId);
     }
 
     public List<String> getFavoriteGenres(Long userId) {
@@ -165,10 +158,7 @@ public class UserService {
 
 
     public void deleteWatchedMovie(Long userId, Long tmdbId) {
-        UserEntity user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with id: " + userId));
-        user.getWatchedMovies().removeIf(movie -> movie.getTmdbId().equals(tmdbId));
-        userRepository.save(user);
+        watchedMovieRepository.deleteByUserIdAndTmdbId(userId, tmdbId);
     }
 
     public void deleteFavoriteGenre(Long userId, Long genreId) {
@@ -179,16 +169,6 @@ public class UserService {
     }
 
     public void deleteMovieRating(Long userId, Long tmdbId) {
-        MovieEntity movie = movieRepository.findByTmdbId(tmdbId)
-                .orElseThrow(() -> new RuntimeException("Movie not found with tmdbId: " + tmdbId));
-        MovieRatingEntity rating = movieRatingRepository.findByUserIdAndMovieId(userId, movie.getId())
-                .orElseThrow(() -> new RuntimeException("Rating not found for user " + userId + " and movie tmdbId " + tmdbId));
-        movieRatingRepository.delete(rating);
-    }
-
-
-    private MovieEntity findOrCreateMovie(Long tmdbId, String title, String posterPath, String releaseDate) {
-        return movieRepository.findByTmdbId(tmdbId)
-                .orElseGet(() -> movieRepository.save(new MovieEntity(tmdbId, title, posterPath, releaseDate)));
+        movieRatingRepository.deleteByUserIdAndTmdbId(userId, tmdbId);
     }
 }

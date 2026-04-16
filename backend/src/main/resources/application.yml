@@ -29,3 +29,7 @@ spring:
 
 server:
   port: ${SERVER_PORT:8080}
+
+tmdb:
+  api-key: ${TMDB_API_KEY:4b4868d94dee5b91fab26a8291ca40fc}
+  base-url: https://api.themoviedb.org/3

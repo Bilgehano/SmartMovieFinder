@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.smartmoviefinder.genre.GenreEntity;
-import com.smartmoviefinder.movie.MovieEntity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Getter;
@@ -49,15 +48,6 @@ public class UserEntity {
     )
     @JsonIgnore
     private Set<GenreEntity> favoriteGenres = new HashSet<>();
-
-    @ManyToMany
-    @JoinTable(
-            name = "user_watched_movies",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "movie_id")
-    )
-    @JsonIgnore
-    private Set<MovieEntity> watchedMovies = new HashSet<>();
 
     public String getUsername() {
         return username;

@@ -8,13 +8,13 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 @Repository
-public interface MovieRatingRepository extends JpaRepository<MovieRatingEntity, Long> {
+public interface WatchedMovieRepository extends JpaRepository<WatchedMovieEntity, Long> {
 
-    Optional<MovieRatingEntity> findByUserIdAndTmdbId(Long userId, Long tmdbId);
+    List<WatchedMovieEntity> findByUserId(Long userId);
+
+    Optional<WatchedMovieEntity> findByUserIdAndTmdbId(Long userId, Long tmdbId);
 
     boolean existsByUserIdAndTmdbId(Long userId, Long tmdbId);
-
-    List<MovieRatingEntity> findByUserId(Long userId);
 
     @Transactional
     void deleteByUserIdAndTmdbId(Long userId, Long tmdbId);

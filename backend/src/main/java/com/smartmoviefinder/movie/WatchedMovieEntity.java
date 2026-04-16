@@ -10,13 +10,13 @@ import lombok.Setter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "movie_ratings", uniqueConstraints = {
+@Table(name = "user_watched_movies", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"user_id", "tmdb_id"})
 })
 @Getter
 @Setter
 @NoArgsConstructor
-public class MovieRatingEntity {
+public class WatchedMovieEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,22 +37,18 @@ public class MovieRatingEntity {
     private String releaseDate;
 
     @Column(nullable = false)
-    private int rating;
+    private LocalDateTime watchedAt;
 
-    @Column(nullable = false)
-    private LocalDateTime ratedAt;
-
-    public MovieRatingEntity(UserEntity user, Long tmdbId, String title, String posterPath, String releaseDate, int rating) {
+    public WatchedMovieEntity(UserEntity user, Long tmdbId, String title, String posterPath, String releaseDate) {
         this.user = user;
         this.tmdbId = tmdbId;
         this.title = title;
         this.posterPath = posterPath;
         this.releaseDate = releaseDate;
-        this.rating = rating;
     }
 
     @PrePersist
     public void prePersist() {
-        this.ratedAt = LocalDateTime.now();
+        this.watchedAt = LocalDateTime.now();
     }
 }

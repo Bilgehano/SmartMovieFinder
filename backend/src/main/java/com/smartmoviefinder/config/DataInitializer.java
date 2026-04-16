@@ -19,16 +19,31 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) {
-        List<String> genres = List.of(
-                "Action", "Adventure", "Animation", "Comedy", "Crime",
-                "Documentary", "Drama", "Family", "Fantasy", "History",
-                "Horror", "Music", "Mystery", "Romance", "Science Fiction",
-                "Thriller", "War", "Western"
+        // IDs match TMDB genre IDs exactly so user_favorite_genres can be used directly in TMDB API calls
+        List<GenreEntity> genres = List.of(
+                new GenreEntity(28L,    "Action"),
+                new GenreEntity(12L,    "Adventure"),
+                new GenreEntity(16L,    "Animation"),
+                new GenreEntity(35L,    "Comedy"),
+                new GenreEntity(80L,    "Crime"),
+                new GenreEntity(99L,    "Documentary"),
+                new GenreEntity(18L,    "Drama"),
+                new GenreEntity(10751L, "Family"),
+                new GenreEntity(14L,    "Fantasy"),
+                new GenreEntity(36L,    "History"),
+                new GenreEntity(27L,    "Horror"),
+                new GenreEntity(10402L, "Music"),
+                new GenreEntity(9648L,  "Mystery"),
+                new GenreEntity(10749L, "Romance"),
+                new GenreEntity(878L,   "Science Fiction"),
+                new GenreEntity(53L,    "Thriller"),
+                new GenreEntity(10752L, "War"),
+                new GenreEntity(37L,    "Western")
         );
 
-        for (String name : genres) {
-            if (!genreRepository.existsByName(name)) {
-                genreRepository.save(new GenreEntity(name));
+        for (GenreEntity genre : genres) {
+            if (!genreRepository.existsById(genre.getId())) {
+                genreRepository.save(genre);
             }
         }
 

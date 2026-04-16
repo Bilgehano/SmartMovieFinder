@@ -13,7 +13,6 @@ import com.smartmoviefinder.user.UserEntity;
 public class GenreEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false, unique = true)
@@ -27,6 +26,11 @@ public class GenreEntity {
     }
 
     public GenreEntity(String name) {
+        this.name = name;
+    }
+
+    public GenreEntity(Long id, String name) {
+        this.id = id;
         this.name = name;
     }
 

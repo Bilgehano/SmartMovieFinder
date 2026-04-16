@@ -13,8 +13,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.smartmoviefinder.movie.MovieEntity;
 import com.smartmoviefinder.movie.MovieRatingEntity;
+import com.smartmoviefinder.movie.WatchedMovieEntity;
 
 
 
@@ -144,7 +144,7 @@ public class UserController {
 
     //Get watched movies for a user
     @GetMapping("/{userId}/watched")
-    public List<MovieEntity> getWatchedMovies(@PathVariable Long userId) {
+    public List<WatchedMovieEntity> getWatchedMovies(@PathVariable Long userId) {
         return userService.getWatchedMovies(userId);
     }
 

@@ -1,0 +1,425 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SmartMovieFinder</title>
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body { font-family: sans-serif; background: #111; color: #eee; }
+
+        /* NAV */
+        nav { background: #1a1a1a; padding: 12px 24px; display: flex; align-items: center; gap: 16px; border-bottom: 2px solid #e50914; }
+        nav h1 { color: #e50914; font-size: 20px; margin-right: auto; }
+        nav button { background: transparent; color: #eee; border: 1px solid #444; padding: 6px 14px; border-radius: 4px; cursor: pointer; font-size: 13px; }
+        nav button:hover, nav button.active { background: #e50914; border-color: #e50914; }
+        #userInfo { font-size: 13px; color: #aaa; }
+
+        /* PAGES */
+        .page { display: none; padding: 24px; }
+        .page.active { display: block; }
+
+        /* AUTH */
+        .auth-box { max-width: 360px; background: #1a1a1a; padding: 28px; border-radius: 10px; }
+        .auth-box h2 { margin-bottom: 18px; }
+        .auth-box input { width: 100%; padding: 10px; margin-bottom: 12px; background: #2a2a2a; border: 1px solid #444; color: #eee; border-radius: 5px; font-size: 14px; }
+        .auth-box button { width: 100%; padding: 10px; background: #e50914; color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 15px; }
+        .auth-box button:hover { background: #b0060f; }
+        .auth-box .switch { margin-top: 12px; font-size: 13px; color: #aaa; text-align: center; }
+        .auth-box .switch span { color: #e50914; cursor: pointer; }
+        .msg { margin-top: 10px; font-size: 13px; min-height: 18px; }
+        .msg.err { color: #ff6b6b; }
+        .msg.ok { color: #6bff9e; }
+
+        /* SEARCH BAR */
+        .search-bar { display: flex; gap: 10px; margin-bottom: 18px; }
+        .search-bar input { flex: 1; padding: 10px; background: #2a2a2a; border: 1px solid #444; color: #eee; border-radius: 5px; font-size: 14px; }
+        .search-bar button { padding: 10px 18px; background: #e50914; color: white; border: none; border-radius: 5px; cursor: pointer; }
+        .search-bar button.secondary { background: #333; }
+        .search-bar button.secondary:hover { background: #555; }
+
+        /* GRID */
+        .grid { display: flex; flex-wrap: wrap; gap: 16px; }
+        .card { width: 150px; cursor: pointer; transition: transform .15s; }
+        .card:hover { transform: scale(1.04); }
+        .card img { width: 150px; height: 225px; object-fit: cover; border-radius: 8px; display: block; }
+        .card .card-title { font-size: 12px; margin: 6px 0 2px; line-height: 1.3; }
+        .card .card-meta { color: #aaa; font-size: 11px; }
+
+        /* PAGINATION */
+        .pagination { display: flex; align-items: center; gap: 10px; margin-top: 20px; }
+        .pagination button { padding: 8px 16px; background: #333; color: #eee; border: none; border-radius: 5px; cursor: pointer; }
+        .pagination button:hover { background: #555; }
+        .pagination button:disabled { opacity: .35; cursor: default; }
+        .pagination span { color: #aaa; font-size: 13px; }
+
+        /* STATUS */
+        .status { color: #aaa; font-size: 13px; margin-bottom: 14px; min-height: 18px; }
+
+        /* DETAIL OVERLAY */
+        #overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.85); z-index: 100; overflow-y: auto; padding: 40px 20px; }
+        #overlay.open { display: flex; justify-content: center; }
+        .detail-box { background: #1a1a1a; border-radius: 12px; max-width: 700px; width: 100%; padding: 28px; position: relative; }
+        .detail-box .close-btn { position: absolute; top: 14px; right: 18px; background: none; border: none; color: #eee; font-size: 22px; cursor: pointer; }
+        .detail-inner { display: flex; gap: 24px; }
+        .detail-inner img { width: 180px; min-width: 180px; border-radius: 8px; }
+        .detail-info h2 { margin-bottom: 8px; }
+        .detail-info .meta { color: #aaa; font-size: 13px; margin-bottom: 12px; }
+        .detail-info p { font-size: 14px; line-height: 1.6; color: #ccc; }
+        .detail-actions { margin-top: 18px; display: flex; gap: 10px; }
+        .btn-watched { padding: 10px 20px; background: #27ae60; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; }
+        .btn-watched:hover { background: #1e8449; }
+        .btn-watched.added { background: #555; cursor: default; }
+
+        /* WATCHED PAGE */
+        .watched-card { display: flex; gap: 16px; background: #1a1a1a; border-radius: 8px; padding: 14px; margin-bottom: 12px; align-items: flex-start; }
+        .watched-card img { width: 80px; height: 120px; object-fit: cover; border-radius: 6px; }
+        .watched-card .winfo h3 { font-size: 15px; margin-bottom: 4px; }
+        .watched-card .winfo small { color: #aaa; font-size: 12px; }
+        .watched-card .winfo button { margin-top: 8px; padding: 5px 12px; background: #c0392b; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+    <h1>SmartMovieFinder</h1>
+    <button id="navMovies" class="active" onclick="showPage('movies')">Movies</button>
+    <button id="navWatched" onclick="showPage('watched')">Watched</button>
+    <span id="userInfo">Not logged in</span>
+    <button id="navAuth" onclick="showPage('auth')">Login / Register</button>
+    <button id="navLogout" style="display:none" onclick="logout()">Logout</button>
+</nav>
+
+<!-- AUTH PAGE -->
+<div id="pageAuth" class="page active" style="display:block">
+    <div class="auth-box" id="registerBox">
+        <h2>Register</h2>
+        <input id="regUsername" placeholder="Username">
+        <input id="regEmail" placeholder="Email" type="email">
+        <input id="regPassword" placeholder="Password" type="password">
+        <button onclick="register()">Register</button>
+        <div class="switch">Already have an account? <span onclick="toggleAuth()">Login</span></div>
+        <div class="msg" id="authMsg"></div>
+    </div>
+    <div class="auth-box" id="loginBox" style="display:none">
+        <h2>Login</h2>
+        <input id="loginUsername" placeholder="Username">
+        <input id="loginPassword" placeholder="Password" type="password">
+        <button onclick="login()">Login</button>
+        <div class="switch">No account? <span onclick="toggleAuth()">Register</span></div>
+        <div class="msg" id="loginMsg"></div>
+    </div>
+</div>
+
+<!-- MOVIES PAGE -->
+<div id="pageMovies" class="page">
+    <div class="search-bar">
+        <input id="searchInput" placeholder="Search movies..." onkeydown="if(event.key==='Enter') doSearch()">
+        <button onclick="doSearch()">Search</button>
+        <button class="secondary" onclick="loadPopular(1)">Popular</button>
+        <button class="secondary" onclick="loadTrending()">Trending</button>
+    </div>
+    <div class="status" id="moviesStatus"></div>
+    <div class="grid" id="moviesGrid"></div>
+    <div class="pagination" id="pagination" style="display:none">
+        <button id="prevBtn" onclick="changePage(-1)">← Prev</button>
+        <span id="pageInfo"></span>
+        <button id="nextBtn" onclick="changePage(1)">Next →</button>
+    </div>
+</div>
+
+<!-- WATCHED PAGE -->
+<div id="pageWatched" class="page">
+    <div class="status" id="watchedStatus"></div>
+    <div id="watchedList"></div>
+</div>
+
+<!-- DETAIL OVERLAY -->
+<div id="overlay">
+    <div class="detail-box">
+        <button class="close-btn" onclick="closeDetail()">✕</button>
+        <div class="detail-inner">
+            <img id="detailPoster" src="" alt="">
+            <div class="detail-info">
+                <h2 id="detailTitle"></h2>
+                <div class="meta" id="detailMeta"></div>
+                <p id="detailOverview"></p>
+                <div class="detail-actions">
+                    <button class="btn-watched" id="watchedBtn" onclick="addToWatched()">+ Add to Watched</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API  = 'http://localhost:8080';
+    const IMG  = 'https://image.tmdb.org/t/p/w342';
+    const IMG_BIG = 'https://image.tmdb.org/t/p/w500';
+    const NO_IMG = 'https://placehold.co/150x225/222/555?text=No+Image';
+
+    let user = JSON.parse(localStorage.getItem('smf_user') || 'null');
+    let currentMovie = null;
+    let currentPage  = 1;
+    let totalPages   = 1;
+    let currentMode  = 'popular'; // 'popular' | 'search' | 'trending'
+    let currentQuery = '';
+
+    // ── STATE INIT ──────────────────────────────────────────────────
+    window.onload = () => {
+        updateNavForUser();
+        if (user) {
+            showPage('movies');
+            loadPopular(1);
+        } else {
+            showPage('auth');
+        }
+    };
+
+    function updateNavForUser() {
+        if (user) {
+            document.getElementById('userInfo').textContent = `👤 ${user.username}`;
+            document.getElementById('navAuth').style.display = 'none';
+            document.getElementById('navLogout').style.display = '';
+        } else {
+            document.getElementById('userInfo').textContent = 'Not logged in';
+            document.getElementById('navAuth').style.display = '';
+            document.getElementById('navLogout').style.display = 'none';
+        }
+    }
+
+    // ── PAGES ───────────────────────────────────────────────────────
+    function showPage(name) {
+        document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+        document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+        document.getElementById('page' + name.charAt(0).toUpperCase() + name.slice(1)).classList.add('active');
+        const btn = document.getElementById('nav' + name.charAt(0).toUpperCase() + name.slice(1));
+        if (btn) btn.classList.add('active');
+        if (name === 'watched') loadWatched();
+        if (name === 'movies' && document.getElementById('moviesGrid').children.length === 0) loadPopular(1);
+    }
+
+    // ── AUTH ────────────────────────────────────────────────────────
+    function toggleAuth() {
+        document.getElementById('registerBox').style.display =
+            document.getElementById('registerBox').style.display === 'none' ? '' : 'none';
+        document.getElementById('loginBox').style.display =
+            document.getElementById('loginBox').style.display === 'none' ? '' : 'none';
+    }
+
+    async function register() {
+        const msg = document.getElementById('authMsg');
+        const body = {
+            username: document.getElementById('regUsername').value.trim(),
+            email:    document.getElementById('regEmail').value.trim(),
+            password: document.getElementById('regPassword').value
+        };
+        if (!body.username || !body.email || !body.password) { setMsg(msg, 'Fill all fields', true); return; }
+        try {
+            const res  = await fetch(`${API}/users/register`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+            const data = await res.text();
+            if (!res.ok) { setMsg(msg, data, true); return; }
+            setMsg(msg, 'Registered! You can now login.', false);
+            toggleAuth();
+        } catch(e) { setMsg(msg, e.message, true); }
+    }
+
+    async function login() {
+        const msg = document.getElementById('loginMsg');
+        const body = { username: document.getElementById('loginUsername').value.trim(), password: document.getElementById('loginPassword').value };
+        if (!body.username || !body.password) { setMsg(msg, 'Fill all fields', true); return; }
+        try {
+            const res  = await fetch(`${API}/users/login`, { method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body) });
+            const data = await res.json();
+            if (!res.ok) { setMsg(msg, data, true); return; }
+            user = data;
+            localStorage.setItem('smf_user', JSON.stringify(user));
+            updateNavForUser();
+            showPage('movies');
+            loadPopular(1);
+        } catch(e) { setMsg(msg, e.message, true); }
+    }
+
+    function logout() {
+        user = null;
+        localStorage.removeItem('smf_user');
+        updateNavForUser();
+        showPage('auth');
+    }
+
+    function setMsg(el, text, isErr) {
+        el.textContent = text;
+        el.className = 'msg ' + (isErr ? 'err' : 'ok');
+    }
+
+    // ── MOVIES ──────────────────────────────────────────────────────
+    async function loadPopular(page) {
+        currentMode = 'popular'; currentPage = page;
+        const res  = await fetch(`${API}/movies/popular?page=${page}`);
+        const data = await res.json();
+        totalPages = data.total_pages;
+        renderGrid(data.results, `Popular Movies — ${data.total_results.toLocaleString()} total`);
+    }
+
+    async function loadTrending() {
+        currentMode = 'trending'; currentPage = 1;
+        const res  = await fetch(`${API}/movies/trending`);
+        const data = await res.json();
+        totalPages = data.total_pages ?? 1;
+        renderGrid(data.results, 'Trending This Week');
+    }
+
+    async function doSearch() {
+        const q = document.getElementById('searchInput').value.trim();
+        if (!q) { loadPopular(1); return; }
+        currentMode = 'search'; currentQuery = q; currentPage = 1;
+        fetchSearch(q, 1);
+    }
+
+    async function fetchSearch(q, page) {
+        const res  = await fetch(`${API}/movies/search?query=${encodeURIComponent(q)}&page=${page}`);
+        const data = await res.json();
+        totalPages = data.total_pages;
+        renderGrid(data.results, `Results for "${q}" — ${data.total_results.toLocaleString()} found`);
+    }
+
+    function changePage(delta) {
+        const next = currentPage + delta;
+        if (next < 1 || next > totalPages) return;
+        currentPage = next;
+        if (currentMode === 'popular')  loadPopular(currentPage);
+        if (currentMode === 'trending') loadTrending();
+        if (currentMode === 'search')   fetchSearch(currentQuery, currentPage);
+    }
+
+    function renderGrid(movies, statusText) {
+        document.getElementById('moviesStatus').textContent = statusText;
+        const grid = document.getElementById('moviesGrid');
+        grid.innerHTML = '';
+        movies.forEach(m => {
+            const card = document.createElement('div');
+            card.className = 'card';
+            card.innerHTML = `
+                <img src="${m.poster_path ? IMG + m.poster_path : NO_IMG}" alt="${m.title}" onerror="this.src='${NO_IMG}'">
+                <div class="card-title">${m.title}</div>
+                <div class="card-meta">⭐ ${m.vote_average?.toFixed(1) ?? '?'} &nbsp;${m.release_date?.slice(0,4) ?? ''}</div>
+            `;
+            card.onclick = () => openDetail(m);
+            grid.appendChild(card);
+        });
+        const pg = document.getElementById('pagination');
+        pg.style.display = totalPages > 1 ? 'flex' : 'none';
+        document.getElementById('pageInfo').textContent = `Page ${currentPage} / ${totalPages}`;
+        document.getElementById('prevBtn').disabled = currentPage <= 1;
+        document.getElementById('nextBtn').disabled = currentPage >= totalPages;
+    }
+
+    // ── DETAIL ──────────────────────────────────────────────────────
+    async function openDetail(movie) {
+        // fetch full detail for overview etc.
+        let m = movie;
+        try {
+            const res = await fetch(`${API}/movies/${movie.id}`);
+            if (res.ok) m = await res.json();
+        } catch(_) {}
+        currentMovie = m;
+
+        document.getElementById('detailPoster').src = m.poster_path ? IMG_BIG + m.poster_path : NO_IMG;
+        document.getElementById('detailTitle').textContent = m.title;
+        document.getElementById('detailMeta').textContent =
+            `${m.release_date?.slice(0,4) ?? '?'} · ⭐ ${m.vote_average?.toFixed(1) ?? '?'} · ${m.vote_count?.toLocaleString() ?? '?'} votes`;
+        document.getElementById('detailOverview').textContent = m.overview || 'No overview available.';
+
+        const btn = document.getElementById('watchedBtn');
+        btn.textContent = '+ Add to Watched';
+        btn.className = 'btn-watched';
+        btn.disabled = false;
+
+        // check if already in watched
+        if (user) {
+            try {
+                const res = await fetch(`${API}/users/${user.id}/watched`);
+                const list = await res.json();
+                if (list.some(w => w.tmdbId === m.id)) {
+                    btn.textContent = '✓ Already Watched';
+                    btn.className = 'btn-watched added';
+                    btn.disabled = true;
+                }
+            } catch(_) {}
+        }
+
+        document.getElementById('overlay').classList.add('open');
+    }
+
+    function closeDetail() {
+        document.getElementById('overlay').classList.remove('open');
+        currentMovie = null;
+    }
+
+    document.getElementById('overlay').addEventListener('click', e => {
+        if (e.target === document.getElementById('overlay')) closeDetail();
+    });
+
+    async function addToWatched() {
+        if (!user) { alert('Please login first.'); return; }
+        if (!currentMovie) return;
+        const m = currentMovie;
+        const body = {
+            tmdbId:      String(m.id),
+            title:       m.title,
+            posterPath:  m.poster_path ?? '',
+            releaseDate: m.release_date ?? ''
+        };
+        try {
+            const res = await fetch(`${API}/users/${user.id}/watched`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(body)
+            });
+            if (!res.ok) throw new Error(`HTTP ${res.status}`);
+            const btn = document.getElementById('watchedBtn');
+            btn.textContent = '✓ Added!';
+            btn.className = 'btn-watched added';
+            btn.disabled = true;
+        } catch(e) { alert('Error: ' + e.message); }
+    }
+
+    // ── WATCHED LIST ────────────────────────────────────────────────
+    async function loadWatched() {
+        const statusEl = document.getElementById('watchedStatus');
+        const listEl   = document.getElementById('watchedList');
+        listEl.innerHTML = '';
+        if (!user) { statusEl.textContent = 'Login to see your watched movies.'; return; }
+        statusEl.textContent = 'Loading...';
+        try {
+            const res  = await fetch(`${API}/users/${user.id}/watched`);
+            const list = await res.json();
+            if (!list.length) { statusEl.textContent = 'No watched movies yet.'; return; }
+            statusEl.textContent = `${list.length} watched movie${list.length !== 1 ? 's' : ''}`;
+            list.forEach(w => {
+                const el = document.createElement('div');
+                el.className = 'watched-card';
+                el.innerHTML = `
+                    <img src="${w.posterPath ? IMG + w.posterPath : NO_IMG}" onerror="this.src='${NO_IMG}'">
+                    <div class="winfo">
+                        <h3>${w.title}</h3>
+                        <small>${w.releaseDate?.slice(0,4) ?? ''} &nbsp;·&nbsp; Added: ${new Date(w.watchedAt).toLocaleDateString()}</small>
+                        <br>
+                        <button onclick="removeWatched(${w.tmdbId}, this)">Remove</button>
+                    </div>
+                `;
+                listEl.appendChild(el);
+            });
+        } catch(e) { statusEl.textContent = 'Error: ' + e.message; }
+    }
+
+    async function removeWatched(tmdbId, btn) {
+        if (!user) return;
+        try {
+            await fetch(`${API}/users/${user.id}/watched/${tmdbId}`, { method: 'DELETE' });
+            btn.closest('.watched-card').remove();
+        } catch(e) { alert('Error: ' + e.message); }
+    }
+</script>
+</body>
+</html>
