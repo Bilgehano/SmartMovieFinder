@@ -57,7 +57,7 @@ services:
 
   api-gateway:
     image: nginx:1.27-alpine
-    container_na    docker psme: smf-api-gateway
+    container_name: smf-api-gateway
     restart: unless-stopped
     depends_on:
       - user-service
