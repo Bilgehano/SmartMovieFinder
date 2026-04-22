@@ -7,15 +7,22 @@ The backend now runs as two Spring Boot services under `backend/`:
 
 Each service is independently buildable, containerized, and connected to its own PostgreSQL database.
 
-### Service Ports
+### Public API
 
-- `user-service`: `http://localhost:8080`
-- `catalog-service`: `http://localhost:8081`
+- `api-gateway`: `http://localhost:8080`
+
+The gateway forwards requests internally:
+
+- `/users/**` -> `user-service`
+- `/movies/**` -> `catalog-service`
+- `/genres` -> `catalog-service`
+
+The Spring Boot services still run on their own container ports internally, but the frontend only needs the gateway URL.
 
 ### Main Endpoints
 
-- `user-service`: `/users/**` for registration, login, user lookup, watched movies, favorite genres, and ratings
-- `catalog-service`: `/movies/**`, `/genres`
+- `/users/**` for registration, login, user lookup, watched movies, favorite genres, and ratings
+- `/movies/**`, `/genres`
 
 ### Run With Docker
 
@@ -41,4 +48,5 @@ cd backend/catalog-service
 - `catalog-service` owns movie discovery endpoints and TMDB integration.
 - The merged user service now stores the `users` table in the same PostgreSQL database as the library data.
 - Existing data from the old `identity-service` database is not migrated automatically.
-- The frontend now only needs `user-service` and `catalog-service`, or you can add an API gateway later if you want one public backend URL.
+- The frontend should call only the API gateway at `http://localhost:8080`.
+- `user-service` and `catalog-service` are no longer exposed directly on host ports in Docker Compose.
