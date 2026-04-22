@@ -9,7 +9,7 @@ Each service is independently buildable, containerized, and connected to its own
 
 ### Public API
 
-- `api-gateway`: `http://localhost:8080`
+- `api-gateway`: `http://193.197.231.197:8080`
 
 The gateway forwards requests internally:
 
@@ -17,7 +17,7 @@ The gateway forwards requests internally:
 - `/movies/**` -> `catalog-service`
 - `/genres` -> `catalog-service`
 
-The Spring Boot services still run on their own container ports internally, but the frontend only needs the gateway URL.
+The Spring Boot services still run on their own container ports internally, but the frontend only needs the gateway URL that is reachable from your cloud server.
 
 ### Main Endpoints
 
@@ -28,6 +28,12 @@ The Spring Boot services still run on their own container ports internally, but 
 
 ```bash
 docker compose up --build
+```
+
+After the stack starts, access the API through your server's public IP or DNS name, for example:
+
+```text
+http://193.197.231.197:8080
 ```
 
 ### Build Individually
@@ -48,5 +54,7 @@ cd backend/catalog-service
 - `catalog-service` owns movie discovery endpoints and TMDB integration.
 - The merged user service now stores the `users` table in the same PostgreSQL database as the library data.
 - Existing data from the old `identity-service` database is not migrated automatically.
-- The frontend should call only the API gateway at `http://localhost:8080`.
+- The frontend should call only the API gateway at `http://193.197.231.197:8080` or your public DNS name.
 - `user-service` and `catalog-service` are no longer exposed directly on host ports in Docker Compose.
+- Docker already publishes the gateway on `0.0.0.0:8080`, so no compose change is required to make it reachable from outside the VM.
+- Make sure your BW Cloud security group / firewall allows inbound TCP traffic on port `8080`.

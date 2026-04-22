@@ -153,7 +153,17 @@
 </div>
 
 <script>
-    const API  = 'http://localhost:8080';
+    const rawSavedApiBase = localStorage.getItem('smf_api_base');
+    const savedApiBase = rawSavedApiBase && !/^https?:\/\/(localhost|127\.0\.0\.1)(:\d+)?/i.test(rawSavedApiBase)
+        ? rawSavedApiBase.replace(/\/$/, '')
+        : null;
+    const queryApiBase = new URLSearchParams(window.location.search).get('api');
+    const currentHost = window.location.hostname;
+    const currentProtocol = window.location.protocol === 'https:' ? 'https:' : 'http:';
+    const inferredApiBase = currentHost && currentHost !== 'localhost' && currentHost !== '127.0.0.1'
+        ? `${currentProtocol}//${currentHost}:8080`
+        : null;
+    const API = queryApiBase || savedApiBase || inferredApiBase || 'http://193.197.231.197:8080';
     const IMG  = 'https://image.tmdb.org/t/p/w342';
     const IMG_BIG = 'https://image.tmdb.org/t/p/w500';
     const NO_IMG = 'https://placehold.co/150x225/222/555?text=No+Image';
@@ -167,6 +177,15 @@
 
     // ── STATE INIT ──────────────────────────────────────────────────
     window.onload = () => {
+        if (API.includes('YOUR_SERVER_IP')) {
+            const configuredApi = window.prompt('Enter the SmartMovieFinder API URL', 'http://193.197.231.197:8080');
+            if (configuredApi) {
+                localStorage.setItem('smf_api_base', configuredApi.replace(/\/$/, ''));
+                window.location.reload();
+                return;
+            }
+        }
+
         updateNavForUser();
         if (user) {
             showPage('movies');
