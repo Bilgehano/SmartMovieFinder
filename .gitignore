@@ -3,6 +3,8 @@ backend/user-service/target/
 backend/user-service/*.iml
 backend/catalog-service/target/
 backend/catalog-service/*.iml
+**/target/
+**/.mvn/
 
 # IDE
 .idea/
