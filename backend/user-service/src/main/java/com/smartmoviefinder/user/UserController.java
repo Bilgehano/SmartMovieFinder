@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.smartmoviefinder.movie.MovieRatingEntity;
+import com.smartmoviefinder.movie.WatchLaterEntity;
 import com.smartmoviefinder.movie.WatchedMovieEntity;
 
 @RestController
@@ -99,7 +100,8 @@ public class UserController {
         String title = movieData.get("title");
         String posterPath = movieData.get("posterPath");
         String releaseDate = movieData.get("releaseDate");
-        userService.addWatchedMovie(userId, tmdbId, title, posterPath, releaseDate);
+        String genreIds = movieData.get("genreIds");
+        userService.addWatchedMovie(userId, tmdbId, title, posterPath, releaseDate, genreIds);
     }
 
     @PostMapping("/{userId}/favorite-genre/{genreId}")
@@ -113,7 +115,8 @@ public class UserController {
         String title = movieData.get("title");
         String posterPath = movieData.get("posterPath");
         String releaseDate = movieData.get("releaseDate");
-        userService.rateMovie(userId, tmdbId, title, posterPath, releaseDate, rating);
+        String genreIds = movieData.get("genreIds");
+        userService.rateMovie(userId, tmdbId, title, posterPath, releaseDate, genreIds, rating);
     }
 
     @GetMapping("/{userId}/watched")
@@ -144,5 +147,29 @@ public class UserController {
     @DeleteMapping("/{userId}/rate/{tmdbId}")
     public void deleteMovieRating(@PathVariable Long userId, @PathVariable Long tmdbId) {
         userService.deleteMovieRating(userId, tmdbId);
+    }
+
+    @PostMapping("/{userId}/watch-later")
+    public void addToWatchLater(@PathVariable Long userId, @RequestBody Map<String, String> movieData) {
+        Long tmdbId = Long.parseLong(movieData.get("tmdbId"));
+        String title = movieData.get("title");
+        String posterPath = movieData.get("posterPath");
+        String releaseDate = movieData.get("releaseDate");
+        userService.addToWatchLater(userId, tmdbId, title, posterPath, releaseDate);
+    }
+
+    @DeleteMapping("/{userId}/watch-later/{tmdbId}")
+    public void removeFromWatchLater(@PathVariable Long userId, @PathVariable Long tmdbId) {
+        userService.removeFromWatchLater(userId, tmdbId);
+    }
+
+    @GetMapping("/{userId}/watch-later")
+    public List<WatchLaterEntity> getWatchLaterList(@PathVariable Long userId) {
+        return userService.getWatchLaterList(userId);
+    }
+
+    @GetMapping("/{userId}/watch-later/{tmdbId}/exists")
+    public boolean isInWatchLater(@PathVariable Long userId, @PathVariable Long tmdbId) {
+        return userService.isInWatchLater(userId, tmdbId);
     }
 }

@@ -53,4 +53,18 @@ public class TmdbClient {
                 .retrieve()
                 .body(String.class);
     }
+
+    public String getSimilarMovies(Long tmdbId) {
+        return restClient.get()
+                .uri("/movie/{id}/similar?api_key={key}&language=en-US&page=1", tmdbId, apiKey)
+                .retrieve()
+                .body(String.class);
+    }
+
+    public String getTopRatedMovies(int page) {
+        return restClient.get()
+                .uri("/movie/top_rated?api_key={key}&language=en-US&page={p}", apiKey, page)
+                .retrieve()
+                .body(String.class);
+    }
 }

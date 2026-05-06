@@ -1,8 +1,13 @@
 # Backend
 backend/user-service/target/
 backend/user-service/*.iml
+backend/user-service/Dockerfile
 backend/catalog-service/target/
 backend/catalog-service/*.iml
+backend/catalog-service/Dockerfile
+backend/recommendation-service/target/
+backend/recommendation-service/*.iml
+backend/recommendation-service/Dockerfile
 **/target/
 **/.mvn/
 

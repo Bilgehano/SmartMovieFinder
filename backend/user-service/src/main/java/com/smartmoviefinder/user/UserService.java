@@ -6,10 +6,13 @@ import java.util.stream.Collectors;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import com.smartmoviefinder.events.EventPublisher;
 import com.smartmoviefinder.genre.GenreEntity;
 import com.smartmoviefinder.genre.GenreRepository;
 import com.smartmoviefinder.movie.MovieRatingEntity;
 import com.smartmoviefinder.movie.MovieRatingRepository;
+import com.smartmoviefinder.movie.WatchLaterEntity;
+import com.smartmoviefinder.movie.WatchLaterRepository;
 import com.smartmoviefinder.movie.WatchedMovieEntity;
 import com.smartmoviefinder.movie.WatchedMovieRepository;
 
@@ -19,18 +22,24 @@ public class UserService {
     private final UserRepository userRepository;
     private final GenreRepository genreRepository;
     private final WatchedMovieRepository watchedMovieRepository;
+    private final WatchLaterRepository watchLaterRepository;
     private final MovieRatingRepository movieRatingRepository;
     private final FavoriteGenreRepository favoriteGenreRepository;
+    private final EventPublisher eventPublisher;
     private final BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
 
     public UserService(UserRepository userRepository, GenreRepository genreRepository,
-                       WatchedMovieRepository watchedMovieRepository, MovieRatingRepository movieRatingRepository,
-                       FavoriteGenreRepository favoriteGenreRepository) {
+                       WatchedMovieRepository watchedMovieRepository, WatchLaterRepository watchLaterRepository,
+                       MovieRatingRepository movieRatingRepository,
+                       FavoriteGenreRepository favoriteGenreRepository,
+                       EventPublisher eventPublisher) {
         this.userRepository = userRepository;
         this.genreRepository = genreRepository;
         this.watchedMovieRepository = watchedMovieRepository;
+        this.watchLaterRepository = watchLaterRepository;
         this.movieRatingRepository = movieRatingRepository;
         this.favoriteGenreRepository = favoriteGenreRepository;
+        this.eventPublisher = eventPublisher;
     }
 
     public UserEntity register(String username, String email, String password) {
@@ -81,11 +90,42 @@ public class UserService {
         return userRepository.existsByEmail(email);
     }
 
-    public void addWatchedMovie(Long userId, Long tmdbId, String title, String posterPath, String releaseDate) {
+    public void addWatchedMovie(Long userId, Long tmdbId, String title, String posterPath, String releaseDate, String genreIds) {
         requireUserExists(userId);
         if (!watchedMovieRepository.existsByUserIdAndTmdbId(userId, tmdbId)) {
-            watchedMovieRepository.save(new WatchedMovieEntity(userId, tmdbId, title, posterPath, releaseDate));
+            watchedMovieRepository.save(new WatchedMovieEntity(userId, tmdbId, title, posterPath, releaseDate, genreIds));
         }
+        // Auto-remove from watch later when marked as watched
+        if (watchLaterRepository.existsByUserIdAndTmdbId(userId, tmdbId)) {
+            watchLaterRepository.deleteByUserIdAndTmdbId(userId, tmdbId);
+            eventPublisher.publishWatchLaterRemoved(userId, tmdbId);
+        }
+        eventPublisher.publishWatched(userId, tmdbId, title, posterPath, releaseDate, genreIds,
+                java.time.LocalDateTime.now().toString());
+    }
+
+    public void addToWatchLater(Long userId, Long tmdbId, String title, String posterPath, String releaseDate) {
+        requireUserExists(userId);
+        if (!watchLaterRepository.existsByUserIdAndTmdbId(userId, tmdbId)) {
+            watchLaterRepository.save(new WatchLaterEntity(userId, tmdbId, title, posterPath, releaseDate));
+            eventPublisher.publishWatchLater(userId, tmdbId, title, posterPath, releaseDate, null);
+        }
+    }
+
+    public void removeFromWatchLater(Long userId, Long tmdbId) {
+        requireUserExists(userId);
+        watchLaterRepository.deleteByUserIdAndTmdbId(userId, tmdbId);
+        eventPublisher.publishWatchLaterRemoved(userId, tmdbId);
+    }
+
+    public List<WatchLaterEntity> getWatchLaterList(Long userId) {
+        requireUserExists(userId);
+        return watchLaterRepository.findByUserId(userId);
+    }
+
+    public boolean isInWatchLater(Long userId, Long tmdbId) {
+        requireUserExists(userId);
+        return watchLaterRepository.existsByUserIdAndTmdbId(userId, tmdbId);
     }
 
     public void addFavoriteGenre(Long userId, Long genreId) {
@@ -94,10 +134,11 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("Genre not found with id: " + genreId));
         if (!favoriteGenreRepository.existsByUserIdAndGenreId(userId, genre.getId())) {
             favoriteGenreRepository.save(new FavoriteGenreEntity(userId, genre.getId()));
+            eventPublisher.publishLikedGenre(userId, genre.getId(), genre.getName());
         }
     }
 
-    public void rateMovie(Long userId, Long tmdbId, String title, String posterPath, String releaseDate, int rating) {
+    public void rateMovie(Long userId, Long tmdbId, String title, String posterPath, String releaseDate, String genreIds, int rating) {
         requireUserExists(userId);
         MovieRatingEntity existingRating = movieRatingRepository.existsByUserIdAndTmdbId(userId, tmdbId)
                 ? movieRatingRepository.findByUserIdAndTmdbId(userId, tmdbId).orElse(null)
@@ -106,8 +147,9 @@ public class UserService {
             existingRating.setRating(rating);
             movieRatingRepository.save(existingRating);
         } else {
-            movieRatingRepository.save(new MovieRatingEntity(userId, tmdbId, title, posterPath, releaseDate, rating));
+            movieRatingRepository.save(new MovieRatingEntity(userId, tmdbId, title, posterPath, releaseDate, genreIds, rating));
         }
+        eventPublisher.publishRated(userId, tmdbId, title, posterPath, releaseDate, genreIds, rating);
     }
 
     public List<WatchedMovieEntity> getWatchedMovies(Long userId) {

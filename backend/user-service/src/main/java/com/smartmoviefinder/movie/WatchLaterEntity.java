@@ -15,13 +15,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "user_watched_movies", uniqueConstraints = {
+@Table(name = "watch_later_movies", uniqueConstraints = {
     @UniqueConstraint(columnNames = {"user_id", "tmdb_id"})
 })
 @Getter
 @Setter
 @NoArgsConstructor
-public class WatchedMovieEntity {
+public class WatchLaterEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,23 +40,19 @@ public class WatchedMovieEntity {
 
     private String releaseDate;
 
-    // Comma-separated genre IDs e.g. "28,12,878"
-    private String genreIds;
-
     @Column(nullable = false)
-    private LocalDateTime watchedAt;
+    private LocalDateTime addedAt;
 
-    public WatchedMovieEntity(Long userId, Long tmdbId, String title, String posterPath, String releaseDate, String genreIds) {
+    public WatchLaterEntity(Long userId, Long tmdbId, String title, String posterPath, String releaseDate) {
         this.userId = userId;
         this.tmdbId = tmdbId;
         this.title = title;
         this.posterPath = posterPath;
         this.releaseDate = releaseDate;
-        this.genreIds = genreIds;
     }
 
     @PrePersist
     public void prePersist() {
-        this.watchedAt = LocalDateTime.now();
+        this.addedAt = LocalDateTime.now();
     }
 }

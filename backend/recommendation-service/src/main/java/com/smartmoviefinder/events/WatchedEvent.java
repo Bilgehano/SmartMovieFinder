@@ -1,0 +1,23 @@
+package com.smartmoviefinder.events;
+
+import java.util.List;
+
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+public class WatchedEvent {
+    private Long userId;
+    private Long tmdbId;
+    private String title;
+    private String posterPath;
+    private String releaseDate;
+    private List<Long> genreIds;
+    private List<String> genreNames;
+    private String watchedAt;
+}

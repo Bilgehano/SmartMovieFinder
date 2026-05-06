@@ -40,18 +40,22 @@ public class MovieRatingEntity {
 
     private String releaseDate;
 
+    // Comma-separated genre IDs e.g. "28,12,878"
+    private String genreIds;
+
     @Column(nullable = false)
     private int rating;
 
     @Column(nullable = false)
     private LocalDateTime ratedAt;
 
-    public MovieRatingEntity(Long userId, Long tmdbId, String title, String posterPath, String releaseDate, int rating) {
+    public MovieRatingEntity(Long userId, Long tmdbId, String title, String posterPath, String releaseDate, String genreIds, int rating) {
         this.userId = userId;
         this.tmdbId = tmdbId;
         this.title = title;
         this.posterPath = posterPath;
         this.releaseDate = releaseDate;
+        this.genreIds = genreIds;
         this.rating = rating;
     }
 
