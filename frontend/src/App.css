@@ -7,6 +7,42 @@
   --panel-light: #e5e7eb;
 }
 
+html,
+body,
+#root {
+  min-height: 100%;
+  margin: 0;
+  background-color: var(--background-dark);
+}
+
+body {
+  color: var(--text-light);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  color: inherit;
+}
+
+/* Layout for pages with navbar */
+
+.app-layout {
+  min-height: 100vh;
+  background-color: var(--background-dark);
+  color: var(--text-light);
+}
+
+.app-main {
+  min-height: calc(100vh - 116px);
+  background-color: var(--background-dark);
+}
+
+/* Start page without navbar */
+
 .start-page {
   min-height: 100vh;
   background-color: var(--background-dark);
@@ -71,15 +107,29 @@
   color: #111827;
 }
 
+/* Temporary placeholder pages */
+
 .placeholder-page {
-  min-height: 100vh;
+  min-height: calc(100vh - 116px);
   background-color: var(--background-dark);
-  color: white;
+  color: var(--text-light);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 }
+
+.placeholder-page h1 {
+  margin: 0 0 12px;
+  font-size: 2.4rem;
+}
+
+.placeholder-page p {
+  margin: 0;
+  color: var(--text-muted);
+}
+
+/* Responsive */
 
 @media (max-width: 600px) {
   .start-card {

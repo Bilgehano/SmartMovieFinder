@@ -1,0 +1,23 @@
+.home-movie-dashboard {
+  width: 100%;
+}
+
+.home-movie-dashboard-header {
+  margin-bottom: 32px;
+  padding-bottom: 20px;
+  border-bottom: 2px solid #111827;
+}
+
+.home-movie-dashboard-header h2 {
+  margin: 0 0 8px;
+  color: #111827;
+  font-size: 1.7rem;
+}
+
+.home-movie-dashboard-header p {
+  max-width: 720px;
+  margin: 0;
+  color: #4b5563;
+  line-height: 1.5;
+  font-weight: 600;
+}

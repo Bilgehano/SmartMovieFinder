@@ -1,0 +1,43 @@
+.home-page {
+  min-height: calc(100vh - 116px);
+  background-color: var(--background-dark);
+  padding: 32px 0 48px;
+  box-sizing: border-box;
+}
+
+.home-search-section {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 28px;
+}
+
+.home-content-shell {
+  width: calc(100% - 200px);
+  margin: 0 auto;
+}
+
+.home-content-area {
+  width: 100%;
+  min-height: 420px;
+  padding: 32px;
+  background-color: #d9d9d9;
+  color: #111827;
+  border-radius: 0 0 10px 10px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 900px) {
+  .home-content-shell {
+    width: calc(100% - 48px);
+  }
+}
+
+@media (max-width: 560px) {
+  .home-content-shell {
+    width: calc(100% - 24px);
+  }
+
+  .home-content-area {
+    padding: 20px;
+  }
+}
