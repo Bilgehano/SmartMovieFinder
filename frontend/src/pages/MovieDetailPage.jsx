@@ -1,6 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
+
 import { mockMovies } from "../data/mockMovies";
+import { mockCommunityRatings } from "../data/mockCommunityRatings";
+
+import MovieDetailBar from "../components/movie-detail/MovieDetailBar";
+import MovieDetailSection from "../components/movie-detail/MovieDetailSection";
+import CommunityRatingSection from "../components/movie-detail/CommunityRatingSection";
+import MovieRecommendationSection from "../components/movie-detail/MovieRecommendationSection";
+
 import "./MovieDetailPage.css";
 
 function normalizeMovie(movie) {
@@ -30,6 +38,14 @@ function MovieDetailPage() {
     return normalizeMovie(foundMovie);
   }, [movieId]);
 
+  const recommendedMovies = useMemo(() => {
+    if (!movie) return [];
+
+    return mockMovies
+      .filter((item) => String(item.id) !== String(movie.id))
+      .slice(0, 4);
+  }, [movie]);
+
   const [selectedRating, setSelectedRating] = useState(null);
   const [watchStatus, setWatchStatus] = useState("Not watched");
 
@@ -40,28 +56,14 @@ function MovieDetailPage() {
     }
   }, [movie]);
 
-  if (!movie) {
-    return (
-      <main className="movie-detail-page">
-        <section className="movie-detail-shell">
-          <div className="movie-detail-panel">
-            <p className="movie-detail-empty">Movie not found.</p>
-
-            <Link className="movie-detail-back-link" to="/homepage">
-              Back to homepage
-            </Link>
-          </div>
-        </section>
-      </main>
+  function handleWatchStatus() {
+    setWatchStatus((currentStatus) =>
+      currentStatus === "Watched" ? "Not watched" : "Watched"
     );
   }
 
-  function handleMarkAsWatched() {
-    setWatchStatus("Watched");
-  }
-
   function handleSaveRating() {
-    if (!selectedRating) return;
+    if (!selectedRating || !movie) return;
 
     console.log("Saved rating:", {
       movieId: movie.id,
@@ -69,98 +71,54 @@ function MovieDetailPage() {
     });
   }
 
+  if (!movie) {
+    return (
+      <div className="movie-detail-page">
+        <section className="movie-detail-shell">
+          <div className="movie-detail-stack">
+            <MovieDetailBar showSectionLinks={false} />
+
+            <div className="movie-detail-panel movie-detail-error-panel">
+              <p className="movie-detail-empty">Movie not found.</p>
+              <p className="movie-detail-empty-text">
+                The selected movie does not exist in the mock data yet.
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
+    );
+  }
+
   return (
-    <main className="movie-detail-page">
+    <div className="movie-detail-page">
       <section className="movie-detail-shell">
-        <div className="movie-detail-panel">
-          <div className="movie-detail-top">
-            <aside className="movie-detail-poster-column">
-              <div className="movie-detail-poster">
-                <span>{movie.title.charAt(0)}</span>
-              </div>
+        <div className="movie-detail-stack">
+          <MovieDetailBar movieId={movie.id} />
 
-              <div className="movie-detail-status-card">
-                <span className="movie-detail-status-label">Status</span>
-                <strong>{watchStatus}</strong>
-              </div>
+          <div className="movie-detail-panel">
+            <MovieDetailSection
+              movie={movie}
+              watchStatus={watchStatus}
+              selectedRating={selectedRating}
+              onWatchStatusToggle={handleWatchStatus}
+              onRatingSelect={setSelectedRating}
+              onSaveRating={handleSaveRating}
+            />
 
-              <button
-                className="movie-detail-outline-button"
-                type="button"
-                onClick={handleMarkAsWatched}
-              >
-                Mark as watched
-              </button>
+            <section className="movie-detail-extra-section">
+              <CommunityRatingSection ratings={mockCommunityRatings} />
 
-              <Link className="movie-detail-back-link" to="/homepage">
-                Back to homepage
-              </Link>
-            </aside>
+              <div className="movie-detail-sub-divider" />
 
-            <section className="movie-detail-info">
-              <div className="movie-detail-title-area">
-                <p className="movie-detail-eyebrow">Movie Detail</p>
-
-                <h1>{movie.title}</h1>
-
-                <div className="movie-detail-meta">
-                  <span>{movie.genre}</span>
-                  <span>{movie.year}</span>
-                  <span>★ {movie.rating}</span>
-                </div>
-              </div>
-
-              <div className="movie-detail-description-card">
-                <h2>Details about Movie</h2>
-                <p>{movie.description}</p>
-              </div>
-
-              <div className="movie-detail-rating-card">
-                <div className="movie-detail-rating-header">
-                  <div>
-                    <h3>Your Rating</h3>
-                    <p>Choose how much you liked this movie.</p>
-                  </div>
-
-                  {selectedRating && (
-                    <span className="movie-detail-selected-rating">
-                      {selectedRating}/5
-                    </span>
-                  )}
-                </div>
-
-                <div className="movie-detail-rating-options">
-                  {[1, 2, 3, 4, 5].map((ratingValue) => (
-                    <button
-                      key={ratingValue}
-                      className={
-                        selectedRating === ratingValue
-                          ? "movie-detail-rating-box is-selected"
-                          : "movie-detail-rating-box"
-                      }
-                      type="button"
-                      onClick={() => setSelectedRating(ratingValue)}
-                      aria-label={`Rate movie with ${ratingValue} out of 5`}
-                    >
-                      ★
-                    </button>
-                  ))}
-                </div>
-
-                <button
-                  className="movie-detail-primary-button"
-                  type="button"
-                  onClick={handleSaveRating}
-                  disabled={!selectedRating}
-                >
-                  Save Rating
-                </button>
-              </div>
+              <MovieRecommendationSection
+                recommendedMovies={recommendedMovies}
+              />
             </section>
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 }
 
