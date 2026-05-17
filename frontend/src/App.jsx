@@ -5,6 +5,7 @@ import AppLayout from "./layouts/AppLayout";
 import StartPage from "./pages/StartPage";
 import HomePage from "./pages/HomePage";
 import MovieDetailPage from "./pages/MovieDetailPage";
+import MovieSearchPage from "./pages/MovieSearchPage";
 
 function PlaceholderPage({ title }) {
   return (
@@ -20,8 +21,8 @@ function App() {
     <BrowserRouter>
       <Routes>
         {/* Pages without navbar */}
-        <Route path="/" element={<Navigate to="/start-page" />} />
-        <Route path="/start-page" element={<StartPage />} />
+        <Route path="/" element={<Navigate to="/startpage" />} />
+        <Route path="/startpage" element={<StartPage />} />
         <Route path="/userlogin" element={<PlaceholderPage title="Login" />} />
         <Route
           path="/userregistration"
@@ -31,7 +32,7 @@ function App() {
         {/* Pages with navbar */}
         <Route element={<AppLayout />}>
           <Route path="/homepage" element={<HomePage />} />
-          <Route path="/search" element={<PlaceholderPage title="Search" />} />
+          <Route path="/search" element={<MovieSearchPage />} />
           <Route path="/library" element={<PlaceholderPage title="Library" />} />
           <Route path="/profile" element={<PlaceholderPage title="Profile" />} />
           <Route path="/genres" element={<PlaceholderPage title="Genres" />} />
