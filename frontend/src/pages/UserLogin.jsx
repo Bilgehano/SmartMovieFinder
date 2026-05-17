@@ -1,8 +1,93 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import "./UserLogin.css";
+
 function UserLogin() {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [loginError, setLoginError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleLogin = async () => {
+    setLoading(true);
+    setLoginError("");
+
+    try {
+      const response = await fetch("http://localhost:8080/users/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ username, password })
+      });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      console.log("Login failed", errorText);
+
+      setLoginError("Username oder Passwort ist falsch");
+      return;
+    }
+
+      const data = await response.json();
+      console.log(data);
+
+    } catch (error) {
+      console.error("Login error:", error);
+      setLoginError("Serverfehler. Bitte später erneut versuchen.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <main className="placeholder-page">
-      <h1>Login</h1>
-      <p>Login page will be built later.</p>
+    <main className="UserLogin">
+      <section className="UserLogin_card">
+        <div className="UserLogin_visual">
+
+          <h1>User Login</h1>
+
+          <p>Welcome back to SmartMovieFinder!</p>
+
+          {loginError && (
+            <p className="error-text">{loginError}</p>
+          )}
+
+          <div className="UserLogin_form">
+            <input
+              type="text"
+              placeholder="Username"
+              className="UserLogin_input"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+            />
+
+            <input
+              type="password"
+              placeholder="Password"
+              className="UserLogin_input"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+            />
+          </div>
+
+          <div className="UserLogin-actions">
+            <button 
+              onClick={handleLogin} 
+              className="primary-button"
+              disabled={loading}
+            >
+              {loading ? "Loggin in..." : "Login"}
+            </button>
+
+            <Link to="/userregistration" className="secondary-button">
+              Sign Up
+            </Link>
+          </div>
+
+        </div>
+      </section>
     </main>
   );
 }

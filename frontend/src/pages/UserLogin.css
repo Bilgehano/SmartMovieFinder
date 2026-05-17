@@ -1,0 +1,94 @@
+.UserLogin {
+  min-height: 100vh;
+  background-color: var(--background-dark);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px;
+}
+
+.UserLogin_card {
+  width: min(760px, 100%);
+  min-height: 420px;
+  background-color: var(--background-darker);
+  color: var(--text-light);
+  border-radius: 16px;
+  padding: 48px;
+  text-align: center;
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
+}
+/*
+.UserLogin_visual {
+  height: 170px;
+  margin-bottom: 32px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, #050816, #2a2540, #6d5dfc);
+}
+*/
+.UserLogin_card h1 {
+  margin: 0 0 16px;
+  font-size: 3rem;
+}
+
+.UserLogin_card p {
+  max-width: 520px;
+  margin: 0 auto;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* Error message */
+.error-text {
+  color: red;
+  margin: 10px 0;
+  font-size: 0.9rem;
+}
+
+/* FORM */
+.UserLogin_form {
+  margin-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: center;
+}
+
+.UserLogin_input {
+  width: 100%;
+  max-width: 420px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  background-color: var(--panel-light);
+  color: #111827;
+  font-size: 1rem;
+}
+
+/* BUTTONS */
+.UserLogin-actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-top: 32px;
+}
+
+.primary-button,
+.secondary-button {
+  text-decoration: none;
+  padding: 12px 22px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+}
+
+.primary-button {
+  background-color: var(--accent);
+  color: white;
+}
+
+.secondary-button {
+  background-color: var(--panel-light);
+  color: #111827;
+}
