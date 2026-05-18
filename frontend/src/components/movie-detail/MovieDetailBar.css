@@ -1,0 +1,102 @@
+.movie-detail-page-bar {
+  width: 100%;
+  min-height: 78px;
+  padding: 0 26px;
+  background: rgba(16, 13, 30, 0.96);
+  color: var(--text-light);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.movie-detail-page-bar-simple {
+  justify-content: flex-start;
+}
+
+.movie-detail-page-bar-back {
+  min-height: 42px;
+  padding: 0 20px;
+  border-radius: 8px;
+  background: var(--panel-light);
+  color: #111827;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-weight: 900;
+  white-space: nowrap;
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease,
+    color 0.18s ease;
+}
+
+.movie-detail-page-bar-links {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.movie-detail-page-bar-links a {
+  min-width: 120px;
+  min-height: 42px;
+  padding: 0 18px;
+  border-radius: 8px;
+  background: var(--panel-light);
+  color: #111827;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 900;
+  transition:
+    transform 0.18s ease,
+    background 0.18s ease,
+    color 0.18s ease;
+}
+
+.movie-detail-page-bar-back:hover,
+.movie-detail-page-bar-links a:hover {
+  background: var(--accent);
+  color: var(--text-light);
+  transform: translateY(-1px);
+}
+
+@media (max-width: 760px) {
+  .movie-detail-page-bar {
+    min-height: auto;
+    flex-direction: column;
+    align-items: stretch;
+    padding: 16px;
+  }
+
+  .movie-detail-page-bar-back {
+    min-height: 42px;
+  }
+
+  .movie-detail-page-bar-links {
+    justify-content: center;
+  }
+
+  .movie-detail-page-bar-links a {
+    flex: 1;
+    min-width: 0;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .movie-detail-page-bar-links {
+    flex-direction: column;
+  }
+
+  .movie-detail-page-bar-links a {
+    width: 100%;
+  }
+}
