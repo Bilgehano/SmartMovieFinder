@@ -4,6 +4,7 @@ import "./App.css";
 import AppLayout from "./layouts/AppLayout";
 import StartPage from "./pages/StartPage";
 import UserLogin from "./pages/UserLogin";
+import UserRegistration from "./pages/UserRegistration";
 import HomePage from "./pages/HomePage";
 import MovieDetailPage from "./pages/MovieDetailPage";
 
@@ -26,7 +27,7 @@ function App() {
         <Route path="/userlogin" element={<UserLogin />} />
         <Route
           path="/userregistration"
-          element={<PlaceholderPage title="Sign Up" />}
+          element={<UserRegistration />}
         />
 
         {/* Pages with navbar */}

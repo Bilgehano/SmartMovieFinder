@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: recommendation-service
+
+  neo4j:
+    uri: ${NEO4J_URI:bolt://localhost:7687}
+    authentication:
+      username: ${NEO4J_USER:neo4j}
+      password: ${NEO4J_PASSWORD:password}
+
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+
+server:
+  port: ${SERVER_PORT:8082}
+
+services:
+  user-service-url: ${USER_SERVICE_URL:http://user-service:8080}
+  catalog-service-url: ${CATALOG_SERVICE_URL:http://catalog-service:8081}
