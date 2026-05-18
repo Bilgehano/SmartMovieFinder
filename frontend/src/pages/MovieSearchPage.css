@@ -27,7 +27,7 @@
   border-bottom: 2px solid #111827;
 }
 
-.movie-search-intro h1 {
+.movie-search-intro h2 {
   margin: 0 0 8px;
   color: #111827;
   font-size: 1.7rem;
@@ -58,7 +58,22 @@
     padding: 18px;
   }
 
-  .movie-search-intro h1 {
+  .movie-search-intro h2 {
     font-size: 1.75rem;
   }
+}
+
+.movie-search-message {
+  margin: 18px 24px;
+  padding: 14px 16px;
+  border: 2px solid #111827;
+  border-radius: 6px;
+  background: #f9fafb;
+  color: #111827;
+  font-weight: 800;
+}
+
+.movie-search-message-error {
+  border-color: #991b1b;
+  color: #991b1b;
 }

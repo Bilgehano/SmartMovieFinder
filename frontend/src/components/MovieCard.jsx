@@ -2,10 +2,16 @@ import { Link } from "react-router-dom";
 import "./MovieCard.css";
 
 function MovieCard({ movie }) {
+  const posterLetter = movie.title ? movie.title.charAt(0) : "M";
+
   return (
     <article className="movie-card">
       <div className="movie-poster">
-        <span>{movie.title.charAt(0)}</span>
+        {movie.posterUrl ? (
+          <img src={movie.posterUrl} alt={movie.title} />
+        ) : (
+          <span>{posterLetter}</span>
+        )}
       </div>
 
       <div className="movie-card-body">

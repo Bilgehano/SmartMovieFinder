@@ -14,8 +14,8 @@ export default function BrowseMovieGrid({ movies }) {
   return (
     <section className="browse-movie-grid-wrapper">
       <div className="browse-movie-grid">
-        {movies.map((movie, index) => (
-          <MovieCard key={`${movie.id}-${index}`} movie={movie} />
+        {movies.map((movie) => (
+          <MovieCard key={movie.id} movie={movie} />
         ))}
       </div>
     </section>

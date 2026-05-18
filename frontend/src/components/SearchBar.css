@@ -19,8 +19,16 @@
 .search-icon {
   display: flex;
   align-items: center;
-  color: #d1d5db;
-  flex-shrink: 0;
+  justify-content: center;
+  border: none;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+  cursor: pointer;
+}
+
+.search-icon:hover {
+  color: var(--accent, #6d5dfc);
 }
 
 .search-input {
