@@ -1,10 +1,31 @@
 import { Handle, Position } from "@xyflow/react";
+import { useNavigate } from "react-router-dom";
 
 function BaseGraphNode({ data, variant }) {
+  const navigate = useNavigate();
   const expandedClass = data.isExpanded ? "graph-node-expanded" : "";
 
+  function handleNodeContentClick(event) {
+    if (data.nodeKind !== "detail") {
+      return;
+    }
+
+    if (!data.movieId) {
+      console.warn("Detail node has no movieId:", data);
+      return;
+    }
+
+    event.stopPropagation();
+    navigate(`/movies/${data.movieId}/graph`);
+  }
+
   return (
-    <div className={`graph-node graph-node-${variant} ${expandedClass}`}>
+    <div
+      className={`graph-node graph-node-${variant} ${expandedClass}`}
+      onClick={handleNodeContentClick}
+      role={data.nodeKind === "detail" && data.movieId ? "button" : undefined}
+      tabIndex={data.nodeKind === "detail" && data.movieId ? 0 : undefined}
+    >
       <Handle
         id="target-center"
         type="target"

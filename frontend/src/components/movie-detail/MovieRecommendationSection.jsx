@@ -11,7 +11,7 @@ function MovieRecommendationSection({ recommendedMovies }) {
         <div>
           <p className="movie-detail-section-kicker">Discover more</p>
           <h2>Recommendations</h2>
-          <p>Similar or popular movies based on the current mock data.</p>
+          <p><p>Similar movies based on the selected movie.</p></p>
         </div>
       </div>
 
@@ -22,7 +22,11 @@ function MovieRecommendationSection({ recommendedMovies }) {
             key={recommendedMovie.id}
           >
             <div className="movie-detail-recommendation-poster">
-              <span>{recommendedMovie.title.charAt(0)}</span>
+              {recommendedMovie.posterUrl ? (
+                <img src={recommendedMovie.posterUrl} alt={recommendedMovie.title} />
+              ) : (
+                <span>{recommendedMovie.title.charAt(0)}</span>
+              )}
             </div>
 
             <div className="movie-detail-recommendation-content">

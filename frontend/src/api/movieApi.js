@@ -47,3 +47,11 @@ export async function fetchTopRatedMovies(page = 1) {
 export async function fetchMovieDetail(tmdbId) {
   return requestJson(`/movies/${tmdbId}`);
 }
+
+export async function fetchSimilarMovies(tmdbId, limit = 5) {
+  return requestJson(`/movies/${tmdbId}/similar?limit=${limit}`);
+}
+
+export async function fetchTrendingMovies() {
+  return requestJson("/movies/trending");
+}

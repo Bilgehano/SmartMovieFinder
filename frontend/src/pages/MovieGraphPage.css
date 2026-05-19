@@ -112,3 +112,18 @@
     padding: 22px;
   }
 }
+
+.movie-graph-state-card {
+  padding: 26px 28px;
+  border-radius: 22px;
+  background: rgba(21, 18, 36, 0.88);
+  color: var(--text-light, #ffffff);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
+  font-weight: 800;
+}
+
+.movie-graph-state-error {
+  color: #fca5a5;
+  border-color: rgba(248, 113, 113, 0.35);
+}
