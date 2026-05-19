@@ -1,0 +1,48 @@
+.library-overview {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.library-overview-card {
+  min-width: 110px;
+  padding: 12px 14px;
+  border: 2px solid #111827;
+  border-radius: 8px;
+  background-color: #f4f4f5;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.library-overview-card span {
+  display: block;
+  margin-bottom: 4px;
+  color: #111827;
+  font-size: 1.3rem;
+  font-weight: 900;
+}
+
+.library-overview-card p {
+  margin: 0;
+  color: #374151;
+  font-size: 0.8rem;
+  font-weight: 900;
+}
+
+@media (max-width: 1100px) {
+  .library-overview {
+    justify-content: flex-start;
+  }
+}
+
+@media (max-width: 700px) {
+  .library-overview {
+    width: 100%;
+  }
+
+  .library-overview-card {
+    flex: 1;
+    min-width: 120px;
+  }
+}

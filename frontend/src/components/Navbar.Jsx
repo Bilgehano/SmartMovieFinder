@@ -1,8 +1,12 @@
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useLocation, useNavigate } from "react-router-dom";
 import "./Navbar.css";
 
 function Navbar() {
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isGraphPage =
+    location.pathname === "/graph" || location.pathname.endsWith("/graph");
 
   function handleLogout() {
     // Later: remove token/user data here
@@ -35,6 +39,13 @@ function Navbar() {
         </NavLink>
 
         <NavLink
+          to="/graph"
+          className={isGraphPage ? "navbar-link active" : "navbar-link"}
+        >
+          Graph
+        </NavLink>
+
+        <NavLink
           to="/library"
           className={({ isActive }) =>
             isActive ? "navbar-link active" : "navbar-link"
@@ -52,7 +63,11 @@ function Navbar() {
           Profile
         </NavLink>
 
-        <button type="button" className="navbar-link logout-button" onClick={handleLogout}>
+        <button
+          type="button"
+          className="navbar-link logout-button"
+          onClick={handleLogout}
+        >
           Logout
         </button>
       </nav>

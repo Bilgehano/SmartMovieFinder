@@ -1,0 +1,114 @@
+.movie-graph-search-section {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 28px;
+}
+
+.movie-graph-page {
+  min-height: calc(100vh - 116px);
+  background:
+    radial-gradient(circle at top left, rgba(109, 93, 252, 0.22), transparent 34%),
+    linear-gradient(180deg, var(--background-dark), var(--background-darker));
+  padding: 32px 0 70px;
+}
+
+.movie-graph-shell {
+  width: calc(100% - 200px);
+  margin: 0 auto;
+}
+
+.movie-graph-page-header {
+  margin-bottom: 24px;
+  padding: 28px;
+  border-radius: 28px;
+  background: rgba(21, 18, 36, 0.88);
+  color: var(--text-light);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 24px 70px rgba(0, 0, 0, 0.35);
+  display: flex;
+  justify-content: space-between;
+  gap: 24px;
+  align-items: center;
+}
+
+.movie-graph-kicker {
+  margin: 0 0 8px;
+  color: var(--accent);
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.movie-graph-page-header h1 {
+  margin: 0 0 10px;
+  font-size: 2rem;
+  line-height: 1.1;
+}
+
+.movie-graph-page-header p {
+  margin: 0;
+  max-width: 760px;
+  color: var(--text-muted);
+  line-height: 1.5;
+}
+
+.movie-graph-search-message {
+  margin-top: 12px;
+  color: #fca5a5;
+  font-weight: 800;
+}
+
+.movie-graph-back-link {
+  min-height: 46px;
+  padding: 0 24px;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #6d5dfc, #9b5cff);
+  color: #ffffff;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  font-weight: 900;
+  font-size: 0.95rem;
+  white-space: nowrap;
+  box-shadow: 0 14px 34px rgba(109, 93, 252, 0.28);
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease;
+}
+
+.movie-graph-back-link:hover {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.42);
+  box-shadow: 0 18px 44px rgba(109, 93, 252, 0.42);
+  background: linear-gradient(135deg, #7c4dff, #b45cff);
+}
+
+@media (max-width: 1050px) {
+  .movie-graph-shell {
+    width: calc(100% - 80px);
+  }
+
+  .movie-graph-page-header {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}
+
+@media (max-width: 760px) {
+  .movie-graph-page {
+    padding: 24px 0 52px;
+  }
+
+  .movie-graph-shell {
+    width: calc(100% - 32px);
+  }
+
+  .movie-graph-page-header {
+    padding: 22px;
+  }
+}
