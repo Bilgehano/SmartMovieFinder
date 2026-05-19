@@ -3,6 +3,10 @@ import "./App.css";
 
 import AppLayout from "./layouts/AppLayout";
 import StartPage from "./pages/StartPage";
+import UserLogin from "./pages/UserLogin";
+import UserRegistration from "./pages/UserRegistration";
+import GenreSelection from "./pages/GenreSelection";
+import UserProfile from "./pages/UserProfile";
 import HomePage from "./pages/HomePage";
 import MovieDetailPage from "./pages/MovieDetailPage";
 import MovieSearchPage from "./pages/MovieSearchPage";
@@ -21,20 +25,18 @@ function App() {
     <BrowserRouter>
       <Routes>
         {/* Pages without navbar */}
-        <Route path="/" element={<Navigate to="/startpage" />} />
-        <Route path="/startpage" element={<StartPage />} />
-        <Route path="/userlogin" element={<PlaceholderPage title="Login" />} />
-        <Route
-          path="/userregistration"
-          element={<PlaceholderPage title="Sign Up" />}
-        />
+        <Route path="/" element={<Navigate to="/start-page" />} />
+        <Route path="/start-page" element={<StartPage />} />
+        <Route path="/userlogin" element={<UserLogin />} />
+        <Route path="/userregistration" element={<UserRegistration />} />
+        <Route path="/genreselection" element={<GenreSelection />} />
 
         {/* Pages with navbar */}
         <Route element={<AppLayout />}>
           <Route path="/homepage" element={<HomePage />} />
           <Route path="/search" element={<MovieSearchPage />} />
           <Route path="/library" element={<PlaceholderPage title="Library" />} />
-          <Route path="/profile" element={<PlaceholderPage title="Profile" />} />
+          <Route path="/profile" element={<UserProfile />} />
           <Route path="/genres" element={<PlaceholderPage title="Genres" />} />
           <Route path="/movies/:movieId" element={<MovieDetailPage />} />
         </Route>
