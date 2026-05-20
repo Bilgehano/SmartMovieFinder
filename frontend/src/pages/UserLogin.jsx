@@ -104,16 +104,17 @@ function UserLogin() {
           </div>
 
           <div className="UserLogin-actions">
-            <button 
-              onClick={handleLogin} 
-              className="primary-button"
+            <button
+              onClick={handleLogin}
+              className="login-button"
               disabled={loading}
-            >
-              {loading ? "Logging in..." : "Login"}
+              type="button"
+          >
+              <span>{loading ? "Logging in..." : "Login"}</span>
             </button>
 
-            <Link to="/userregistration" className="secondary-button">
-              Sign Up
+            <Link to="/userregistration" className="signup-button">
+              <span>Sign Up</span>
             </Link>
           </div>
 

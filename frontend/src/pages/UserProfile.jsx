@@ -1,9 +1,10 @@
 import { useEffect, useState } from "react";
 import "./UserProfile.css";
+import { useNavigate } from "react-router-dom";
 
 function UserProfile() {
+  const navigate = useNavigate();
 
-  
   const [genres, setGenres] = useState([]);
   const [watchedMovies, setWatchedMovies] = useState([]);
   const [ratedMovies, setRatedMovies] = useState([]);
@@ -24,39 +25,30 @@ function UserProfile() {
     setEmail(localStorage.getItem("email") || "");
     
     const fetchProfile = async () => {
-
       try {   
         if (!userId) {
           setError("User nicht eingeloggt");
           return;
         }
 
-
         const genreResponse = await fetch(
           `http://localhost:8080/users/${userId}/favorite-genres`
         );
-
         const genreData = await genreResponse.json();
 
-      
         const watchedResponse = await fetch(
           `http://localhost:8080/users/${userId}/watched`
         );
-
         const watchedData = await watchedResponse.json();
-
-        
+  
         const ratingsResponse = await fetch(
           `http://localhost:8080/users/${userId}/ratings`
         );
-
         const ratingsData = await ratingsResponse.json();
 
-       
         const watchLaterResponse = await fetch(
           `http://localhost:8080/users/${userId}/watch-later`
         );
-
         const watchLaterData = await watchLaterResponse.json();
 
         setGenres(genreData || []);
@@ -65,27 +57,59 @@ function UserProfile() {
         setWatchLater(watchLaterData || []);
 
       } catch (err) {
-
         console.error(err);
         setError("Fehler beim Laden des Profils");
 
       } finally {
-
         setLoading(false);
       }
     };
 
     fetchProfile();
-
   }, []);
-
-  if (loading) {
+  if (loading) {  
     return <p>Loading profile...</p>;
   }
-
   if (error) {
     return <p>{error}</p>;
   }
+/* Account löschen */  
+const handleDeleteAccount = async () => {
+  const userId = localStorage.getItem("userId");
+
+  if (!userId) {
+    setError("User nicht eingeloggt");
+    return;
+  }
+
+  const confirmDelete = window.confirm(
+    "Bist du sicher, dass du deinen Account löschen möchtest? Dieser Vorgang kann nicht rückgängig gemacht werden."
+  );
+
+  if (!confirmDelete) return;
+
+  try {
+    const response = await fetch(
+      `http://localhost:8080/users/${userId}`,
+      {
+        method: "DELETE",
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error("Fehler beim Löschen des Accounts");
+    }
+
+    localStorage.removeItem("userId");
+    localStorage.removeItem("username");
+    localStorage.removeItem("email");
+
+    navigate("/start-page"); 
+  } catch (err) {
+    console.error(err);
+    setError("Fehler beim Löschen des Accounts");
+  }
+};
 
   return (
     <main className="UserProfile">
@@ -102,6 +126,10 @@ function UserProfile() {
           <p>
             <strong>Email:</strong> {email}
           </p>
+
+            <button className="delete-btn" onClick={handleDeleteAccount}>
+              <strong>Account löschen</strong>
+            </button>
         </div>
 
       </section>
