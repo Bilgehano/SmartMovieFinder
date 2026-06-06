@@ -23,19 +23,11 @@ function App() {
     <BrowserRouter>
       <Routes>
         {/* Pages without navbar */}
-<<<<<<< HEAD
-        <Route path="/" element={<Navigate to="/start-page" />} />
-        <Route path="/start-page" element={<StartPage />} />
-        <Route path="/userlogin" element={<UserLogin />} />
-=======
         <Route path="/" element={<Navigate to="/startpage" />} />
         <Route path="/startpage" element={<StartPage />} />
-        <Route path="/userlogin" element={<PlaceholderPage title="Login" />} />
->>>>>>> main
-        <Route
-          path="/userregistration"
-          element={<UserRegistration />}
-        />
+        <Route path="/start-page" element={<Navigate to="/startpage" />} />
+        <Route path="/userlogin" element={<UserLogin />} />
+        <Route path="/userregistration" element={<UserRegistration />} />
 
         {/* Pages with navbar */}
         <Route element={<AppLayout />}>

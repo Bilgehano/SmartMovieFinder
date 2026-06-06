@@ -1,0 +1,141 @@
+.user-profile-page {
+  min-height: calc(100vh - 116px);
+  padding: 28px 0 60px;
+  background: var(--background-dark, #241f38);
+  color: var(--text-light, #ffffff);
+}
+
+.user-profile-top {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.user-profile-content-shell {
+  width: calc(100% - 200px);
+  margin: 0 auto;
+  padding: 0 0 24px;
+  border-radius: 4px;
+  background: var(--panel-light, #e5e7eb);
+  color: #111827;
+  overflow: hidden;
+}
+
+
+/* user profile card */
+.profile-card{
+  margin: 20px 24px;
+  padding: 18px 20px;
+  background: #ffffff;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+}
+
+.profile-card h1 {
+  margin: 0 0 12px;
+  font-size: 1.5rem;
+  color: black;
+}
+.profile-card h2 {
+  margin: 0 0 12px;
+  font-size: 1.2rem;
+  color: #111827;
+}
+
+.profile-card p {
+  margin: 6px 0;
+  color: #374151;
+  font-weight: 500;
+}
+
+/* genre list */
+.genre-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.genre-badge {
+  padding: 6px 10px;
+  background: #241f38;
+  color: #ffffff;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+/* stats */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.stat-box {
+  background: #f3f4f6;
+  border-radius: 6px;
+  padding: 14px;
+  text-align: center;
+  border: 1px solid #e5e7eb;
+}
+
+.stat-box h3 {
+  margin: 0;
+  font-size: 1.4rem;
+  color: #111827;
+}
+
+.stat-box p {
+  margin: 6px 0 0;
+  color: #4b5563;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+/* buttons für späteren genre select
+.profile-card button {
+  margin-top: 10px;
+  padding: 8px 12px;
+  border-radius: 4px;
+  border: none;
+  background: #241f38;
+  color: #ffffff;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.profile-card button:hover {
+  opacity: 0.85;
+}
+*/
+
+/* delete Acc button*/
+.delete-btn {
+  margin-top: 12px;
+  background-color: #d73836;
+  color: rgb(254, 254, 254);
+  border: none;
+  padding: 10px 14px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.delete-btn:hover {
+  background-color: #bc2020;
+}
+/* responsive design */
+@media (max-width: 700px) {
+  .user-profile-content-shell {
+    width: calc(100% - 32px);
+  }
+
+  .profile-card {
+    margin: 16px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+}
