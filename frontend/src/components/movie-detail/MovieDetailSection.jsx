@@ -13,7 +13,11 @@ function MovieDetailSection({
       <div className="movie-detail-top">
         <aside className="movie-detail-poster-column">
           <div className="movie-detail-poster">
-            <span>{movie.title.charAt(0)}</span>
+            {movie.posterUrl ? (
+              <img src={movie.posterUrl} alt={movie.title} />
+            ) : (
+              <span>{movie.title.charAt(0)}</span>
+            )}
           </div>
 
           <button
@@ -68,13 +72,13 @@ function MovieDetailSection({
 
               {selectedRating && (
                 <span className="movie-detail-selected-rating">
-                  {selectedRating}/5
+                  {selectedRating}/10
                 </span>
               )}
             </div>
 
             <div className="movie-detail-rating-options">
-              {[1, 2, 3, 4, 5].map((ratingValue) => (
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((ratingValue) => (
                 <button
                   key={ratingValue}
                   className={
@@ -84,7 +88,7 @@ function MovieDetailSection({
                   }
                   type="button"
                   onClick={() => onRatingSelect(ratingValue)}
-                  aria-label={`Rate movie with ${ratingValue} out of 5`}
+                  aria-label={`Rate movie with ${ratingValue} out of 10`}
                 >
                   ★
                 </button>

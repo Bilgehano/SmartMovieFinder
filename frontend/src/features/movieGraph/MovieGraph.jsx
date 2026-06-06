@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Background,
   BackgroundVariant,
@@ -29,6 +29,8 @@ const nodeTypes = {
 const nodeOrigin = [0.5, 0.5];
 
 function MovieGraph({ graphData = movieGraphMockData }) {
+  const navigate = useNavigate();
+
   const [expandedCategoryIds, setExpandedCategoryIds] = useState([]);
   const [moviePopupData, setMoviePopupData] = useState(null);
 
@@ -50,8 +52,14 @@ function MovieGraph({ graphData = movieGraphMockData }) {
   }, [graphData]);
 
   function handleNodeClick(event, node) {
+
     if (node.data.nodeKind === "movie") {
       setMoviePopupData(node.data);
+      return;
+    }
+
+    if (node.data.nodeKind === "detail" && node.data.movieId) {
+      navigate(`/movies/${node.data.movieId}/graph`);
       return;
     }
 

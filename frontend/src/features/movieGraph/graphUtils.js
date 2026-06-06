@@ -30,6 +30,26 @@ function getDetailPosition({
   };
 }
 
+function getDetailItemData(item, categoryLabel) {
+  if (typeof item === "string") {
+    return {
+      movieId: null,
+      label: item,
+      year: undefined,
+      averageRating: undefined,
+      subtitle: categoryLabel,
+    };
+  }
+
+  return {
+    movieId: item.movieId ?? null,
+    label: item.label ?? "Unknown Movie",
+    year: item.year,
+    averageRating: item.averageRating,
+    subtitle: item.movieId ? "Click to open graph" : categoryLabel,
+  };
+}
+
 export function buildMovieGraphElements(graphData, expandedCategoryIds = []) {
   const nodes = [];
   const edges = [];
@@ -54,7 +74,6 @@ export function buildMovieGraphElements(graphData, expandedCategoryIds = []) {
   });
 
   const categories = graphData.categories.slice(0, MAX_CHILDREN_PER_NODE);
-
   const categoryRadius = 380;
 
   categories.forEach((category, categoryIndex) => {
@@ -106,7 +125,11 @@ export function buildMovieGraphElements(graphData, expandedCategoryIds = []) {
         itemCount: visibleItems.length,
       });
 
-      const detailNodeId = `detail-${category.id}-${itemIndex}`;
+      const detailItemData = getDetailItemData(item, category.label);
+
+      const detailNodeId = detailItemData.movieId
+        ? `detail-${category.id}-${detailItemData.movieId}`
+        : `detail-${category.id}-${itemIndex}`;
 
       nodes.push({
         id: detailNodeId,
@@ -115,8 +138,11 @@ export function buildMovieGraphElements(graphData, expandedCategoryIds = []) {
         draggable: false,
         data: {
           nodeKind: "detail",
-          label: item,
-          subtitle: category.label,
+          movieId: detailItemData.movieId,
+          label: detailItemData.label,
+          year: detailItemData.year,
+          averageRating: detailItemData.averageRating,
+          subtitle: detailItemData.subtitle,
         },
       });
 

@@ -1,8 +1,17 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-import { mockMovies } from "../data/mockMovies";
 import { mockCommunityRatings } from "../data/mockCommunityRatings";
+import {
+  fetchGenres,
+  fetchMovieDetail,
+  fetchSimilarMovies,
+} from "../api/movieApi";
+import {
+  createGenreMap,
+  mapTmdbMovieDetail,
+  mapTmdbMovieList,
+} from "../utils/movieMapper";
 
 import MovieDetailBar from "../components/movie-detail/MovieDetailBar";
 import MovieDetailSection from "../components/movie-detail/MovieDetailSection";
@@ -11,50 +20,93 @@ import MovieRecommendationSection from "../components/movie-detail/MovieRecommen
 
 import "./MovieDetailPage.css";
 
-function normalizeMovie(movie) {
-  if (!movie) return null;
-
-  return {
-    id: movie.id,
-    title: movie.title ?? "Unknown Movie",
-    year: movie.year ?? "2024",
-    genre: movie.genre ?? "Unknown Genre",
-    rating: movie.rating ?? "N/A",
-    description:
-      movie.description ??
-      "A short movie description will be displayed here. Later this text can come from the backend or TMDB.",
-    status: movie.status ?? "Not watched",
-  };
-}
-
 function MovieDetailPage() {
   const { movieId } = useParams();
 
-  const movie = useMemo(() => {
-    const foundMovie = mockMovies.find(
-      (item) => String(item.id) === String(movieId)
-    );
-
-    return normalizeMovie(foundMovie);
-  }, [movieId]);
-
-  const recommendedMovies = useMemo(() => {
-    if (!movie) return [];
-
-    return mockMovies
-      .filter((item) => String(item.id) !== String(movie.id))
-      .slice(0, 4);
-  }, [movie]);
-
+  const [movie, setMovie] = useState(null);
+  const [recommendedMovies, setRecommendedMovies] = useState([]);
   const [selectedRating, setSelectedRating] = useState(null);
   const [watchStatus, setWatchStatus] = useState("Not watched");
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-    if (movie) {
-      setWatchStatus(movie.status);
-      setSelectedRating(null);
+    let isMounted = true;
+
+    async function loadMovieDetails() {
+      setIsLoading(true);
+      setErrorMessage("");
+      setMovie(null);
+      setRecommendedMovies([]);
+
+      try {
+        const [movieDetailResult, genresResult, similarMoviesResult] =
+          await Promise.allSettled([
+            fetchMovieDetail(movieId),
+            fetchGenres(),
+            fetchSimilarMovies(movieId, 4),
+          ]);
+
+        if (movieDetailResult.status !== "fulfilled") {
+          throw movieDetailResult.reason;
+        }
+
+        const genres =
+          genresResult.status === "fulfilled" ? genresResult.value : [];
+
+        const similarMoviesResponse =
+          similarMoviesResult.status === "fulfilled"
+            ? similarMoviesResult.value
+            : [];
+
+        const genreMap = createGenreMap(genres);
+
+        const mappedMovie = mapTmdbMovieDetail(
+          movieDetailResult.value,
+          genreMap
+        );
+
+        const mappedRecommendations = mapTmdbMovieList(
+          similarMoviesResponse,
+          genreMap
+        )
+          .filter(
+            (recommendedMovie) =>
+              String(recommendedMovie.id) !== String(mappedMovie.id)
+          )
+          .slice(0, 4);
+
+        if (!isMounted) {
+          return;
+        }
+
+        setMovie(mappedMovie);
+        setRecommendedMovies(mappedRecommendations);
+        setWatchStatus(mappedMovie.status);
+        setSelectedRating(null);
+      } catch (error) {
+        console.error("Failed to load movie details:", error);
+
+        if (!isMounted) {
+          return;
+        }
+
+        setMovie(null);
+        setRecommendedMovies([]);
+        setErrorMessage("Could not load this movie from the backend.");
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
+      }
     }
-  }, [movie]);
+
+    loadMovieDetails();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [movieId]);
 
   function handleWatchStatus() {
     setWatchStatus((currentStatus) =>
@@ -63,12 +115,33 @@ function MovieDetailPage() {
   }
 
   function handleSaveRating() {
-    if (!selectedRating || !movie) return;
+    if (!selectedRating || !movie) {
+      return;
+    }
 
     console.log("Saved rating:", {
       movieId: movie.id,
       rating: selectedRating,
     });
+  }
+
+  if (isLoading) {
+    return (
+      <div className="movie-detail-page">
+        <section className="movie-detail-shell">
+          <div className="movie-detail-stack">
+            <MovieDetailBar showSectionLinks={false} />
+
+            <div className="movie-detail-panel movie-detail-error-panel">
+              <p className="movie-detail-empty">Loading movie details...</p>
+              <p className="movie-detail-empty-text">
+                Please wait while the movie data is loaded from the backend.
+              </p>
+            </div>
+          </div>
+        </section>
+      </div>
+    );
   }
 
   if (!movie) {
@@ -81,7 +154,8 @@ function MovieDetailPage() {
             <div className="movie-detail-panel movie-detail-error-panel">
               <p className="movie-detail-empty">Movie not found.</p>
               <p className="movie-detail-empty-text">
-                The selected movie does not exist in the mock data yet.
+                {errorMessage ||
+                  "The selected movie could not be loaded from the backend."}
               </p>
             </div>
           </div>

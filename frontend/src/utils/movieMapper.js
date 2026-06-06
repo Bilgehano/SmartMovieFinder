@@ -55,12 +55,50 @@ export function mapTmdbMovie(movie, genreMap = {}) {
     id: movie.id,
     tmdbId: movie.id,
     title: movie.title || movie.name || "Untitled",
-    year: getMovieYear(movie.release_date),
+    year: getMovieYear(movie.release_date || movie.first_air_date),
     genre: getMovieGenreText(movie, genreMap),
     rating: getMovieRating(movie.vote_average),
     posterUrl: getPosterUrl(movie.poster_path),
     description: movie.overview || "",
   };
+}
+
+function getMovieDetailGenreText(movie, genreMap = {}) {
+  if (Array.isArray(movie.genres) && movie.genres.length > 0) {
+    const genreNames = movie.genres
+      .map((genre) => genre.name)
+      .filter(Boolean);
+
+    if (genreNames.length > 0) {
+      return genreNames.join(", ");
+    }
+  }
+
+  return getMovieGenreText(movie, genreMap);
+}
+
+export function mapTmdbMovieDetail(movie, genreMap = {}) {
+  return {
+    id: movie.id,
+    tmdbId: movie.id,
+    title: movie.title || movie.name || "Untitled",
+    year: getMovieYear(movie.release_date || movie.first_air_date),
+    genre: getMovieDetailGenreText(movie, genreMap),
+    rating: getMovieRating(movie.vote_average),
+    posterUrl: getPosterUrl(movie.poster_path),
+    description: movie.overview || "",
+    status: "Not watched",
+  };
+}
+
+export function mapTmdbMovieList(response, genreMap = {}) {
+  const results = Array.isArray(response)
+    ? response
+    : Array.isArray(response?.results)
+      ? response.results
+      : [];
+
+  return results.map((movie) => mapTmdbMovie(movie, genreMap));
 }
 
 export function mapTmdbMovieResponse(response, genreMap = {}) {
