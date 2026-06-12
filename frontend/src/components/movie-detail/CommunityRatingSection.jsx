@@ -1,7 +1,7 @@
 import "./CommunityRatingSection.css";
 
 function renderStars(rating) {
-  return Array.from({ length: 5 }, (_, index) => {
+  return Array.from({ length: 10 }, (_, index) => {
     return index < rating ? "★" : "☆";
   }).join("");
 }
@@ -33,7 +33,7 @@ function CommunityRatingSection({ ratings }) {
         </div>
 
         <div className="movie-detail-average-rating">
-          <span>{averageCommunityRating}/5</span>
+          <span>{averageCommunityRating}/10</span>
           <small>Average rating</small>
         </div>
       </div>
@@ -43,7 +43,7 @@ function CommunityRatingSection({ ratings }) {
           <article className="movie-detail-community-card" key={item.id}>
             <div className="movie-detail-community-card-header">
               <strong>{item.username}</strong>
-              <span>{item.rating}/5</span>
+              <span>{item.rating}/10  </span>
             </div>
 
             <div className="movie-detail-community-stars">

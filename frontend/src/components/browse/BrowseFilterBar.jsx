@@ -19,8 +19,8 @@ export default function BrowseFilterBar({
           <option value="all">All genres</option>
 
           {availableGenres.map((genre) => (
-            <option key={genre} value={genre}>
-              {genre}
+            <option key={genre.id} value={String(genre.id)}>
+              {genre.name}
             </option>
           ))}
         </select>

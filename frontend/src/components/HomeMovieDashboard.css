@@ -21,3 +21,15 @@
   line-height: 1.5;
   font-weight: 600;
 }
+
+.home-movie-dashboard-status {
+  margin-top: 12px;
+  color: #374151;
+  font-weight: 800;
+}
+
+.home-movie-dashboard-warning {
+  margin-top: 12px;
+  color: #7c2d12;
+  font-weight: 800;
+}

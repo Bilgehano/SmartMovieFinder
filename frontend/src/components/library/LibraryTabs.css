@@ -1,0 +1,41 @@
+.library-tabs {
+  padding: 16px 18px;
+  background-color: #181820;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.library-tab-button {
+  padding: 9px 14px;
+  border: 2px solid transparent;
+  border-radius: 6px;
+  background-color: #f3f4f6;
+  color: #111827;
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 900;
+  cursor: pointer;
+}
+
+.library-tab-button:hover {
+  background-color: #ffffff;
+}
+
+.library-tab-button.active {
+  background-color: var(--accent, #6d5dfc);
+  border-color: var(--accent, #6d5dfc);
+  color: #ffffff;
+}
+
+@media (max-width: 700px) {
+  .library-tabs {
+    padding: 14px;
+  }
+
+  .library-tab-button {
+    width: 100%;
+  }
+}

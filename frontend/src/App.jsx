@@ -10,6 +10,8 @@ import UserProfile from "./pages/UserProfile";
 import HomePage from "./pages/HomePage";
 import MovieDetailPage from "./pages/MovieDetailPage";
 import MovieSearchPage from "./pages/MovieSearchPage";
+import UserLibraryPage from "./pages/UserLibraryPage";
+import MovieGraphPage from "./pages/MovieGraphPage";
 
 function PlaceholderPage({ title }) {
   return (
@@ -35,10 +37,11 @@ function App() {
         <Route element={<AppLayout />}>
           <Route path="/homepage" element={<HomePage />} />
           <Route path="/search" element={<MovieSearchPage />} />
-          <Route path="/library" element={<PlaceholderPage title="Library" />} />
+          <Route path="/graph" element={<MovieGraphPage />} />
+          <Route path="/library" element={<UserLibraryPage />} />
           <Route path="/profile" element={<UserProfile />} />
-          <Route path="/genres" element={<PlaceholderPage title="Genres" />} />
           <Route path="/movies/:movieId" element={<MovieDetailPage />} />
+          <Route path="/movies/:movieId/graph" element={<MovieGraphPage />} />
         </Route>
       </Routes>
     </BrowserRouter>

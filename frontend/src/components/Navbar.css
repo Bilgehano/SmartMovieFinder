@@ -26,12 +26,12 @@
 .navbar-links {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 12px;
 }
 
 .navbar-link {
-  min-width: 92px;
-  padding: 8px 18px;
+  min-width: 86px;
+  padding: 8px 16px;
   border-radius: 6px;
   border: none;
   background-color: #eeeeee;
