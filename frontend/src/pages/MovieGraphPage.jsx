@@ -3,6 +3,7 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 
 import SearchBar from "../components/SearchBar";
 import MovieGraph from "../features/movieGraph/MovieGraph";
+
 import {
   fetchMovieDetail,
   fetchMoviesByGenre,
@@ -11,6 +12,15 @@ import {
   fetchTopRatedMovies,
   searchMovies,
 } from "../api/movieApi";
+
+import {
+  fetchGenreBasedRecommendations,
+  fetchRecommendedMovies,
+  fetchTopRatedRecommendations,
+} from "../api/recommendationApi";
+
+import { getCurrentUserId } from "../api/userSession";
+
 import {
   getFirstSearchResult,
   getPrimaryGenreId,
@@ -25,6 +35,87 @@ function getSettledValue(result, fallbackValue) {
   }
 
   return fallbackValue;
+}
+
+function normalizeMovieList(response) {
+  if (Array.isArray(response)) {
+    return response;
+  }
+
+  if (Array.isArray(response?.results)) {
+    return response.results;
+  }
+
+  return [];
+}
+
+function hasMovies(response) {
+  return normalizeMovieList(response).length > 0;
+}
+
+async function fetchGraphRecommendations(userId) {
+  if (!userId) {
+    return fetchPopularMovies(2);
+  }
+
+  try {
+    const recommendations = await fetchRecommendedMovies(userId, 5);
+
+    if (hasMovies(recommendations)) {
+      return recommendations;
+    }
+  } catch (error) {
+    console.warn(
+      "Graph recommendations could not be loaded:",
+      error
+    );
+  }
+
+  return fetchPopularMovies(2);
+}
+
+async function fetchGraphGenrePicks(userId, primaryGenreId) {
+  if (userId) {
+    try {
+      const genreRecommendations =
+        await fetchGenreBasedRecommendations(userId, 5);
+
+      if (hasMovies(genreRecommendations)) {
+        return genreRecommendations;
+      }
+    } catch (error) {
+      console.warn(
+        "Genre recommendations could not be loaded:",
+        error
+      );
+    }
+  }
+
+  if (!primaryGenreId) {
+    return [];
+  }
+
+  return fetchMoviesByGenre(primaryGenreId, 2);
+}
+
+async function fetchGraphTopRated(userId) {
+  if (userId) {
+    try {
+      const topRatedRecommendations =
+        await fetchTopRatedRecommendations(userId, 5);
+
+      if (hasMovies(topRatedRecommendations)) {
+        return topRatedRecommendations;
+      }
+    } catch (error) {
+      console.warn(
+        "User top-rated recommendations could not be loaded:",
+        error
+      );
+    }
+  }
+
+  return fetchTopRatedMovies(1);
 }
 
 function MovieGraphPage() {
@@ -56,6 +147,7 @@ function MovieGraphPage() {
       try {
         const movieDetail = await fetchMovieDetail(movieId);
         const primaryGenreId = getPrimaryGenreId(movieDetail);
+        const currentUserId = getCurrentUserId();
 
         const [
           similarResult,
@@ -65,10 +157,19 @@ function MovieGraphPage() {
           topRatedResult,
         ] = await Promise.allSettled([
           fetchSimilarMovies(movieId, 5),
-          primaryGenreId ? fetchMoviesByGenre(primaryGenreId, 1) : [],
-          primaryGenreId ? fetchMoviesByGenre(primaryGenreId, 2) : [],
-          fetchPopularMovies(2),
-          fetchTopRatedMovies(1),
+
+          primaryGenreId
+            ? fetchMoviesByGenre(primaryGenreId, 1)
+            : [],
+
+          fetchGraphGenrePicks(
+            currentUserId,
+            primaryGenreId
+          ),
+
+          fetchGraphRecommendations(currentUserId),
+
+          fetchGraphTopRated(currentUserId),
         ]);
 
         if (!isMounted) {
@@ -77,23 +178,48 @@ function MovieGraphPage() {
 
         const graphData = mapBackendDataToMovieGraph({
           movieDetail,
-          sameGenreMovies: getSettledValue(sameGenreResult, []),
-          similarMovies: getSettledValue(similarResult, []),
-          recommendations: getSettledValue(recommendationsResult, []),
-          genrePicks: getSettledValue(genrePicksResult, []),
-          topRatedMovies: getSettledValue(topRatedResult, []),
+
+          sameGenreMovies: getSettledValue(
+            sameGenreResult,
+            []
+          ),
+
+          similarMovies: getSettledValue(
+            similarResult,
+            []
+          ),
+
+          recommendations: getSettledValue(
+            recommendationsResult,
+            []
+          ),
+
+          genrePicks: getSettledValue(
+            genrePicksResult,
+            []
+          ),
+
+          topRatedMovies: getSettledValue(
+            topRatedResult,
+            []
+          ),
         });
 
         setCurrentGraphData(graphData);
       } catch (error) {
-        console.error("Failed to load movie graph:", error);
+        console.error(
+          "Failed to load movie graph:",
+          error
+        );
 
         if (!isMounted) {
           return;
         }
 
         setCurrentGraphData(null);
-        setErrorMessage("Could not load the movie graph from the backend.");
+        setErrorMessage(
+          "Could not load the movie graph from the backend."
+        );
       } finally {
         if (isMounted) {
           setIsLoading(false);
@@ -112,7 +238,9 @@ function MovieGraphPage() {
     const searchTerm = value.trim();
 
     if (!searchTerm) {
-      setGraphSearchMessage("Please enter a movie title.");
+      setGraphSearchMessage(
+        "Please enter a movie title."
+      );
       return;
     }
 
@@ -121,24 +249,40 @@ function MovieGraphPage() {
     setGraphSearchMessage("");
 
     try {
-      const searchResponse = await searchMovies(searchTerm, 1);
-      const firstMovie = getFirstSearchResult(searchResponse);
+      const searchResponse = await searchMovies(
+        searchTerm,
+        1
+      );
+
+      const firstMovie = getFirstSearchResult(
+        searchResponse
+      );
 
       if (!firstMovie) {
-        setGraphSearchMessage("No movie found for this search term.");
+        setGraphSearchMessage(
+          "No movie found for this search term."
+        );
         return;
       }
 
       navigate(`/movies/${firstMovie.id}/graph`);
     } catch (error) {
-      console.error("Failed to search movie graph:", error);
-      setGraphSearchMessage("Could not search for this movie graph.");
+      console.error(
+        "Failed to search movie graph:",
+        error
+      );
+
+      setGraphSearchMessage(
+        "Could not search for this movie graph."
+      );
     } finally {
       setIsLoading(false);
     }
   }
 
-  const backMovieId = currentGraphData?.center?.movieId ?? movieId;
+  const backMovieId =
+    currentGraphData?.center?.movieId ?? movieId;
+
   const graphTitle = currentGraphData
     ? `${currentGraphData.center.label} Graph`
     : "Movie Graph";
@@ -157,11 +301,16 @@ function MovieGraphPage() {
       <section className="movie-graph-shell">
         <div className="movie-graph-page-header">
           <div>
-            <p className="movie-graph-kicker">Movie Mindmap</p>
+            <p className="movie-graph-kicker">
+              Movie Mindmap
+            </p>
+
             <h1>{graphTitle}</h1>
+
             <p>
-              Explore how this movie connects to genres, similar movies,
-              recommendations and top rated movie areas.
+              Explore how this movie connects to genres,
+              similar movies, recommendations and top
+              rated movie areas.
             </p>
 
             {graphSearchMessage && (
@@ -193,16 +342,20 @@ function MovieGraphPage() {
           </div>
         )}
 
-        {!isLoading && !errorMessage && currentGraphData && (
-          <MovieGraph graphData={currentGraphData} />
-        )}
+        {!isLoading &&
+          !errorMessage &&
+          currentGraphData && (
+            <MovieGraph graphData={currentGraphData} />
+          )}
 
-        {!isLoading && !errorMessage && !currentGraphData && (
-          <div className="movie-graph-state-card">
-            Search for a movie to build a graph or open the graph from a movie
-            detail page.
-          </div>
-        )}
+        {!isLoading &&
+          !errorMessage &&
+          !currentGraphData && (
+            <div className="movie-graph-state-card">
+              Search for a movie to build a graph or open
+              the graph from a movie detail page.
+            </div>
+          )}
       </section>
     </main>
   );

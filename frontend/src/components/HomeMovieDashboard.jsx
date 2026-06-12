@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
+
 import HomeMovieRow from "./HomeMovieRow";
+
 import {
   popularMovies,
   recentlyViewedMovies,
@@ -7,11 +9,16 @@ import {
   topRatedMovies,
   watchlistMovies,
 } from "../data/mockMovies";
+
 import {
   fetchPopularMovies,
   fetchTopRatedMovies,
   fetchTrendingMovies,
 } from "../api/movieApi";
+
+import { fetchRecommendedMovies } from "../api/recommendationApi";
+import { getCurrentUserId } from "../api/userSession";
+
 import "./HomeMovieDashboard.css";
 
 const HOMEPAGE_MOVIE_LIMIT = 4;
@@ -30,6 +37,13 @@ function getPosterUrl(posterPath) {
     return "";
   }
 
+  if (
+    posterPath.startsWith("http://") ||
+    posterPath.startsWith("https://")
+  ) {
+    return posterPath;
+  }
+
   return `${TMDB_IMAGE_BASE_URL}${posterPath}`;
 }
 
@@ -39,39 +53,81 @@ function getGenreLabel(movie) {
   }
 
   if (Array.isArray(movie.genres) && movie.genres.length > 0) {
-    return movie.genres.map((genre) => genre.name).join(", ");
-  }
-
-  if (Array.isArray(movie.genre_ids) && movie.genre_ids.length > 0) {
-    return "Movie";
+    return movie.genres
+      .map((genre) => genre.name)
+      .filter(Boolean)
+      .join(", ");
   }
 
   return "Movie";
 }
 
 function mapApiMovie(movie) {
+  const movieId =
+    movie.id ??
+    movie.tmdbId ??
+    movie.movieId;
+
   return {
-    id: movie.id,
+    id: movieId,
+    tmdbId: movie.tmdbId ?? movie.id ?? movie.movieId,
     title: movie.title ?? movie.name ?? "Unknown Movie",
-    year: getYear(movie.release_date ?? movie.releaseDate),
+    year: getYear(
+      movie.release_date ??
+      movie.releaseDate ??
+      movie.first_air_date
+    ),
     genre: getGenreLabel(movie),
     rating:
       typeof movie.vote_average === "number"
         ? Number(movie.vote_average.toFixed(1))
-        : movie.rating ?? "N/A",
-    description: movie.overview ?? movie.description ?? "",
-    posterUrl: getPosterUrl(movie.poster_path ?? movie.posterPath),
-    releaseDate: movie.release_date ?? movie.releaseDate ?? "",
+        : typeof movie.averageRating === "number"
+          ? Number(movie.averageRating.toFixed(1))
+          : typeof movie.rating === "number"
+            ? Number(movie.rating.toFixed(1))
+            : "N/A",
+    description:
+      movie.overview ??
+      movie.description ??
+      "",
+    posterUrl: getPosterUrl(
+      movie.poster_path ??
+      movie.posterPath
+    ),
+    releaseDate:
+      movie.release_date ??
+      movie.releaseDate ??
+      movie.first_air_date ??
+      "",
   };
 }
 
-function mapApiMovieList(data, limit = HOMEPAGE_MOVIE_LIMIT) {
-  const results = Array.isArray(data) ? data : data?.results ?? [];
+function extractMovieList(data) {
+  if (Array.isArray(data)) {
+    return data;
+  }
 
-  return results.slice(0, limit).map(mapApiMovie);
+  if (Array.isArray(data?.results)) {
+    return data.results;
+  }
+
+  return [];
 }
 
-function getMoviesFromResult(result, fallbackMovies) {
+function mapApiMovieList(
+  data,
+  limit = HOMEPAGE_MOVIE_LIMIT
+) {
+  return extractMovieList(data)
+    .slice(0, limit)
+    .map(mapApiMovie)
+    .filter((movie) => movie.id);
+}
+
+function getMoviesFromResult(
+  result,
+  fallbackMovies
+) {
   if (result.status !== "fulfilled") {
     return fallbackMovies;
   }
@@ -83,6 +139,31 @@ function getMoviesFromResult(result, fallbackMovies) {
   }
 
   return mappedMovies;
+}
+
+async function fetchRecommendedSection(userId) {
+  if (!userId) {
+    return fetchPopularMovies(2);
+  }
+
+  try {
+    const recommendations =
+      await fetchRecommendedMovies(
+        userId,
+        HOMEPAGE_MOVIE_LIMIT
+      );
+
+    if (extractMovieList(recommendations).length > 0) {
+      return recommendations;
+    }
+  } catch (error) {
+    console.warn(
+      "Personalized recommendations could not be loaded:",
+      error
+    );
+  }
+
+  return fetchPopularMovies(2);
 }
 
 function HomeMovieDashboard() {
@@ -104,32 +185,50 @@ function HomeMovieDashboard() {
       setIsLoading(true);
       setErrorMessage("");
 
-      const [trendingResult, recommendedResult, topRatedResult] =
-        await Promise.allSettled([
-          fetchTrendingMovies(),
-          fetchPopularMovies(2),
-          fetchTopRatedMovies(1),
-        ]);
+      const currentUserId = getCurrentUserId();
+
+      const [
+        trendingResult,
+        recommendedResult,
+        topRatedResult,
+      ] = await Promise.allSettled([
+        fetchTrendingMovies(),
+        fetchRecommendedSection(currentUserId),
+        fetchTopRatedMovies(1),
+      ]);
 
       if (!isMounted) {
         return;
       }
 
-      const hasError = [trendingResult, recommendedResult, topRatedResult].some(
+      const hasError = [
+        trendingResult,
+        recommendedResult,
+        topRatedResult,
+      ].some(
         (result) => result.status === "rejected"
       );
 
       setSections({
-        trending: getMoviesFromResult(trendingResult, recommendedMovies),
-        recommended: getMoviesFromResult(recommendedResult, popularMovies),
-        topRated: getMoviesFromResult(topRatedResult, topRatedMovies),
+        trending: getMoviesFromResult(
+          trendingResult,
+          recommendedMovies
+        ),
+        recommended: getMoviesFromResult(
+          recommendedResult,
+          popularMovies
+        ),
+        topRated: getMoviesFromResult(
+          topRatedResult,
+          topRatedMovies
+        ),
         recentlyViewed: recentlyViewedMovies,
         watchlist: watchlistMovies,
       });
 
       if (hasError) {
         setErrorMessage(
-          "Some movie sections could not be loaded from the backend. Mock data is shown as fallback."
+          "Some movie sections could not be loaded from the backend. Fallback data is shown."
         );
       }
 
@@ -147,17 +246,22 @@ function HomeMovieDashboard() {
     <div className="home-movie-dashboard">
       <div className="home-movie-dashboard-header">
         <h2>Discover Movies</h2>
+
         <p>
-          Explore trending movies, recommended movies, top rated movies and your
-          personal movie areas.
+          Explore trending movies, recommended movies, top rated movies and
+          your personal movie areas.
         </p>
 
         {isLoading && (
-          <p className="home-movie-dashboard-status">Loading movies...</p>
+          <p className="home-movie-dashboard-status">
+            Loading movies...
+          </p>
         )}
 
         {errorMessage && (
-          <p className="home-movie-dashboard-warning">{errorMessage}</p>
+          <p className="home-movie-dashboard-warning">
+            {errorMessage}
+          </p>
         )}
       </div>
 

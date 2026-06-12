@@ -1,23 +1,4 @@
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
-
-async function requestJson(path) {
-  const response = await fetch(`${API_BASE_URL}${path}`);
-
-  const text = await response.text();
-
-  if (!response.ok) {
-    throw new Error(
-      `API request failed with status ${response.status}: ${text}`
-    );
-  }
-
-  try {
-    return JSON.parse(text);
-  } catch {
-    throw new Error("API response was not valid JSON.");
-  }
-}
+import { requestJson } from "../services/apiClient";
 
 export async function fetchGenres() {
   return requestJson("/genres");
@@ -33,15 +14,29 @@ export async function searchMovies(query, page = 1) {
 }
 
 export async function fetchMoviesByGenre(genreId, page = 1) {
-  return requestJson(`/movies/genre/${genreId}?page=${page}`);
+  const params = new URLSearchParams({
+    page: String(page),
+  });
+
+  return requestJson(
+    `/movies/genre/${genreId}?${params.toString()}`
+  );
 }
 
 export async function fetchPopularMovies(page = 1) {
-  return requestJson(`/movies/popular?page=${page}`);
+  const params = new URLSearchParams({
+    page: String(page),
+  });
+
+  return requestJson(`/movies/popular?${params.toString()}`);
 }
 
 export async function fetchTopRatedMovies(page = 1) {
-  return requestJson(`/movies/top-rated?page=${page}`);
+  const params = new URLSearchParams({
+    page: String(page),
+  });
+
+  return requestJson(`/movies/top-rated?${params.toString()}`);
 }
 
 export async function fetchMovieDetail(tmdbId) {
@@ -49,7 +44,13 @@ export async function fetchMovieDetail(tmdbId) {
 }
 
 export async function fetchSimilarMovies(tmdbId, limit = 5) {
-  return requestJson(`/movies/${tmdbId}/similar?limit=${limit}`);
+  const params = new URLSearchParams({
+    limit: String(limit),
+  });
+
+  return requestJson(
+    `/movies/${tmdbId}/similar?${params.toString()}`
+  );
 }
 
 export async function fetchTrendingMovies() {

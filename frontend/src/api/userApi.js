@@ -1,4 +1,4 @@
-import { requestJson } from "./movieApi";
+import { requestJson } from "../services/apiClient";
 
 export async function fetchWatchLaterMovies(userId) {
   return requestJson(`/users/${userId}/watch-later`);

@@ -15,11 +15,20 @@ function getYearFromReleaseDate(releaseDate) {
 }
 
 function getMovieTitle(movie) {
-  return movie?.title || movie?.name || movie?.label || "Unknown Movie";
+  return (
+    movie?.title ||
+    movie?.name ||
+    movie?.label ||
+    "Unknown Movie"
+  );
 }
 
 function getMovieId(movie) {
-  return movie?.id ?? movie?.tmdbId ?? movie?.movieId;
+  return (
+    movie?.id ??
+    movie?.tmdbId ??
+    movie?.movieId
+  );
 }
 
 function getMovieRating(movie) {
@@ -63,14 +72,23 @@ function mapMoviesToGraphItems(response, currentTmdbId) {
         movieId: String(movieId),
         label: getMovieTitle(movie),
         year: getYearFromReleaseDate(
-          movie.release_date || movie.first_air_date
+          movie.release_date ||
+          movie.releaseDate ||
+          movie.first_air_date
         ),
         averageRating: getMovieRating(movie),
       };
     })
     .filter(Boolean)
-    .filter((movie) => String(movie.movieId) !== String(currentTmdbId))
-    .filter((movie) => movie.movieId && movie.label)
+    .filter(
+      (movie) =>
+        String(movie.movieId) !== String(currentTmdbId)
+    )
+    .filter(
+      (movie) =>
+        movie.movieId &&
+        movie.label
+    )
     .slice(0, MAX_GRAPH_ITEMS);
 }
 
@@ -89,7 +107,10 @@ export function mapBackendDataToMovieGraph({
   genrePicks,
   topRatedMovies,
 }) {
-  const tmdbId = movieDetail.id;
+  const tmdbId =
+    movieDetail.id ??
+    movieDetail.tmdbId;
+
   const genres = movieDetail.genres ?? [];
 
   return {
@@ -98,11 +119,21 @@ export function mapBackendDataToMovieGraph({
       movieId: String(tmdbId),
       tmdbId,
       type: "movie",
-      label: movieDetail.title ?? "Unknown Movie",
-      year: getYearFromReleaseDate(movieDetail.release_date),
+      label:
+        movieDetail.title ??
+        movieDetail.name ??
+        "Unknown Movie",
+      year: getYearFromReleaseDate(
+        movieDetail.release_date ??
+        movieDetail.releaseDate ??
+        movieDetail.first_air_date
+      ),
       genre:
         genres.length > 0
-          ? genres.map((genre) => genre.name).join(", ")
+          ? genres
+              .map((genre) => genre.name)
+              .filter(Boolean)
+              .join(", ")
           : "Unknown",
       averageRating:
         typeof movieDetail.vote_average === "number"
@@ -111,11 +142,26 @@ export function mapBackendDataToMovieGraph({
     },
 
     categories: buildGraphCategories({
-      "same-genre": mapMoviesToGraphItems(sameGenreMovies, tmdbId),
-      "similar-movies": mapMoviesToGraphItems(similarMovies, tmdbId),
-      recommendations: mapMoviesToGraphItems(recommendations, tmdbId),
-      "your-genre-picks": mapMoviesToGraphItems(genrePicks, tmdbId),
-      "top-rated": mapMoviesToGraphItems(topRatedMovies, tmdbId),
+      "same-genre": mapMoviesToGraphItems(
+        sameGenreMovies,
+        tmdbId
+      ),
+      "similar-movies": mapMoviesToGraphItems(
+        similarMovies,
+        tmdbId
+      ),
+      recommendations: mapMoviesToGraphItems(
+        recommendations,
+        tmdbId
+      ),
+      "your-genre-picks": mapMoviesToGraphItems(
+        genrePicks,
+        tmdbId
+      ),
+      "top-rated": mapMoviesToGraphItems(
+        topRatedMovies,
+        tmdbId
+      ),
     }),
   };
 }
@@ -127,5 +173,9 @@ export function getFirstSearchResult(searchResponse) {
 }
 
 export function getPrimaryGenreId(movieDetail) {
-  return movieDetail.genres?.[0]?.id ?? null;
+  return (
+    movieDetail.genres?.[0]?.id ??
+    movieDetail.genre_ids?.[0] ??
+    null
+  );
 }
