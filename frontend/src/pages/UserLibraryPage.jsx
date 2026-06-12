@@ -1,39 +1,63 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
+
 import SearchBar from "../components/SearchBar";
 import BrowseMovieGrid from "../components/browse/BrowseMovieGrid";
 import BrowsePagination from "../components/browse/BrowsePagination";
 import LibraryTabs from "../components/library/LibraryTabs";
 import LibraryOverview from "../components/library/LibraryOverview";
 import FavoriteGenresPanel from "../components/library/FavoriteGenresPanel";
-import { mockFavoriteGenres, mockLibraryMovies } from "../data/mockLibraryMovies";
+
+import { fetchGenres } from "../api/movieApi";
+import {
+  fetchFavoriteGenres,
+  fetchUserRatings,
+  fetchWatchedMovies,
+  fetchWatchLaterMovies,
+} from "../api/userApi";
+import { getCurrentUserId } from "../api/userSession";
+
+import { createGenreMap } from "../utils/movieMapper";
+import { mapUserLibraryData } from "../utils/libraryMapper";
+
 import "./UserLibraryPage.css";
 
 const MOVIES_PER_PAGE = 8;
 
 function movieMatchesSearch(movie, searchTerm) {
-  const normalizedSearchTerm = searchTerm.trim().toLowerCase();
+  const normalizedSearchTerm = searchTerm
+    .trim()
+    .toLowerCase();
 
   if (!normalizedSearchTerm) {
     return true;
   }
 
+  const title = String(movie.title ?? "").toLowerCase();
+  const genre = String(movie.genre ?? "").toLowerCase();
+
   return (
-    movie.title.toLowerCase().includes(normalizedSearchTerm) ||
-    movie.genre.toLowerCase().includes(normalizedSearchTerm)
+    title.includes(normalizedSearchTerm) ||
+    genre.includes(normalizedSearchTerm)
   );
 }
 
 function getMoviesByTab(movies, activeTab) {
   switch (activeTab) {
     case "watched":
-      return movies.filter((movie) => movie.status.includes("watched"));
+      return movies.filter((movie) =>
+        movie.status.includes("watched")
+      );
 
     case "rated":
-      return movies.filter((movie) => movie.status.includes("rated"));
+      return movies.filter((movie) =>
+        movie.status.includes("rated")
+      );
 
     case "recent":
       return [...movies].sort(
-        (a, b) => new Date(b.addedAt) - new Date(a.addedAt)
+        (firstMovie, secondMovie) =>
+          new Date(secondMovie.addedAt || 0) -
+          new Date(firstMovie.addedAt || 0)
       );
 
     case "all":
@@ -42,24 +66,139 @@ function getMoviesByTab(movies, activeTab) {
   }
 }
 
+function getSettledValue(result, fallbackValue) {
+  if (result.status === "fulfilled") {
+    return result.value;
+  }
+
+  return fallbackValue;
+}
+
 function UserLibraryPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeTab, setActiveTab] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
 
-  const watchedMoviesCount = mockLibraryMovies.filter((movie) =>
-    movie.status.includes("watched")
-  ).length;
+  const [libraryMovies, setLibraryMovies] = useState([]);
+  const [favoriteGenres, setFavoriteGenres] = useState([]);
 
-  const ratedMoviesCount = mockLibraryMovies.filter((movie) =>
-    movie.status.includes("rated")
-  ).length;
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadUserLibrary() {
+      const userId = getCurrentUserId();
+
+      if (!userId) {
+        setLibraryMovies([]);
+        setFavoriteGenres([]);
+        setErrorMessage(
+          "Please log in to view your personal library."
+        );
+        setIsLoading(false);
+        return;
+      }
+
+      setIsLoading(true);
+      setErrorMessage("");
+
+      const [
+        genresResult,
+        watchedResult,
+        watchLaterResult,
+        ratingsResult,
+        favoriteGenresResult,
+      ] = await Promise.allSettled([
+        fetchGenres(),
+        fetchWatchedMovies(userId),
+        fetchWatchLaterMovies(userId),
+        fetchUserRatings(userId),
+        fetchFavoriteGenres(userId),
+      ]);
+
+      if (!isMounted) {
+        return;
+      }
+
+      const genres = getSettledValue(genresResult, []);
+      const watchedMovies = getSettledValue(
+        watchedResult,
+        []
+      );
+      const watchLaterMovies = getSettledValue(
+        watchLaterResult,
+        []
+      );
+      const ratings = getSettledValue(ratingsResult, []);
+      const loadedFavoriteGenres = getSettledValue(
+        favoriteGenresResult,
+        []
+      );
+
+      const genreMap = createGenreMap(genres);
+
+      const mappedLibraryMovies = mapUserLibraryData({
+        watchedMovies,
+        watchLaterMovies,
+        ratings,
+        genreMap,
+      });
+
+      setLibraryMovies(mappedLibraryMovies);
+      setFavoriteGenres(loadedFavoriteGenres);
+
+      const hasFailedRequest = [
+        genresResult,
+        watchedResult,
+        watchLaterResult,
+        ratingsResult,
+        favoriteGenresResult,
+      ].some((result) => result.status === "rejected");
+
+      if (hasFailedRequest) {
+        setErrorMessage(
+          "Some library data could not be loaded from the backend."
+        );
+      }
+
+      setIsLoading(false);
+    }
+
+    loadUserLibrary();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const watchedMoviesCount = useMemo(
+    () =>
+      libraryMovies.filter((movie) =>
+        movie.status.includes("watched")
+      ).length,
+    [libraryMovies]
+  );
+
+  const ratedMoviesCount = useMemo(
+    () =>
+      libraryMovies.filter((movie) =>
+        movie.status.includes("rated")
+      ).length,
+    [libraryMovies]
+  );
 
   const filteredMovies = useMemo(() => {
-    const tabMovies = getMoviesByTab(mockLibraryMovies, activeTab);
+    const tabMovies = getMoviesByTab(
+      libraryMovies,
+      activeTab
+    );
 
-    return tabMovies.filter((movie) => movieMatchesSearch(movie, searchTerm));
-  }, [activeTab, searchTerm]);
+    return tabMovies.filter((movie) =>
+      movieMatchesSearch(movie, searchTerm)
+    );
+  }, [libraryMovies, activeTab, searchTerm]);
 
   const visibleMovies = useMemo(() => {
     return filteredMovies.slice(
@@ -68,7 +207,9 @@ function UserLibraryPage() {
     );
   }, [filteredMovies, currentPage]);
 
-  const hasNextPage = currentPage * MOVIES_PER_PAGE < filteredMovies.length;
+  const hasNextPage =
+    currentPage * MOVIES_PER_PAGE <
+    filteredMovies.length;
 
   function handleSearchChange(value) {
     setSearchTerm(value);
@@ -97,37 +238,56 @@ function UserLibraryPage() {
       </section>
 
       <section className="user-library-shell">
-        <LibraryTabs activeTab={activeTab} onTabChange={handleTabChange} />
+        <LibraryTabs
+          activeTab={activeTab}
+          onTabChange={handleTabChange}
+        />
 
         <section className="library-intro">
           <div>
             <h2>My Library</h2>
+
             <p>
-              Manage your watched movies, rated movies, favorite genres and
-              recently added titles in one place.
+              Manage your watched movies, rated movies,
+              favorite genres and recently added titles in
+              one place.
             </p>
           </div>
 
           <LibraryOverview
-            totalMovies={mockLibraryMovies.length}
+            totalMovies={libraryMovies.length}
             watchedMovies={watchedMoviesCount}
             ratedMovies={ratedMoviesCount}
           />
         </section>
 
-        {activeTab === "genres" ? (
-          <FavoriteGenresPanel genres={mockFavoriteGenres} />
+        {errorMessage && (
+          <div className="library-state-message library-state-error">
+            {errorMessage}
+          </div>
+        )}
+
+        {isLoading ? (
+          <div className="library-state-message">
+            Loading your library...
+          </div>
+        ) : activeTab === "genres" ? (
+          <FavoriteGenresPanel
+            genres={favoriteGenres}
+          />
+        ) : filteredMovies.length === 0 ? (
+          <div className="library-state-message">
+            No movies found in this library section.
+          </div>
         ) : (
           <>
             <BrowseMovieGrid movies={visibleMovies} />
 
-            {filteredMovies.length > 0 && (
-              <BrowsePagination
-                currentPage={currentPage}
-                hasNextPage={hasNextPage}
-                onPageChange={setCurrentPage}
-              />
-            )}
+            <BrowsePagination
+              currentPage={currentPage}
+              hasNextPage={hasNextPage}
+              onPageChange={setCurrentPage}
+            />
           </>
         )}
       </section>

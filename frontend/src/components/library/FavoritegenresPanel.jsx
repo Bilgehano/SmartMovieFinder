@@ -1,21 +1,31 @@
 import "./FavoriteGenresPanel.css";
 
-function FavoriteGenresPanel({ genres }) {
+function FavoriteGenresPanel({ genres = [] }) {
   return (
     <section className="library-genre-panel">
       <h3>Favorite Genres</h3>
 
       <p>
-        These genres can later be loaded from the user profile or backend.
+        Your selected favorite genres are used to improve
+        your personal movie recommendations.
       </p>
 
-      <div className="library-genre-list">
-        {genres.map((genre) => (
-          <span key={genre} className="library-genre-pill">
-            {genre}
-          </span>
-        ))}
-      </div>
+      {genres.length === 0 ? (
+        <p className="library-genre-empty">
+          No favorite genres selected yet.
+        </p>
+      ) : (
+        <div className="library-genre-list">
+          {genres.map((genre) => (
+            <span
+              key={genre}
+              className="library-genre-pill"
+            >
+              {genre}
+            </span>
+          ))}
+        </div>
+      )}
     </section>
   );
 }
