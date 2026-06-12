@@ -147,11 +147,11 @@ userId,
 HOMEPAGE_MOVIE_LIMIT
 );
 
-```
+
 if (extractMovieList(recommendations).length > 0) {
   return recommendations;
 }
-```
+
 
 } catch (error) {
 console.warn(
@@ -178,7 +178,7 @@ const [errorMessage, setErrorMessage] = useState("");
 useEffect(() => {
 let isMounted = true;
 
-```
+
 async function loadHomepageMovies() {
   setIsLoading(true);
   setErrorMessage("");
@@ -275,13 +275,13 @@ loadHomepageMovies();
 return () => {
   isMounted = false;
 };
-```
+
 
 }, []);
 
 return ( <div className="home-movie-dashboard"> <div className="home-movie-dashboard-header"> <h2>Discover Movies</h2>
 
-```
+
     <p>
       Explore trending movies, recommended movies, top rated movies and
       your personal movie areas.
