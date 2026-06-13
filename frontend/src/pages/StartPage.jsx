@@ -1,29 +1,50 @@
 import { Link } from "react-router-dom";
 
+import "./StartPage.css";
+
 function StartPage() {
-  return (
-    <main className="start-page">
-      <section className="start-card">
-        <div className="start-visual"></div>
+return ( <main className="start-page"> <section
+     className="start-hero"
+     aria-label="SmartMovieFinder introduction"
+   > <h1 className="start-page-visually-hidden">
+SmartMovieFinder </h1>
 
-        <h1>SmartMovieFinder</h1>
+    <div
+      className="start-hero-right"
+      aria-hidden="true"
+    />
 
-        <p>
-          Find movies smarter based on genres, recommendations and your personal library.
-        </p>
+    <div
+      className="start-hero-left"
+      aria-hidden="true"
+    />
 
-        <div className="start-actions">
-          <Link to="/userregistration" className="primary-button">
-            Sign Up
-          </Link>
+    <div
+      className="start-lightbeam"
+      aria-hidden="true"
+    />
+  </section>
 
-          <Link to="/userlogin" className="secondary-button">
-            Login
-          </Link>
-        </div>
-      </section>
-    </main>
-  );
+  <section className="start-action-area">
+    <div className="start-actions">
+      <Link
+        to="/userregistration"
+        className="start-button start-signup-button"
+      >
+        Sign Up
+      </Link>
+
+      <Link
+        to="/userlogin"
+        className="start-button start-login-button"
+      >
+        Login
+      </Link>
+    </div>
+  </section>
+</main>
+
+);
 }
 
 export default StartPage;
