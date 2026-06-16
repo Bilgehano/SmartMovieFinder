@@ -69,6 +69,10 @@ export default function BrowseFilterBar({
           onChange={(event) => onFilterChange("sortBy", event.target.value)}
         >
           <option value="relevance">Relevance</option>
+          <option value="recommended">Recommended</option>
+          <option value="popular">Popular Movies</option>
+          <option value="top-rated">Top Rated</option>
+          <option value="new-releases">New Releases</option>
           <option value="rating-desc">Highest rating</option>
           <option value="year-desc">Newest first</option>
           <option value="year-asc">Oldest first</option>

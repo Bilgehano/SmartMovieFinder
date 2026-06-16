@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { useSearchParams } from "react-router-dom";
 
 import SearchBar from "../components/SearchBar";
 import BrowseMovieGrid from "../components/browse/BrowseMovieGrid";
@@ -23,6 +24,23 @@ import "./UserLibraryPage.css";
 
 const MOVIES_PER_PAGE = 8;
 
+const VALID_LIBRARY_TABS = [
+  "all",
+  "watched",
+  "watch-later",
+  "rated",
+  "genres",
+  "recent",
+];
+
+function getValidLibraryTab(tabId) {
+  if (VALID_LIBRARY_TABS.includes(tabId)) {
+    return tabId;
+  }
+
+  return "all";
+}
+
 function movieMatchesSearch(movie, searchTerm) {
   const normalizedSearchTerm = searchTerm
     .trim()
@@ -46,6 +64,11 @@ function getMoviesByTab(movies, activeTab) {
     case "watched":
       return movies.filter((movie) =>
         movie.status.includes("watched")
+      );
+
+    case "watch-later":
+      return movies.filter((movie) =>
+        movie.status.includes("watch-later")
       );
 
     case "rated":
@@ -75,8 +98,12 @@ function getSettledValue(result, fallbackValue) {
 }
 
 function UserLibraryPage() {
+  const [searchParams, setSearchParams] = useSearchParams();
+
   const [searchTerm, setSearchTerm] = useState("");
-  const [activeTab, setActiveTab] = useState("all");
+  const [activeTab, setActiveTab] = useState(
+    getValidLibraryTab(searchParams.get("tab"))
+  );
   const [currentPage, setCurrentPage] = useState(1);
 
   const [libraryMovies, setLibraryMovies] = useState([]);
@@ -84,6 +111,13 @@ function UserLibraryPage() {
 
   const [isLoading, setIsLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
+
+  useEffect(() => {
+    const tabFromUrl = getValidLibraryTab(searchParams.get("tab"));
+
+    setActiveTab(tabFromUrl);
+    setCurrentPage(1);
+  }, [searchParams]);
 
   useEffect(() => {
     let isMounted = true;
@@ -123,15 +157,22 @@ function UserLibraryPage() {
       }
 
       const genres = getSettledValue(genresResult, []);
+
       const watchedMovies = getSettledValue(
         watchedResult,
         []
       );
+
       const watchLaterMovies = getSettledValue(
         watchLaterResult,
         []
       );
-      const ratings = getSettledValue(ratingsResult, []);
+
+      const ratings = getSettledValue(
+        ratingsResult,
+        []
+      );
+
       const loadedFavoriteGenres = getSettledValue(
         favoriteGenresResult,
         []
@@ -181,6 +222,14 @@ function UserLibraryPage() {
     [libraryMovies]
   );
 
+  const watchlistMoviesCount = useMemo(
+    () =>
+      libraryMovies.filter((movie) =>
+        movie.status.includes("watch-later")
+      ).length,
+    [libraryMovies]
+  );
+
   const ratedMoviesCount = useMemo(
     () =>
       libraryMovies.filter((movie) =>
@@ -222,8 +271,17 @@ function UserLibraryPage() {
   }
 
   function handleTabChange(tabId) {
-    setActiveTab(tabId);
+    const validTabId = getValidLibraryTab(tabId);
+
+    setActiveTab(validTabId);
     setCurrentPage(1);
+
+    if (validTabId === "all") {
+      setSearchParams({});
+      return;
+    }
+
+    setSearchParams({ tab: validTabId });
   }
 
   return (
@@ -248,15 +306,16 @@ function UserLibraryPage() {
             <h2>My Library</h2>
 
             <p>
-              Manage your watched movies, rated movies,
-              favorite genres and recently added titles in
-              one place.
+              Manage your watched movies, watchlist,
+              rated movies, favorite genres and recently
+              added titles in one place.
             </p>
           </div>
 
           <LibraryOverview
             totalMovies={libraryMovies.length}
             watchedMovies={watchedMoviesCount}
+            watchlistMovies={watchlistMoviesCount}
             ratedMovies={ratedMoviesCount}
           />
         </section>

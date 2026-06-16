@@ -1,6 +1,11 @@
 import "./LibraryOverview.css";
 
-function LibraryOverview({ totalMovies, watchedMovies, ratedMovies }) {
+function LibraryOverview({
+  totalMovies,
+  watchedMovies,
+  watchlistMovies,
+  ratedMovies,
+}) {
   return (
     <div className="library-overview">
       <article className="library-overview-card">
@@ -11,6 +16,11 @@ function LibraryOverview({ totalMovies, watchedMovies, ratedMovies }) {
       <article className="library-overview-card">
         <span>{watchedMovies}</span>
         <p>Watched</p>
+      </article>
+
+      <article className="library-overview-card">
+        <span>{watchlistMovies}</span>
+        <p>Watchlist</p>
       </article>
 
       <article className="library-overview-card">

@@ -3,6 +3,7 @@ import "./LibraryTabs.css";
 const libraryTabs = [
   { id: "all", label: "All Movies" },
   { id: "watched", label: "Watched Movies" },
+  { id: "watch-later", label: "Watchlist" },
   { id: "rated", label: "Rated Movies" },
   { id: "genres", label: "Favorite Genres" },
   { id: "recent", label: "Recently Added" },
