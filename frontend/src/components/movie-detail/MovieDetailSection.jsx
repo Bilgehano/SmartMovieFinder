@@ -3,8 +3,11 @@ import "./MovieDetailSection.css";
 function MovieDetailSection({
   movie,
   watchStatus,
+  isWatchLater,
   selectedRating,
+  isUserActionSaving,
   onWatchStatusToggle,
+  onWatchLaterToggle,
   onRatingSelect,
   onSaveRating,
 }) {
@@ -20,17 +23,41 @@ function MovieDetailSection({
             )}
           </div>
 
-          <button
-            className={
-              watchStatus === "Watched"
-                ? "movie-detail-outline-button is-watched"
-                : "movie-detail-outline-button"
-            }
-            type="button"
-            onClick={onWatchStatusToggle}
-          >
-            {watchStatus === "Watched" ? "✓ Watched" : "+ Mark as watched"}
-          </button>
+          <div className="movie-detail-poster-actions">
+            <button
+              className={
+                watchStatus === "Watched"
+                  ? "movie-detail-outline-button is-active"
+                  : "movie-detail-outline-button"
+              }
+              type="button"
+              onClick={onWatchStatusToggle}
+              disabled={isUserActionSaving}
+            >
+              {isUserActionSaving
+                ? "Saving..."
+                : watchStatus === "Watched"
+                  ? "✓ Watched"
+                  : "+ Mark as watched"}
+            </button>
+
+            <button
+              className={
+                isWatchLater
+                  ? "movie-detail-outline-button is-active"
+                  : "movie-detail-outline-button"
+              }
+              type="button"
+              onClick={onWatchLaterToggle}
+              disabled={isUserActionSaving}
+            >
+              {isUserActionSaving
+                ? "Saving..."
+                : isWatchLater
+                  ? "✓ In watch later"
+                  : "+ Watch later"}
+            </button>
+          </div>
         </aside>
 
         <section className="movie-detail-info">
@@ -46,6 +73,7 @@ function MovieDetailSection({
               <span>{movie.genre}</span>
               <span>{movie.year}</span>
               <span>★ {movie.rating}</span>
+
               <span
                 className={
                   watchStatus === "Watched"
@@ -55,6 +83,12 @@ function MovieDetailSection({
               >
                 {watchStatus}
               </span>
+
+              {isWatchLater && (
+                <span className="movie-detail-watch-pill is-watch-later">
+                  Watch later
+                </span>
+              )}
             </div>
           </div>
 
@@ -78,30 +112,39 @@ function MovieDetailSection({
             </div>
 
             <div className="movie-detail-rating-options">
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((ratingValue) => (
-                <button
-                  key={ratingValue}
-                  className={
-                    selectedRating && ratingValue <= selectedRating
-                      ? "movie-detail-rating-box is-selected"
-                      : "movie-detail-rating-box"
-                  }
-                  type="button"
-                  onClick={() => onRatingSelect(ratingValue)}
-                  aria-label={`Rate movie with ${ratingValue} out of 10`}
-                >
-                  ★
-                </button>
-              ))}
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(function (ratingValue) {
+                return (
+                  <button
+                    key={ratingValue}
+                    className={
+                      selectedRating && ratingValue <= selectedRating
+                        ? "movie-detail-rating-box is-selected"
+                        : "movie-detail-rating-box"
+                    }
+                    type="button"
+                    onClick={function () {
+                      onRatingSelect(ratingValue);
+                    }}
+                    disabled={isUserActionSaving}
+                    aria-label={"Rate movie with " + ratingValue + " out of 10"}
+                  >
+                    ★
+                  </button>
+                );
+              })}
             </div>
 
             <button
               className="movie-detail-primary-button"
               type="button"
               onClick={onSaveRating}
-              disabled={!selectedRating}
+              disabled={!selectedRating || isUserActionSaving}
             >
-              {selectedRating ? "Save Rating" : "Choose rating first"}
+              {isUserActionSaving
+                ? "Saving..."
+                : selectedRating
+                  ? "Save Rating"
+                  : "Choose rating first"}
             </button>
           </div>
         </section>

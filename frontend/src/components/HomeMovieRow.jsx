@@ -1,15 +1,13 @@
-import { Link } from "react-router-dom";
 import MovieCard from "./MovieCard";
 import "./HomeMovieRow.css";
 
-function HomeMovieRow({ title, linkTo, movies }) {
+function HomeMovieRow({ title, movies }) {
   return (
     <section className="home-movie-row">
       <div className="home-movie-row-header">
-        <Link to={linkTo} className="home-movie-row-title">
+        <h2 className="home-movie-row-title">
           {title}
-          <span aria-hidden="true">→</span>
-        </Link>
+        </h2>
       </div>
 
       <div className="home-movie-row-grid">

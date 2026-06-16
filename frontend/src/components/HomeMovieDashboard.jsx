@@ -168,7 +168,7 @@ const [sections, setSections] = useState({
 trending: [],
 recommended: [],
 topRated: [],
-recentlyViewed: [],
+recentlyWatched: [],
 watchlist: [],
 });
 
@@ -226,7 +226,7 @@ async function loadHomepageMovies() {
     genreMap,
   });
 
-  const recentlyViewedMovies = personalLibraryMovies
+  const recentlyWatchedMovies = personalLibraryMovies
     .filter((movie) => movie.status.includes("watched"))
     .slice(0, HOMEPAGE_MOVIE_LIMIT);
 
@@ -238,7 +238,7 @@ async function loadHomepageMovies() {
     trending: getMoviesFromResult(trendingResult),
     recommended: getMoviesFromResult(recommendedResult),
     topRated: getMoviesFromResult(topRatedResult),
-    recentlyViewed: recentlyViewedMovies,
+    recentlyWatched: recentlyWatchedMovies,
     watchlist: watchlistMovies,
   });
 
@@ -302,31 +302,26 @@ return ( <div className="home-movie-dashboard"> <div className="home-movie-dashb
 
   <HomeMovieRow
     title="Trending Movies"
-    linkTo="/search"
     movies={sections.trending}
   />
 
   <HomeMovieRow
     title="Recommended Movies"
-    linkTo="/search"
     movies={sections.recommended}
   />
 
   <HomeMovieRow
     title="Top Rated"
-    linkTo="/search"
     movies={sections.topRated}
   />
 
   <HomeMovieRow
-    title="Recently Viewed"
-    linkTo="/library"
-    movies={sections.recentlyViewed}
+    title="Recently Watched"
+    movies={sections.recentlyWatched}
   />
 
   <HomeMovieRow
     title="Watchlist"
-    linkTo="/library"
     movies={sections.watchlist}
   />
 </div>

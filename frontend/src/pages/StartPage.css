@@ -132,10 +132,10 @@ position: relative;
 z-index: 5;
 
 display: flex;
-align-items: flex-start;
-justify-content: flex-end;
+align-items: center;
+justify-content: center;
 
-padding: 42px 14vw 36px 32px;
+padding: 46px 32px 42px;
 
 border-top: 2px solid rgba(107, 165, 224, 0.32);
 
@@ -154,25 +154,26 @@ inset -180px 0 250px rgba(73, 29, 205, 0.08);
 .start-actions {
 display: flex;
 align-items: center;
-gap: 46px;
+justify-content: center;
+gap: clamp(32px, 4vw, 72px);
 }
 
 .start-button {
-min-width: 170px;
-min-height: 48px;
+min-width: clamp(210px, 13vw, 260px);
+min-height: 62px;
 
-padding: 12px 30px;
+padding: 16px 42px;
 
 border: 1px solid transparent;
-border-radius: 7px;
+border-radius: 10px;
 
 display: inline-flex;
 align-items: center;
 justify-content: center;
 
 color: #ffffff;
-font-size: 1rem;
-font-weight: 800;
+font-size: clamp(1.05rem, 1vw, 1.2rem);
+font-weight: 900;
 line-height: 1;
 text-decoration: none;
 
@@ -207,8 +208,8 @@ linear-gradient(
 );
 
 box-shadow:
-0 5px 12px rgba(0, 0, 0, 0.38),
-0 0 15px rgba(73, 29, 205, 0.38),
+0 7px 16px rgba(0, 0, 0, 0.38),
+0 0 18px rgba(73, 29, 205, 0.42),
 inset 0 1px 0 rgba(255, 255, 255, 0.22);
 }
 
@@ -223,8 +224,39 @@ linear-gradient(
 );
 
 box-shadow:
-0 5px 12px rgba(0, 0, 0, 0.34),
+0 7px 16px rgba(0, 0, 0, 0.34),
 inset 0 1px 0 rgba(255, 255, 255, 0.14);
+}
+
+.start-brand-title {
+position: absolute;
+z-index: 4;
+
+left: clamp(42px, 8vw, 140px);
+top: 22%;
+
+margin: 0;
+
+display: flex;
+flex-direction: column;
+gap: 2px;
+
+color: #ffffff;
+font-family: Arial, Helvetica, sans-serif;
+font-size: clamp(3.2rem, 7vw, 8.5rem);
+font-weight: 900;
+line-height: 0.9;
+letter-spacing: -0.06em;
+
+text-transform: none;
+
+text-shadow:
+0 4px 18px rgba(0, 0, 0, 0.7),
+0 0 18px rgba(73, 29, 205, 0.28);
+}
+
+.start-brand-title span {
+display: block;
 }
 
 .start-page-visually-hidden {
@@ -248,6 +280,12 @@ minmax(390px, 68vh)
 minmax(210px, 32vh);
 }
 
+.start-brand-title {
+left: 7vw;
+top: 24%;
+font-size: clamp(2.8rem, 9vw, 5.5rem);
+}
+
 .start-hero {
 --split-top: 38%;
 --split-bottom: 66%;
@@ -266,6 +304,12 @@ minmax(360px, 65vh)
 auto;
 }
 
+.start-brand-title {
+left: 24px;
+top: 22%;
+font-size: clamp(2.4rem, 13vw, 4rem);
+}
+
 .start-hero {
 --split-top: 28%;
 --split-bottom: 69%;
@@ -278,7 +322,7 @@ justify-content: center;
 }
 
 .start-actions {
-width: min(100%, 340px);
+width: min(100%, 360px);
 flex-direction: column;
 gap: 18px;
 }
@@ -286,5 +330,6 @@ gap: 18px;
 .start-button {
 width: 100%;
 min-width: 0;
+min-height: 58px;
 }
 }

@@ -1,18 +1,24 @@
 import { Link } from "react-router-dom";
 
+import StartHexGrid from "../components/start/StartHexGrid";
 import "./StartPage.css";
 
 function StartPage() {
 return ( <main className="start-page"> <section
      className="start-hero"
      aria-label="SmartMovieFinder introduction"
-   > <h1 className="start-page-visually-hidden">
-SmartMovieFinder </h1>
+   > <h1 className="start-brand-title">
+      <span>Smart</span>
+      <span>Movie</span>
+      <span>Finder</span>
+    </h1>
 
     <div
       className="start-hero-right"
       aria-hidden="true"
-    />
+    > 
+      <StartHexGrid />
+    </div>
 
     <div
       className="start-hero-left"

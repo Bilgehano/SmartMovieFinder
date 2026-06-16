@@ -8,6 +8,17 @@ import {
   fetchSimilarMovies,
 } from "../api/movieApi";
 import {
+  addWatchedMovie,
+  addWatchLaterMovie,
+  fetchUserRatings,
+  fetchWatchedMovies,
+  fetchWatchLaterMovies,
+  removeWatchedMovie,
+  removeWatchLaterMovie,
+  saveMovieRating,
+} from "../api/userApi";
+import { getCurrentUserId } from "../api/userSession";
+import {
   createGenreMap,
   mapTmdbMovieDetail,
   mapTmdbMovieList,
@@ -20,6 +31,96 @@ import MovieRecommendationSection from "../components/movie-detail/MovieRecommen
 
 import "./MovieDetailPage.css";
 
+function normalizeId(value) {
+  if (value === null || value === undefined) {
+    return "";
+  }
+
+  return String(value);
+}
+
+function getMovieIds(movie) {
+  if (!movie) {
+    return [];
+  }
+
+  return [
+    movie.id,
+    movie.tmdbId,
+    movie.movieId,
+  ]
+    .map(normalizeId)
+    .filter(Boolean);
+}
+
+function getUserMovieIds(item) {
+  if (!item) {
+    return [];
+  }
+
+  const nestedMovie = item.movie || item.catalogMovie || item.tmdbMovie;
+
+  return [
+    item.id,
+    item.tmdbId,
+    item.movieId,
+    item.catalogMovieId,
+    item.tmdbMovieId,
+    nestedMovie?.id,
+    nestedMovie?.tmdbId,
+    nestedMovie?.movieId,
+  ]
+    .map(normalizeId)
+    .filter(Boolean);
+}
+
+function isSameMovie(movie, userMovieItem) {
+  const movieIds = getMovieIds(movie);
+  const userMovieIds = getUserMovieIds(userMovieItem);
+
+  return movieIds.some(function (movieId) {
+    return userMovieIds.includes(movieId);
+  });
+}
+
+function findMatchingItem(items, movie) {
+  if (!Array.isArray(items)) {
+    return null;
+  }
+
+  return items.find(function (item) {
+    return isSameMovie(movie, item);
+  }) || null;
+}
+
+function getRatingValue(ratingItem) {
+  if (!ratingItem) {
+    return null;
+  }
+
+  const rawRating =
+    ratingItem.rating ??
+    ratingItem.ratingValue ??
+    ratingItem.value ??
+    ratingItem.score;
+
+  const numericRating = Number(rawRating);
+
+  if (!Number.isFinite(numericRating)) {
+    return null;
+  }
+
+  return numericRating;
+}
+
+function getMovieTmdbId(movie) {
+  if (!movie) {
+    return null;
+  }
+
+  return movie.tmdbId ?? movie.id ?? movie.movieId;
+}
+
 function MovieDetailPage() {
   const { movieId } = useParams();
 
@@ -27,8 +128,11 @@ function MovieDetailPage() {
   const [recommendedMovies, setRecommendedMovies] = useState([]);
   const [selectedRating, setSelectedRating] = useState(null);
   const [watchStatus, setWatchStatus] = useState("Not watched");
+  const [isWatchLater, setIsWatchLater] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [userStatusMessage, setUserStatusMessage] = useState("");
+  const [isUserActionSaving, setIsUserActionSaving] = useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -36,16 +140,44 @@ function MovieDetailPage() {
     async function loadMovieDetails() {
       setIsLoading(true);
       setErrorMessage("");
+      setUserStatusMessage("");
       setMovie(null);
       setRecommendedMovies([]);
+      setWatchStatus("Not watched");
+      setIsWatchLater(false);
+      setSelectedRating(null);
+      setIsUserActionSaving(false);
 
       try {
-        const [movieDetailResult, genresResult, similarMoviesResult] =
-          await Promise.allSettled([
-            fetchMovieDetail(movieId),
-            fetchGenres(),
-            fetchSimilarMovies(movieId, 4),
-          ]);
+        const currentUserId = getCurrentUserId();
+
+        const watchedMoviesRequest = currentUserId
+          ? fetchWatchedMovies(currentUserId)
+          : Promise.resolve([]);
+
+        const watchLaterMoviesRequest = currentUserId
+          ? fetchWatchLaterMovies(currentUserId)
+          : Promise.resolve([]);
+
+        const userRatingsRequest = currentUserId
+          ? fetchUserRatings(currentUserId)
+          : Promise.resolve([]);
+
+        const [
+          movieDetailResult,
+          genresResult,
+          similarMoviesResult,
+          watchedMoviesResult,
+          watchLaterMoviesResult,
+          userRatingsResult,
+        ] = await Promise.allSettled([
+          fetchMovieDetail(movieId),
+          fetchGenres(),
+          fetchSimilarMovies(movieId, 4),
+          watchedMoviesRequest,
+          watchLaterMoviesRequest,
+          userRatingsRequest,
+        ]);
 
         if (movieDetailResult.status !== "fulfilled") {
           throw movieDetailResult.reason;
@@ -57,6 +189,21 @@ function MovieDetailPage() {
         const similarMoviesResponse =
           similarMoviesResult.status === "fulfilled"
             ? similarMoviesResult.value
+            : [];
+
+        const watchedMovies =
+          watchedMoviesResult.status === "fulfilled"
+            ? watchedMoviesResult.value
+            : [];
+
+        const watchLaterMovies =
+          watchLaterMoviesResult.status === "fulfilled"
+            ? watchLaterMoviesResult.value
+            : [];
+
+        const userRatings =
+          userRatingsResult.status === "fulfilled"
+            ? userRatingsResult.value
             : [];
 
         const genreMap = createGenreMap(genres);
@@ -76,14 +223,34 @@ function MovieDetailPage() {
           )
           .slice(0, 4);
 
+        const watchedItem = findMatchingItem(watchedMovies, mappedMovie);
+        const watchLaterItem = findMatchingItem(watchLaterMovies, mappedMovie);
+        const ratingItem = findMatchingItem(userRatings, mappedMovie);
+        const existingRating = getRatingValue(ratingItem);
+
         if (!isMounted) {
           return;
         }
 
         setMovie(mappedMovie);
         setRecommendedMovies(mappedRecommendations);
-        setWatchStatus(mappedMovie.status);
-        setSelectedRating(null);
+        setWatchStatus(watchedItem ? "Watched" : "Not watched");
+        setIsWatchLater(Boolean(watchLaterItem));
+        setSelectedRating(existingRating);
+
+        if (!currentUserId) {
+          setUserStatusMessage(
+            "Login is required to load your personal movie status."
+          );
+        } else if (
+          watchedMoviesResult.status === "rejected" ||
+          watchLaterMoviesResult.status === "rejected" ||
+          userRatingsResult.status === "rejected"
+        ) {
+          setUserStatusMessage(
+            "Some personal movie data could not be loaded."
+          );
+        }
       } catch (error) {
         console.error("Failed to load movie details:", error);
 
@@ -108,21 +275,95 @@ function MovieDetailPage() {
     };
   }, [movieId]);
 
-  function handleWatchStatus() {
-    setWatchStatus((currentStatus) =>
-      currentStatus === "Watched" ? "Not watched" : "Watched"
-    );
-  }
-
-  function handleSaveRating() {
-    if (!selectedRating || !movie) {
+  async function handleWatchStatus() {
+    if (!movie || isUserActionSaving) {
       return;
     }
 
-    console.log("Saved rating:", {
-      movieId: movie.id,
-      rating: selectedRating,
-    });
+    const currentUserId = getCurrentUserId();
+    const tmdbId = getMovieTmdbId(movie);
+
+    if (!currentUserId || !tmdbId) {
+      setUserStatusMessage("Login is required to update your movie status.");
+      return;
+    }
+
+    setIsUserActionSaving(true);
+    setUserStatusMessage("");
+
+    try {
+      if (watchStatus === "Watched") {
+        await removeWatchedMovie(currentUserId, tmdbId);
+        setWatchStatus("Not watched");
+      } else {
+        await addWatchedMovie(currentUserId, movie);
+        setWatchStatus("Watched");
+        setIsWatchLater(false);
+      }
+    } catch (error) {
+      console.error("Failed to update watched status:", error);
+      setUserStatusMessage("Could not update watched status.");
+    } finally {
+      setIsUserActionSaving(false);
+    }
+  }
+
+  async function handleWatchLaterStatus() {
+    if (!movie || isUserActionSaving) {
+      return;
+    }
+
+    const currentUserId = getCurrentUserId();
+    const tmdbId = getMovieTmdbId(movie);
+
+    if (!currentUserId || !tmdbId) {
+      setUserStatusMessage("Login is required to update watch later.");
+      return;
+    }
+
+    setIsUserActionSaving(true);
+    setUserStatusMessage("");
+
+    try {
+      if (isWatchLater) {
+        await removeWatchLaterMovie(currentUserId, tmdbId);
+        setIsWatchLater(false);
+      } else {
+        await addWatchLaterMovie(currentUserId, movie);
+        setIsWatchLater(true);
+      }
+    } catch (error) {
+      console.error("Failed to update watch later:", error);
+      setUserStatusMessage("Could not update watch later.");
+    } finally {
+      setIsUserActionSaving(false);
+    }
+  }
+
+  async function handleSaveRating() {
+    if (!selectedRating || !movie || isUserActionSaving) {
+      return;
+    }
+
+    const currentUserId = getCurrentUserId();
+
+    if (!currentUserId) {
+      setUserStatusMessage("Login is required to save your rating.");
+      return;
+    }
+
+    setIsUserActionSaving(true);
+    setUserStatusMessage("");
+
+    try {
+      await saveMovieRating(currentUserId, movie, selectedRating);
+      setUserStatusMessage("Rating saved.");
+    } catch (error) {
+      console.error("Failed to save rating:", error);
+      setUserStatusMessage("Could not save your rating.");
+    } finally {
+      setIsUserActionSaving(false);
+    }
   }
 
   if (isLoading) {
@@ -171,11 +412,20 @@ function MovieDetailPage() {
           <MovieDetailBar movieId={movie.id} />
 
           <div className="movie-detail-panel">
+            {userStatusMessage && (
+              <p className="movie-detail-user-status-message">
+                {userStatusMessage}
+              </p>
+            )}
+
             <MovieDetailSection
               movie={movie}
               watchStatus={watchStatus}
+              isWatchLater={isWatchLater}
               selectedRating={selectedRating}
+              isUserActionSaving={isUserActionSaving}
               onWatchStatusToggle={handleWatchStatus}
+              onWatchLaterToggle={handleWatchLaterStatus}
               onRatingSelect={setSelectedRating}
               onSaveRating={handleSaveRating}
             />
