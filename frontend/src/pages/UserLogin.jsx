@@ -16,7 +16,7 @@ function UserLogin() {
   setLoginError("");
 
   try {
-    const response = await fetch("http://localhost:8080/users/login", {
+    const response = await fetch("http://193.197.230.150:8080/users/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -44,7 +44,7 @@ function UserLogin() {
     localStorage.setItem("userId", userId);
 
     const genreResponse = await fetch(
-      `http://localhost:8080/users/${userId}/favorite-genres`
+      `http://193.197.230.150:8080/users/${userId}/favorite-genres`
     );
 
     if (!genreResponse.ok) {

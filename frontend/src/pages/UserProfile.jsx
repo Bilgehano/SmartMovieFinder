@@ -32,22 +32,22 @@ function UserProfile() {
         }
 
         const genreResponse = await fetch(
-          `http://localhost:8080/users/${userId}/favorite-genres`
+          `http://193.197.230.150:8080/users/${userId}/favorite-genres`
         );
         const genreData = await genreResponse.json();
 
         const watchedResponse = await fetch(
-          `http://localhost:8080/users/${userId}/watched`
+          `http://193.197.230.150:8080/users/${userId}/watched`
         );
         const watchedData = await watchedResponse.json();
   
         const ratingsResponse = await fetch(
-          `http://localhost:8080/users/${userId}/ratings`
+          `http://193.197.230.150:8080/users/${userId}/ratings`
         );
         const ratingsData = await ratingsResponse.json();
 
         const watchLaterResponse = await fetch(
-          `http://localhost:8080/users/${userId}/watch-later`
+          `http://193.197.230.150:8080/users/${userId}/watch-later`
         );
         const watchLaterData = await watchLaterResponse.json();
 
@@ -90,7 +90,7 @@ const handleDeleteAccount = async () => {
 
   try {
     const response = await fetch(
-      `http://localhost:8080/users/${userId}`,
+      `http://193.197.230.150:8080/users/${userId}`,
       {
         method: "DELETE",
       }
