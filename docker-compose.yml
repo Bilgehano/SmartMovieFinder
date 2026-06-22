@@ -30,6 +30,8 @@ services:
       context: ./backend/user-service
     container_name: smf-user-service
     restart: unless-stopped
+    ports:
+      - "18080:8080"
     depends_on:
       - user-db
       - redis
@@ -48,6 +50,8 @@ services:
       context: ./backend/catalog-service
     container_name: smf-catalog-service
     restart: unless-stopped
+    ports:
+      - "18081:8081"
     depends_on:
       - catalog-db
     environment:
@@ -90,6 +94,8 @@ services:
       context: ./backend/recommendation-service
     container_name: smf-recommendation-service
     restart: unless-stopped
+    ports:
+      - "18082:8082"
     depends_on:
       - neo4j
       - redis
