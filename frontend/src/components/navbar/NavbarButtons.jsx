@@ -48,7 +48,7 @@ function NavbarButtons() {
             : "navbar-link navbar-icon-only"
         }
       >
-        <House className="navbar-icon" size={20} strokeWidth={2.3} />
+        <House className="navbar-icon" size={28} strokeWidth={2.3} />
       </NavLink>
 
       <NavLink
@@ -61,7 +61,7 @@ function NavbarButtons() {
             : "navbar-link navbar-icon-only"
         }
       >
-        <Search className="navbar-icon" size={20} strokeWidth={2.3} />
+        <Search className="navbar-icon" size={28} strokeWidth={2.3} />
       </NavLink>
 
       <NavLink
@@ -74,7 +74,7 @@ function NavbarButtons() {
             : "navbar-link navbar-icon-only"
         }
       >
-        <ChartNetwork className="navbar-icon" size={20} strokeWidth={2.2} />
+        <ChartNetwork className="navbar-icon" size={28} strokeWidth={2.2} />
       </NavLink>
 
       <NavLink
@@ -88,10 +88,10 @@ function NavbarButtons() {
         }
       >
         <span className="navbar-icon-stack" aria-hidden="true">
-          <BookOpen className="navbar-icon" size={20} strokeWidth={2.3} />
+          <BookOpen className="navbar-icon" size={28} strokeWidth={2.3} />
           <Search
             className="navbar-icon-badge"
-            size={11}
+            size={14}
             strokeWidth={3}
           />
         </span>
@@ -108,10 +108,10 @@ function NavbarButtons() {
         }
       >
         <span className="navbar-icon-stack" aria-hidden="true">
-          <Eye className="navbar-icon" size={21} strokeWidth={2.3} />
+          <Eye className="navbar-icon" size={29} strokeWidth={2.3} />
           <Bookmark
             className="navbar-icon-badge"
-            size={11}
+            size={14}
             strokeWidth={3}
           />
         </span>
@@ -129,7 +129,7 @@ function NavbarButtons() {
       >
         <CircleUserRound
           className="navbar-icon"
-          size={21}
+          size={29}
           strokeWidth={2.2}
         />
       </NavLink>
@@ -141,7 +141,7 @@ function NavbarButtons() {
         title="Logout"
         onClick={handleLogout}
       >
-        <LogOut className="navbar-icon" size={20} strokeWidth={2.3} />
+        <LogOut className="navbar-icon" size={28} strokeWidth={2.3} />
       </button>
     </nav>
   );

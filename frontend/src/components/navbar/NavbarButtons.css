@@ -1,20 +1,24 @@
 .navbar-links {
+  align-self: stretch;
   display: flex;
-  align-items: center;
+  align-items: stretch;
   justify-content: flex-end;
-  gap: 9px;
-  flex-wrap: wrap;
+  gap: 0 !important;
   margin-left: auto;
+  padding: 0;
 }
 
-.navbar-link {
-  width: 58px;
-  height: 42px;
+.navbar-links .navbar-link {
+  position: relative;
+  z-index: 1;
+  width: var(--navbar-height, 120px);
+  min-height: var(--navbar-height, 120px);
+  margin: 0 !important;
   padding: 0;
   border: none;
-  border-radius: 9px;
-  background-color: rgba(255, 255, 255, 0.94);
-  color: #05040a;
+  border-radius: 0 !important;
+  background-color: transparent;
+  color: #f8fbff;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -23,21 +27,66 @@
   text-decoration: none;
   box-sizing: border-box;
   transition:
-    transform 0.18s ease,
-    background-color 0.18s ease,
-    color 0.18s ease,
-    box-shadow 0.18s ease;
+    background-color 0.2s ease,
+    color 0.2s ease,
+    box-shadow 0.2s ease;
 }
 
-.navbar-link:hover {
-  background-color: #ffffff;
-  transform: translateY(-2px);
+/* Feine Trennlinien zwischen den Icons */
+.navbar-links .navbar-link + .navbar-link {
+  border-left: 1px solid rgba(255, 255, 255, 0.26);
 }
 
-.navbar-link.active {
-  background: linear-gradient(180deg, #785cff 0%, #5b37f0 100%);
+.navbar-links .navbar-link:hover {
+  background-color: rgba(255, 255, 255, 0.06);
+  transform: none;
+}
+
+/*
+  Active state:
+  Kein lila Vollton mehr.
+  Nur ein leichter Farbverlauf von unten nach oben.
+*/
+.navbar-links .navbar-link.active {
+  z-index: 2;
+  background: linear-gradient(
+    0deg,
+    rgba(118, 88, 255, 0.24) 0%,
+    rgba(118, 88, 255, 0.1) 30%,
+    rgba(118, 88, 255, 0.025) 56%,
+    transparent 78%
+  );
   color: #ffffff;
-  box-shadow: 0 6px 16px rgba(85, 55, 230, 0.34);
+}
+
+.navbar-links .navbar-link.active .navbar-icon {
+  filter: drop-shadow(0 0 7px rgba(211, 204, 255, 0.5));
+}
+
+/*
+  Laser-Strich unten am aktiven Button.
+*/
+.navbar-links .navbar-link.active::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    #8d76ff 10%,
+    #f4f1ff 50%,
+    #8d76ff 90%,
+    transparent 100%
+  );
+  box-shadow:
+    0 0 6px rgba(169, 150, 255, 1),
+    0 0 16px rgba(113, 85, 255, 0.85),
+    0 0 28px rgba(113, 85, 255, 0.42);
+  pointer-events: none;
 }
 
 .navbar-icon {
@@ -45,8 +94,8 @@
 }
 
 .navbar-icon-stack {
-  width: 22px;
-  height: 22px;
+  width: 32px;
+  height: 32px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -56,18 +105,18 @@
 
 .navbar-icon-badge {
   position: absolute;
-  right: -5px;
-  bottom: -4px;
-  width: 13px;
-  height: 13px;
+  right: -7px;
+  bottom: -6px;
+  width: 16px;
+  height: 16px;
   padding: 1px;
   border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.94);
+  background-color: #041229;
   pointer-events: none;
 }
 
 .navbar-link.active .navbar-icon-badge {
-  background-color: #603cf2;
+  background-color: #0a1530;
 }
 
 .logout-button {
@@ -75,35 +124,33 @@
 }
 
 .logout-button:hover {
-  background-color: #fff3f4;
-}
-
-@media (max-width: 1320px) {
-  .navbar-links {
-    gap: 7px;
-  }
-
-  .navbar-link {
-    width: 54px;
-    height: 40px;
-  }
+  background-color: rgba(255, 93, 93, 0.12) !important;
+  color: #ffd8d8 !important;
 }
 
 @media (max-width: 1050px) {
   .navbar-links {
     width: 100%;
+    min-height: auto;
+    align-self: auto;
     justify-content: flex-start;
-    margin-left: 0;
-  }
-}
-
-@media (max-width: 620px) {
-  .navbar-links {
-    gap: 7px;
+    flex-wrap: wrap;
+    gap: 8px !important;
+    padding-top: 8px;
   }
 
-  .navbar-link {
-    width: 50px;
-    height: 40px;
+  .navbar-links .navbar-link {
+    width: 62px;
+    min-height: 48px;
+    border: 1px solid rgba(255, 255, 255, 0.22);
+  }
+
+  .navbar-links .navbar-link + .navbar-link {
+    border-left: 1px solid rgba(255, 255, 255, 0.22);
+  }
+
+  .navbar-links .navbar-link.active::after {
+    left: 15%;
+    width: 70%;
   }
 }
