@@ -1,76 +1,26 @@
-import { NavLink, useLocation, useNavigate } from "react-router-dom";
+import { NavLink } from "react-router-dom";
+import NavbarButtons from "./navbar/NavbarButtons";
 import "./Navbar.css";
 
 function Navbar() {
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  const isGraphPage =
-    location.pathname === "/graph" || location.pathname.endsWith("/graph");
-
-  function handleLogout() {
-    // Later: remove token/user data here
-    navigate("/userlogin");
-  }
-
   return (
     <header className="app-navbar">
-      <NavLink to="/homepage" className="navbar-logo" aria-label="Go to homepage">
-        <div className="logo-placeholder"></div>
+      <NavLink
+        to="/homepage"
+        className="navbar-logo"
+        aria-label="Go to homepage"
+      >
+        <div className="navbar-brand">
+          <span className="navbar-brand-smart">SMART</span>
+          <span className="navbar-brand-line">Movie</span>
+          <span className="navbar-brand-line">Finder</span>
+          <span className="navbar-brand-tagline">
+            Discover your next movie
+          </span>
+        </div>
       </NavLink>
 
-      <nav className="navbar-links" aria-label="Main navigation">
-        <NavLink
-          to="/homepage"
-          className={({ isActive }) =>
-            isActive ? "navbar-link active" : "navbar-link"
-          }
-        >
-          Home
-        </NavLink>
-
-        <NavLink
-          to="/search"
-          className={({ isActive }) =>
-            isActive ? "navbar-link active" : "navbar-link"
-          }
-        >
-          Search
-        </NavLink>
-
-        <NavLink
-          to="/graph"
-          className={isGraphPage ? "navbar-link active" : "navbar-link"}
-        >
-          Graph
-        </NavLink>
-
-        <NavLink
-          to="/library"
-          className={({ isActive }) =>
-            isActive ? "navbar-link active" : "navbar-link"
-          }
-        >
-          Library
-        </NavLink>
-
-        <NavLink
-          to="/profile"
-          className={({ isActive }) =>
-            isActive ? "navbar-link active" : "navbar-link"
-          }
-        >
-          Profile
-        </NavLink>
-
-        <button
-          type="button"
-          className="navbar-link logout-button"
-          onClick={handleLogout}
-        >
-          Logout
-        </button>
-      </nav>
+      <NavbarButtons />
     </header>
   );
 }
