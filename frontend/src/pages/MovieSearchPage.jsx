@@ -12,10 +12,10 @@ import { fetchRecommendedMovies } from "../api/recommendationApi";
 import { getCurrentUserId } from "../api/userSession";
 import { createGenreMap } from "../utils/movieMapper";
 
-import BrowseFilterBar from "../components/browse/BrowseFilterBar";
-import BrowseMovieGrid from "../components/browse/BrowseMovieGrid";
-import BrowsePagination from "../components/browse/BrowsePagination";
-import SearchBar from "../components/SearchBar";
+import BrowseFilterBar from "../components/search-page/BrowseFilterBar";
+import BrowseMovieGrid from "../components/search-page/BrowseMovieGrid";
+import BrowsePagination from "../components/search-page/BrowsePagination";
+import SearchBar from "../components/shared/SearchBar";
 import "./MovieSearchPage.css";
 
 const MOVIES_PER_PAGE = 20;

@@ -1,4 +1,4 @@
-import MovieCard from "../MovieCard";
+import MovieCard from "../shared/MovieCard";
 import "./BrowseMovieGrid.css";
 
 export default function BrowseMovieGrid({ movies }) {

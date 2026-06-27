@@ -24,10 +24,10 @@ import {
   mapTmdbMovieList,
 } from "../utils/movieMapper";
 
-import MovieDetailBar from "../components/movie-detail/MovieDetailBar";
-import MovieDetailSection from "../components/movie-detail/MovieDetailSection";
-import CommunityRatingSection from "../components/movie-detail/CommunityRatingSection";
-import MovieRecommendationSection from "../components/movie-detail/MovieRecommendationSection";
+import MovieDetailBar from "../components/movie-detail-page/MovieDetailBar";
+import MovieDetailSection from "../components/movie-detail-page/MovieDetailSection";
+import CommunityRatingSection from "../components/movie-detail-page/CommunityRatingSection";
+import MovieRecommendationSection from "../components/movie-detail-page/MovieRecommendationSection";
 
 import "./MovieDetailPage.css";
 

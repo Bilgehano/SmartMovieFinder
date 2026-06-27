@@ -1,12 +1,12 @@
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 
-import SearchBar from "../components/SearchBar";
-import BrowseMovieGrid from "../components/browse/BrowseMovieGrid";
-import BrowsePagination from "../components/browse/BrowsePagination";
-import LibraryTabs from "../components/library/LibraryTabs";
-import LibraryOverview from "../components/library/LibraryOverview";
-import FavoriteGenresPanel from "../components/library/FavoriteGenresPanel";
+import SearchBar from "../components/shared/SearchBar";
+import BrowseMovieGrid from "../components/search-page/BrowseMovieGrid";
+import BrowsePagination from "../components/search-page/BrowsePagination";
+import LibraryTabs from "../components/library-page/LibraryTabs";
+import LibraryOverview from "../components/library-page/LibraryOverview";
+import FavoriteGenresPanel from "../components/library-page/FavoriteGenresPanel";
 
 import { fetchGenres } from "../api/movieApi";
 import {

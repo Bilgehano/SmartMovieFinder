@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 
-import HomeMovieRow from "../HomeMovieRow";
+import HomeMovieRow from "./HomeMovieRow";
 
 import {
   fetchGenres,

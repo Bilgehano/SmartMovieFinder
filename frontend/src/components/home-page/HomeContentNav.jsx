@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import SearchBar from "../SearchBar";
+import SearchBar from "../shared/SearchBar";
 
 import { fetchGenres } from "../../api/movieApi";
 import { fetchFavoriteGenres } from "../../api/userApi";

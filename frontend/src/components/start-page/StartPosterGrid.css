@@ -1,13 +1,16 @@
-.start-hex-pattern {
+.start-poster-grid {
   --poster-width: clamp(205px, 13.2vw, 270px);
   --poster-height: calc(var(--poster-width) * 1.5);
   --poster-gap: clamp(18px, 1.3vw, 26px);
 
   position: absolute;
   z-index: 1;
-
   top: 46%;
-  left: calc(clamp(39%, 44vw, 48%) - var(--poster-width) - var(--poster-gap));
+  left: calc(
+    clamp(39%, 44vw, 48%) -
+    var(--poster-width) -
+    var(--poster-gap)
+  );
   right: auto;
   transform: translateY(-50%);
 
@@ -16,25 +19,26 @@
   gap: var(--poster-gap);
 
   width: max-content;
-
   opacity: 0.92;
   pointer-events: none;
 
   filter: drop-shadow(0 18px 36px rgba(0, 0, 0, 0.28));
 }
 
-.start-card-column {
+.start-poster-column {
   display: flex;
   flex-direction: column;
   gap: var(--poster-gap);
 }
 
-.start-card-column:nth-child(even) {
-  margin-top: calc((var(--poster-height) + var(--poster-gap)) / 2);
+.start-poster-column:nth-child(even) {
+  margin-top: calc(
+    (var(--poster-height) + var(--poster-gap)) / 2
+  );
 }
 
 @media (max-width: 1200px) {
-  .start-hex-pattern {
+  .start-poster-grid {
     --poster-width: clamp(175px, 13vw, 230px);
     --poster-height: calc(var(--poster-width) * 1.5);
     --poster-gap: clamp(16px, 1.2vw, 24px);
@@ -46,7 +50,7 @@
 }
 
 @media (max-width: 900px) {
-  .start-hex-pattern {
+  .start-poster-grid {
     --poster-width: clamp(130px, 15vw, 175px);
     --poster-height: calc(var(--poster-width) * 1.5);
     --poster-gap: 16px;
@@ -58,7 +62,7 @@
 }
 
 @media (max-width: 650px) {
-  .start-hex-pattern {
+  .start-poster-grid {
     --poster-width: clamp(92px, 18vw, 125px);
     --poster-height: calc(var(--poster-width) * 1.5);
     --poster-gap: 12px;
@@ -68,7 +72,7 @@
     opacity: 0.35;
   }
 
-  .movie-hex-card__label {
+  .start-poster-card__label {
     display: none;
   }
 }

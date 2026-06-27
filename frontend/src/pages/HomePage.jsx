@@ -1,6 +1,6 @@
 import { useState } from "react";
-import HomeContentNav from "../components/homepage/HomeContentNav";
-import HomeMovieDashboard from "../components/homepage/HomeMovieDashboard";
+import HomeContentNav from "../components/home-page/HomeContentNav";
+import HomeMovieDashboard from "../components/home-page/HomeMovieDashboard";
 import "./HomePage.css";
 
 function HomePage() {

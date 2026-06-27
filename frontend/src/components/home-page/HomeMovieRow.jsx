@@ -1,4 +1,4 @@
-import MovieCard from "./MovieCard";
+import MovieCard from "../shared/MovieCard";
 import "./HomeMovieRow.css";
 
 function HomeMovieRow({ title, movies }) {

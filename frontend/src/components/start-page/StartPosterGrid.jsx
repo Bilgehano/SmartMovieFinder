@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 
 import { fetchTrendingMovies } from "../../api/movieApi";
-import MovieHexCard from "./MovieHexCard";
-import "./StartHexGrid.css";
+import StartPosterCard from "./StartPosterCard";
+import "./StartPosterGrid.css";
 
 const CARD_COLUMNS = [
   1,
@@ -11,7 +11,7 @@ const CARD_COLUMNS = [
   3,
   3,
   3,
-  3
+  3,
 ];
 
 const CARD_LIMIT = CARD_COLUMNS.reduce(function (sum, count) {
@@ -43,7 +43,7 @@ function mapStartMovie(movie) {
   return {
     id: movie.id || movie.tmdbId || movie.movieId,
     title: getMovieTitle(movie),
-    posterUrl: getPosterUrl(movie.poster_path || movie.posterPath)
+    posterUrl: getPosterUrl(movie.poster_path || movie.posterPath),
   };
 }
 
@@ -84,7 +84,7 @@ function getCardMovie(movies, columnIndex, cardIndex) {
   return movies[movieIndex] || null;
 }
 
-function StartHexGrid() {
+function StartPosterGrid() {
   const [movies, setMovies] = useState([]);
 
   useEffect(function () {
@@ -100,7 +100,10 @@ function StartHexGrid() {
 
         setMovies(mapTrendingMovies(trendingMovies));
       } catch (error) {
-        console.warn("Trending movies for start page could not be loaded:", error);
+        console.warn(
+          "Trending movies for start page could not be loaded:",
+          error
+        );
 
         if (isMounted) {
           setMovies([]);
@@ -116,19 +119,19 @@ function StartHexGrid() {
   }, []);
 
   return (
-    <div className="start-hex-pattern" aria-hidden="true">
+    <div className="start-poster-grid" aria-hidden="true">
       {CARD_COLUMNS.map(function (cardCount, columnIndex) {
         return (
           <div
-            className="start-card-column"
-            key={"start-card-column-" + columnIndex}
+            className="start-poster-column"
+            key={"start-poster-column-" + columnIndex}
           >
             {Array.from({ length: cardCount }).map(function (_, cardIndex) {
               const movie = getCardMovie(movies, columnIndex, cardIndex);
 
               return (
-                <MovieHexCard
-                  key={"start-card-" + columnIndex + "-" + cardIndex}
+                <StartPosterCard
+                  key={"start-poster-" + columnIndex + "-" + cardIndex}
                   title={movie ? movie.title : "Bild einfügen"}
                   imageUrl={movie ? movie.posterUrl : ""}
                 />
@@ -141,4 +144,4 @@ function StartHexGrid() {
   );
 }
 
-export default StartHexGrid;
+export default StartPosterGrid;

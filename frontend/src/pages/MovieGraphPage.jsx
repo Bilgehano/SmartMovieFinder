@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 
-import SearchBar from "../components/SearchBar";
+import SearchBar from "../components/shared/SearchBar";
 import MovieGraph from "../features/movieGraph/MovieGraph";
 
 import {
