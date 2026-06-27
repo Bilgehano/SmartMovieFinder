@@ -1,84 +1,291 @@
+.browse-filter-section {
+  width: 100%;
+}
+
+.browse-filter-section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 12px;
+}
+
+.browse-filter-eyebrow {
+  color: #e3ecfb;
+  font-size: 0.98rem;
+  font-weight: 850;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.browse-clear-link {
+  min-width: 124px;
+  min-height: 44px;
+  padding: 0 17px;
+
+  border: 1px solid rgba(150, 174, 220, 0.3);
+  border-radius: 8px;
+
+  background: rgba(8, 19, 38, 0.5);
+  color: #c6d3e8;
+
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 800;
+  cursor: pointer;
+
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease,
+    color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.browse-clear-link:hover {
+  transform: translateY(-1px);
+  border-color: rgba(181, 155, 255, 0.62);
+  background: rgba(47, 34, 99, 0.46);
+  color: #f0ebff;
+
+  box-shadow:
+    0 0 0 1px rgba(177, 151, 255, 0.1),
+    0 0 16px rgba(118, 88, 255, 0.18);
+}
+
+.browse-clear-link:hover {
+  transform: translateY(-1px);
+  border-color: rgba(181, 155, 255, 0.72);
+  background: rgba(58, 42, 120, 0.5);
+  color: #f1ebff;
+
+  box-shadow:
+    0 0 0 1px rgba(177, 151, 255, 0.1),
+    0 0 18px rgba(118, 88, 255, 0.24);
+}
+
+.browse-clear-link:focus-visible {
+  outline: 2px solid rgba(190, 170, 255, 0.95);
+  outline-offset: 3px;
+}
+
+.browse-filter-panel {
+  padding: 15px 16px 16px;
+
+  border: 1px solid rgba(115, 142, 194, 0.16);
+  border-radius: 11px;
+
+  background: linear-gradient(
+    145deg,
+    rgba(6, 16, 32, 0.68),
+    rgba(9, 24, 46, 0.44)
+  );
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.025),
+    0 10px 22px rgba(0, 0, 0, 0.12);
+}
+
+.browse-filter-section {
+  position: relative;
+}
+
+.browse-filter-section-header {
+  padding-right: 0;
+}
+
 .browse-filter-bar {
   display: grid;
-  grid-template-columns: 1fr 1.3fr 1fr 1fr auto;
+  grid-template-columns: 1fr 1.45fr 1fr 1.2fr auto;
   gap: 16px;
   align-items: end;
-  padding: 18px 24px;
-  background-color: #1f1f24;
 }
 
 .browse-filter-control {
   display: grid;
-  gap: 6px;
+  gap: 8px;
+}
+
+.browse-year-control {
+  position: relative;
 }
 
 .browse-filter-control label {
+  color: #c6d3e8;
   font-size: 0.8rem;
-  font-weight: 700;
-  color: #ffffff;
+  font-weight: 800;
 }
 
 .browse-filter-control select,
 .browse-filter-control input {
   width: 100%;
-  height: 36px;
-  border: 2px solid #d1d5db;
-  border-radius: 5px;
-  padding: 0 10px;
-  background: #ffffff;
-  color: #111827;
-  font-weight: 800;
+  height: 44px;
+  padding: 0 12px;
+
+  border: 1px solid rgba(150, 174, 220, 0.28);
+  border-radius: 8px;
+
+  background: rgba(8, 19, 38, 0.9);
+  color: #edf4ff;
+
+  font-family: inherit;
+  font-size: 0.9rem;
+  font-weight: 700;
+
+  outline: none;
+  box-sizing: border-box;
+
+  transition:
+    border-color 0.18s ease,
+    background-color 0.18s ease,
+    box-shadow 0.18s ease;
+}
+
+.browse-filter-control select {
+  cursor: pointer;
+}
+
+.browse-filter-control select:hover,
+.browse-filter-control input:hover {
+  border-color: rgba(166, 190, 232, 0.42);
+  background: rgba(12, 28, 52, 0.94);
+}
+
+.browse-filter-control select:focus,
+.browse-filter-control input:focus {
+  border-color: rgba(170, 145, 255, 0.86);
+
+  box-shadow:
+    0 0 0 3px rgba(118, 88, 255, 0.12),
+    0 0 16px rgba(118, 88, 255, 0.1);
 }
 
 .browse-filter-control input::placeholder {
-  color: #6b7280;
+  color: #8392aa;
+  opacity: 1;
 }
 
 .browse-year-inputs {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  align-items: center;
   gap: 8px;
+}
+
+.browse-year-separator {
+  color: #8fa4c5;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.browse-year-validation-message {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 30;
+
+  width: max-content;
+  max-width: 360px;
+  margin: 0;
+  padding: 8px 10px;
+
+  border: 1px solid rgba(248, 113, 113, 0.45);
+  border-radius: 7px;
+
+  background: rgba(69, 20, 30, 0.96);
+  color: #fecaca;
+
+  font-size: 0.76rem;
+  font-weight: 750;
+  line-height: 1.35;
+
+  box-shadow:
+    0 8px 20px rgba(0, 0, 0, 0.3),
+    0 0 12px rgba(248, 113, 113, 0.12);
 }
 
 .browse-filter-actions {
   display: flex;
-  gap: 8px;
 }
 
 .browse-filter-actions button {
-  height: 36px;
-  border: 2px solid #ffffff;
-  border-radius: 5px;
-  padding: 0 12px;
-  background: #f3f4f6;
-  color: #111827;
-  font-weight: 900;
+  min-width: 124px;
+  height: 44px;
+  padding: 0 17px;
+
+  border: 1px solid rgba(171, 145, 255, 0.72);
+  border-radius: 8px;
+
+  background: linear-gradient(
+    180deg,
+    rgba(92, 67, 166, 0.94),
+    rgba(48, 37, 104, 0.98)
+  );
+
+  color: #ffffff;
+
+  font-family: inherit;
+  font-size: 0.88rem;
+  font-weight: 800;
+
   cursor: pointer;
+
+  transition:
+    transform 0.18s ease,
+    border-color 0.18s ease,
+    background 0.18s ease,
+    box-shadow 0.18s ease;
 }
 
 .browse-filter-actions button:hover {
-  background: var(--accent, #6d5dfc);
-  color: #ffffff;
-  border-color: var(--accent, #6d5dfc);
+  transform: translateY(-1px);
+
+  border-color: rgba(190, 170, 255, 0.92);
+
+  background: linear-gradient(
+    180deg,
+    rgba(111, 80, 191, 0.98),
+    rgba(55, 39, 113, 0.98)
+  );
+
+  box-shadow:
+    0 0 0 1px rgba(177, 151, 255, 0.14),
+    0 0 18px rgba(118, 88, 255, 0.28);
+}
+
+.browse-filter-actions button:focus-visible {
+  outline: 2px solid rgba(190, 170, 255, 0.95);
+  outline-offset: 3px;
 }
 
 @media (max-width: 1300px) {
   .browse-filter-bar {
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .browse-filter-actions {
+    justify-content: flex-start;
   }
 }
 
 @media (max-width: 760px) {
+  .browse-filter-section-header {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 10px;
+  }
+
   .browse-filter-bar {
     grid-template-columns: 1fr;
-    padding: 18px;
   }
 
-  .browse-filter-actions {
-    width: 100%;
-  }
-
+  .browse-filter-actions,
   .browse-filter-actions button {
     width: 100%;
+  }
+
+  .browse-year-validation-message {
+    width: calc(100vw - 72px);
+    max-width: none;
   }
 }
