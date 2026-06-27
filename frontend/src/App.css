@@ -22,7 +22,7 @@
   --panel-border: rgba(166, 190, 232, 0.18);
 
   --navbar-height: 120px;
-  --page-content-width: calc(100% - 300px);
+  --page-content-width: calc(100% - 400px);
 }
 
 html,

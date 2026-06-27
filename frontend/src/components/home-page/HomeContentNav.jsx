@@ -1,5 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import {
+  ChevronDown,
+  Compass,
+  Grid2X2,
+  Star,
+} from "lucide-react";
 
 import SearchBar from "../shared/SearchBar";
 
@@ -52,7 +58,9 @@ function HomeContentNav({
   onSearchSubmit,
 }) {
   const navigate = useNavigate();
+  const navigationRef = useRef(null);
 
+  const [activeDropdown, setActiveDropdown] = useState("");
   const [favoriteGenreOptions, setFavoriteGenreOptions] = useState([]);
   const [favoriteGenresLoading, setFavoriteGenresLoading] = useState(false);
 
@@ -102,7 +110,46 @@ function HomeContentNav({
     };
   }, []);
 
+  useEffect(function () {
+    function handleClickOutside(event) {
+      if (
+        navigationRef.current &&
+        !navigationRef.current.contains(event.target)
+      ) {
+        setActiveDropdown("");
+      }
+    }
+
+    function handleEscapeKey(event) {
+      if (event.key === "Escape") {
+        setActiveDropdown("");
+      }
+    }
+
+    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener("touchstart", handleClickOutside);
+    document.addEventListener("keydown", handleEscapeKey);
+
+    return function cleanup() {
+      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener("touchstart", handleClickOutside);
+      document.removeEventListener("keydown", handleEscapeKey);
+    };
+  }, []);
+
+  function toggleDropdown(dropdownName) {
+    setActiveDropdown(function (currentDropdown) {
+      return currentDropdown === dropdownName ? "" : dropdownName;
+    });
+  }
+
+  function closeDropdown() {
+    setActiveDropdown("");
+  }
+
   function goToLibraryTab(tabId) {
+    closeDropdown();
+
     if (tabId === "all") {
       navigate("/library");
       return;
@@ -112,26 +159,52 @@ function HomeContentNav({
   }
 
   function goToSearchSort(sortValue) {
+    closeDropdown();
     navigate("/search?sortBy=" + sortValue);
   }
 
   function goToGenreSearch(genreId) {
+    closeDropdown();
     navigate("/search?genre=" + genreId);
   }
 
-  function goToDiscover() {
-    navigate("/search");
-  }
-
   return (
-    <nav className="movie-content-nav" aria-label="Movie content navigation">
+    <nav
+      ref={navigationRef}
+      className="movie-content-nav"
+      aria-label="Movie content navigation"
+    >
       <ul className="movie-content-menu movie-content-menu-left">
-        <li className="movie-content-menu-item">
-          <button type="button" className="movie-content-menu-button">
-            Quick Access <span>▾</span>
+        <li
+          className={
+            "movie-content-menu-item " +
+            (activeDropdown === "quick-access" ? "active" : "")
+          }
+        >
+          <button
+            type="button"
+            className="movie-content-menu-button"
+            onClick={() => toggleDropdown("quick-access")}
+            aria-expanded={activeDropdown === "quick-access"}
+            aria-controls="quick-access-dropdown"
+          >
+            <Grid2X2 size={18} aria-hidden="true" />
+
+            <span className="movie-content-menu-button-label">
+              Quick Access
+            </span>
+
+            <ChevronDown
+              className="movie-content-menu-chevron"
+              size={15}
+              aria-hidden="true"
+            />
           </button>
 
-          <div className="movie-content-dropdown">
+          <div
+            id="quick-access-dropdown"
+            className="movie-content-dropdown"
+          >
             <button type="button" onClick={() => goToLibraryTab("all")}>
               My Library
             </button>
@@ -164,12 +237,36 @@ function HomeContentNav({
         </div>
 
         <ul className="movie-content-menu movie-content-menu-explore">
-          <li className="movie-content-menu-item">
-            <button type="button" className="movie-content-menu-button">
-              Explore <span>▾</span>
+          <li
+            className={
+              "movie-content-menu-item " +
+              (activeDropdown === "explore" ? "active" : "")
+            }
+          >
+            <button
+              type="button"
+              className="movie-content-menu-button"
+              onClick={() => toggleDropdown("explore")}
+              aria-expanded={activeDropdown === "explore"}
+              aria-controls="explore-dropdown"
+            >
+              <Compass size={18} aria-hidden="true" />
+
+              <span className="movie-content-menu-button-label">
+                Explore
+              </span>
+
+              <ChevronDown
+                className="movie-content-menu-chevron"
+                size={15}
+                aria-hidden="true"
+              />
             </button>
 
-            <div className="movie-content-dropdown">
+            <div
+              id="explore-dropdown"
+              className="movie-content-dropdown"
+            >
               <button
                 type="button"
                 onClick={() => goToSearchSort("recommended")}
@@ -203,12 +300,36 @@ function HomeContentNav({
       </div>
 
       <ul className="movie-content-menu movie-content-menu-right">
-        <li className="movie-content-menu-item">
-          <button type="button" className="movie-content-menu-button">
-            Favorite Genres <span>▾</span>
+        <li
+          className={
+            "movie-content-menu-item " +
+            (activeDropdown === "favorite-genres" ? "active" : "")
+          }
+        >
+          <button
+            type="button"
+            className="movie-content-menu-button"
+            onClick={() => toggleDropdown("favorite-genres")}
+            aria-expanded={activeDropdown === "favorite-genres"}
+            aria-controls="favorite-genres-dropdown"
+          >
+            <Star size={18} aria-hidden="true" />
+
+            <span className="movie-content-menu-button-label">
+              Favorite Genres
+            </span>
+
+            <ChevronDown
+              className="movie-content-menu-chevron"
+              size={15}
+              aria-hidden="true"
+            />
           </button>
 
-          <div className="movie-content-dropdown">
+          <div
+            id="favorite-genres-dropdown"
+            className="movie-content-dropdown"
+          >
             {favoriteGenresLoading ? (
               <button type="button" disabled>
                 Loading genres...
@@ -231,16 +352,6 @@ function HomeContentNav({
               })
             )}
           </div>
-        </li>
-
-        <li className="movie-content-menu-item">
-          <button
-            type="button"
-            className="movie-content-menu-button"
-            onClick={goToDiscover}
-          >
-            Back to Discover
-          </button>
         </li>
       </ul>
     </nav>

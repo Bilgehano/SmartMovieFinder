@@ -1,16 +1,17 @@
 .movie-content-nav {
   width: 100%;
-  min-height: 76px;
+  min-height: 94px;
+  padding-top: 14px;
   display: grid;
-  grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  grid-template-columns: minmax(260px, 1fr) auto minmax(260px, 1fr);
   align-items: center;
-  gap: 18px;
+  gap: 22px;
   position: relative;
   z-index: 20;
 }
 
 .movie-content-menu {
-  height: 48px;
+  height: 52px;
   margin: 0;
   padding: 0;
   display: flex;
@@ -24,32 +25,33 @@
 
 .movie-content-menu-right {
   justify-content: flex-end;
-  gap: 12px;
 }
 
 .movie-content-menu-center {
-  width: 790px;
-  height: 48px;
+  width: 940px;
+  height: 52px;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 0;
   padding: 3px;
-  background: rgba(8, 16, 32, 0.92);
-  border: 1px solid rgba(166, 190, 232, 0.22);
-  border-radius: 12px;
-  box-shadow: 0 0 0 1px rgba(118, 88, 255, 0.05);
+  background: rgba(8, 16, 32, 0.94);
+  border: 1px solid rgba(145, 118, 255, 0.36);
+  border-radius: 13px;
+  box-shadow:
+    0 0 0 1px rgba(118, 88, 255, 0.08),
+    0 0 24px rgba(89, 58, 184, 0.08);
 }
 
 .movie-content-menu-center:focus-within {
-  border-color: rgba(155, 133, 255, 0.85);
+  border-color: rgba(170, 145, 255, 0.88);
   box-shadow:
-    0 0 0 3px rgba(118, 88, 255, 0.12),
-    0 0 18px rgba(118, 88, 255, 0.12);
+    0 0 0 3px rgba(118, 88, 255, 0.14),
+    0 0 22px rgba(118, 88, 255, 0.18);
 }
 
 .movie-content-search {
-  width: 650px;
+  width: 760px;
   min-width: 0;
   height: 100%;
 }
@@ -64,52 +66,84 @@
 
 .movie-content-menu-item {
   position: relative;
-  min-width: 168px;
+  min-width: 260px;
   height: 100%;
   flex: 0 0 auto;
   z-index: 30;
 }
 
 .movie-content-menu-explore .movie-content-menu-item {
-  min-width: 140px;
-  height: 100%;
+  min-width: 190px;
 }
 
 .movie-content-menu-button {
   width: 100%;
   height: 100%;
-  padding: 0 18px;
-  border: 1px solid rgba(166, 190, 232, 0.22);
+  padding: 0 22px;
+  border: 1px solid rgba(150, 174, 220, 0.24);
   border-radius: 10px;
-  background: rgba(10, 20, 39, 0.72);
-  color: #f4f7ff;
-  font-size: 0.95rem;
+  background: linear-gradient(
+    180deg,
+    rgba(18, 32, 57, 0.92),
+    rgba(8, 18, 36, 0.92)
+  );
+  color: #f6f8ff;
+  font-size: 0.96rem;
   font-weight: 800;
   font-family: inherit;
   cursor: pointer;
-  display: flex;
+  display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 9px;
+  gap: 10px;
   white-space: nowrap;
   transition:
+    transform 0.18s ease,
     background-color 0.18s ease,
     border-color 0.18s ease,
     box-shadow 0.18s ease,
-    color 0.18s ease;
+    color 0.18s ease,
+    border-radius 0.18s ease;
+}
+
+.movie-content-menu-button:hover,
+.movie-content-menu-item:hover .movie-content-menu-button,
+.movie-content-menu-item.active .movie-content-menu-button {
+  transform: translateY(-1px);
+  border-color: rgba(171, 145, 255, 0.82);
+  background: linear-gradient(
+    180deg,
+    rgba(61, 43, 111, 0.84),
+    rgba(25, 24, 58, 0.94)
+  );
+  color: #ffffff;
+  box-shadow:
+    0 0 0 1px rgba(166, 138, 255, 0.12),
+    0 0 18px rgba(118, 88, 255, 0.2);
 }
 
 .movie-content-menu-item:hover .movie-content-menu-button,
 .movie-content-menu-item.active .movie-content-menu-button {
-  border-color: rgba(155, 133, 255, 0.75);
-  background: rgba(118, 88, 255, 0.16);
-  color: #ffffff;
-  box-shadow: 0 0 18px rgba(118, 88, 255, 0.16);
+  border-radius: 10px 10px 0 0;
 }
 
-.movie-content-menu-button span {
-  font-size: 0.74rem;
+.movie-content-menu-button:focus-visible {
+  outline: 2px solid rgba(190, 170, 255, 0.95);
+  outline-offset: 3px;
+}
+
+.movie-content-menu-button-label {
+  line-height: 1;
+}
+
+.movie-content-menu-chevron {
   opacity: 0.9;
+  transition: transform 0.18s ease;
+}
+
+.movie-content-menu-item:hover .movie-content-menu-chevron,
+.movie-content-menu-item.active .movie-content-menu-chevron {
+  transform: rotate(180deg);
 }
 
 .movie-content-menu-center .movie-content-search {
@@ -121,13 +155,13 @@
   width: 100%;
   height: 100%;
   border: none;
-  border-radius: 8px 0 0 8px;
+  border-radius: 9px 0 0 9px;
   box-shadow: none;
   background: transparent;
 }
 
 .movie-content-menu-center .search-bar:hover {
-  background: rgba(13, 26, 48, 0.5);
+  background: rgba(19, 31, 57, 0.52);
 }
 
 .movie-content-menu-center .search-bar:focus-within {
@@ -135,60 +169,73 @@
   box-shadow: none;
 }
 
+.movie-content-menu-center .search-input {
+  font-size: 0.96rem;
+}
+
 .movie-content-menu-explore .movie-content-menu-button {
-  height: 100%;
   border: none;
-  border-left: 1px solid rgba(166, 190, 232, 0.16);
-  border-radius: 0 8px 8px 0;
-  background: rgba(15, 29, 54, 0.72);
+  border-left: 1px solid rgba(166, 190, 232, 0.18);
+  border-radius: 0 9px 9px 0;
+  background: rgba(18, 33, 61, 0.92);
 }
 
 .movie-content-menu-explore
   .movie-content-menu-item:hover
+  .movie-content-menu-button,
+.movie-content-menu-explore
+  .movie-content-menu-item.active
   .movie-content-menu-button {
-  border-left-color: rgba(155, 133, 255, 0.5);
-  background: rgba(118, 88, 255, 0.18);
+  border-left-color: rgba(171, 145, 255, 0.7);
+  border-radius: 0 9px 0 0;
 }
 
 .movie-content-dropdown {
   position: absolute;
-  top: calc(100% + 8px);
+  top: calc(100% - 4px);
   left: 0;
-  width: 260px;
-  background: linear-gradient(180deg, #172238, #0c182b);
-  border: 1px solid rgba(166, 190, 232, 0.2);
-  border-radius: 10px;
-  box-shadow: 0 18px 35px rgba(0, 0, 0, 0.42);
+  width: 100%;
   display: none;
   flex-direction: column;
   overflow: hidden;
   z-index: 100;
+  background: linear-gradient(
+    180deg,
+    rgba(22, 35, 61, 0.98),
+    rgba(7, 16, 32, 0.98)
+  );
+  border: 1px solid rgba(161, 185, 230, 0.2);
+  border-radius: 0 0 11px 11px;
+  box-shadow:
+    0 18px 38px rgba(0, 0, 0, 0.44),
+    0 0 20px rgba(82, 55, 175, 0.1);
 }
 
-.movie-content-menu-item:hover .movie-content-dropdown {
+.movie-content-menu-item:hover .movie-content-dropdown,
+.movie-content-menu-item.active .movie-content-dropdown {
   display: flex;
 }
 
-.movie-content-menu-right
-  .movie-content-menu-item:first-child
-  .movie-content-dropdown {
+.movie-content-menu-right .movie-content-dropdown {
   right: 0;
   left: auto;
 }
 
 .movie-content-dropdown button {
   width: 100%;
-  padding: 16px 20px;
+  padding: 15px 18px;
   border: none;
   border-bottom: 1px solid rgba(166, 190, 232, 0.1);
-  background-color: transparent;
-  color: #f5f7ff;
-  font-size: 0.95rem;
-  font-weight: 650;
+  background: transparent;
+  color: #e9effc;
   font-family: inherit;
+  font-size: 0.94rem;
+  font-weight: 700;
   text-align: left;
   cursor: pointer;
-  transition: background-color 0.16s ease;
+  transition:
+    background-color 0.16s ease,
+    color 0.16s ease;
 }
 
 .movie-content-dropdown button:last-child {
@@ -196,7 +243,8 @@
 }
 
 .movie-content-dropdown button:hover {
-  background-color: rgba(118, 88, 255, 0.18);
+  background: rgba(118, 88, 255, 0.2);
+  color: #ffffff;
 }
 
 .movie-content-dropdown button:disabled {
@@ -205,7 +253,25 @@
 }
 
 .movie-content-dropdown button:disabled:hover {
-  background-color: transparent;
+  background: transparent;
+}
+
+@media (max-width: 1400px) {
+  .movie-content-menu-center {
+    width: 790px;
+  }
+
+  .movie-content-search {
+    width: 620px;
+  }
+
+  .movie-content-menu-item {
+    min-width: 220px;
+  }
+
+  .movie-content-menu-explore .movie-content-menu-item {
+    min-width: 170px;
+  }
 }
 
 @media (max-width: 1100px) {
@@ -214,20 +280,26 @@
   }
 
   .movie-content-search {
-    width: 500px;
+    width: 490px;
   }
 
   .movie-content-menu-item {
-    min-width: 148px;
+    min-width: 180px;
   }
 
-  .movie-content-menu-right {
-    gap: 8px;
+  .movie-content-menu-explore .movie-content-menu-item {
+    min-width: 145px;
+  }
+
+  .movie-content-nav {
+    gap: 12px;
   }
 }
 
 @media (max-width: 900px) {
   .movie-content-nav {
+    min-height: auto;
+    padding-top: 14px;
     display: flex;
     flex-direction: column;
     align-items: stretch;
@@ -238,8 +310,8 @@
   .movie-content-menu,
   .movie-content-menu-left,
   .movie-content-menu-right {
-    min-height: 50px;
-    height: 50px;
+    min-height: 52px;
+    height: 52px;
     justify-content: flex-start;
   }
 
