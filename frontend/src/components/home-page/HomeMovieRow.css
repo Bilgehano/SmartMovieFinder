@@ -1,40 +1,124 @@
 .home-movie-row {
-  margin-bottom: 44px;
-  padding-bottom: 36px;
-  border-bottom: 2px solid #111827;
+  position: relative;
+  margin-bottom: 68px;
+  padding-bottom: 52px;
+}
+
+.home-movie-row::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 1px;
+
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(57, 105, 190, 0.05) 8%,
+    rgba(76, 126, 214, 0.16) 22%,
+    rgba(131, 102, 255, 0.4) 50%,
+    rgba(76, 126, 214, 0.16) 78%,
+    rgba(57, 105, 190, 0.05) 92%,
+    transparent 100%
+  );
+
+  box-shadow:
+    0 0 9px rgba(118, 88, 255, 0.16),
+    0 0 24px rgba(42, 105, 214, 0.07);
 }
 
 .home-movie-row:last-child {
   margin-bottom: 0;
   padding-bottom: 0;
-  border-bottom: none;
+}
+
+.home-movie-row:last-child::after {
+  display: none;
 }
 
 .home-movie-row-header {
-  margin-bottom: 18px;
+  margin-bottom: 24px;
 }
 
 .home-movie-row-title {
   margin: 0;
-  color: #111827;
+  color: #edf4ff;
   font-size: 1.35rem;
-  font-weight: 900;
+  font-weight: 850;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
 }
 
 .home-movie-row-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 22px;
+  gap: 28px;
+}
+
+.home-movie-row-empty {
+  min-height: 170px;
+  padding: 28px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  text-align: center;
+
+  border: 1px dashed rgba(115, 142, 194, 0.25);
+  border-radius: 12px;
+
+  background: linear-gradient(
+    145deg,
+    rgba(11, 27, 49, 0.58),
+    rgba(7, 18, 33, 0.5)
+  );
+}
+
+.home-movie-row-empty-title {
+  margin: 0 0 8px;
+
+  color: #eef4ff;
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.home-movie-row-empty-text {
+  max-width: 460px;
+  margin: 0;
+
+  color: #9facbf;
+  font-size: 0.92rem;
+  font-weight: 600;
+  line-height: 1.5;
 }
 
 @media (max-width: 1200px) {
   .home-movie-row-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
   }
 }
 
 @media (max-width: 650px) {
+  .home-movie-row {
+    margin-bottom: 48px;
+    padding-bottom: 38px;
+  }
+
+  .home-movie-row-header {
+    margin-bottom: 18px;
+  }
+
   .home-movie-row-grid {
     grid-template-columns: 1fr;
+    gap: 18px;
+  }
+
+  .home-movie-row-empty {
+    min-height: 145px;
+    padding: 22px;
   }
 }

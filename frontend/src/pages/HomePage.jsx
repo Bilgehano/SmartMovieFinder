@@ -1,13 +1,25 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 import HomeContentNav from "../components/home-page/HomeContentNav";
 import HomeMovieDashboard from "../components/home-page/HomeMovieDashboard";
 import "./HomePage.css";
 
 function HomePage() {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState("");
 
   function handleSearchSubmit(value) {
-    console.log("Search submitted:", value);
+    const trimmedSearchTerm = value.trim();
+
+    if (!trimmedSearchTerm) {
+      navigate("/search");
+      return;
+    }
+
+    navigate(
+      "/search?query=" + encodeURIComponent(trimmedSearchTerm)
+    );
   }
 
   return (

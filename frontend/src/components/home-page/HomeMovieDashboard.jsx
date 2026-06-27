@@ -313,11 +313,15 @@ function HomeMovieDashboard() {
       <HomeMovieRow
         title="Recently Watched"
         movies={sections.recentlyWatched}
+        emptyTitle="No watched movies yet"
+        emptyText="Mark a movie as watched to see it here."
       />
 
       <HomeMovieRow
         title="Watchlist"
         movies={sections.watchlist}
+        emptyTitle="Your watchlist is empty"
+        emptyText="Add movies to Watch Later and they will appear here."
       />
     </div>
   );

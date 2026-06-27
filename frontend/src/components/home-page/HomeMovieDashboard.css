@@ -5,10 +5,13 @@
 .home-movie-dashboard-message {
   margin: 0 0 24px;
   padding: 14px 16px;
+
   border: 1px solid rgba(166, 190, 232, 0.2);
   border-radius: 10px;
+
   background-color: rgba(16, 29, 51, 0.72);
   color: #dce7f8;
+
   font-weight: 800;
 }
 

@@ -1,4 +1,6 @@
 import { Link } from "react-router-dom";
+import { ChevronRight, Star } from "lucide-react";
+
 import "./MovieCard.css";
 
 function MovieCard({ movie }) {
@@ -7,6 +9,11 @@ function MovieCard({ movie }) {
   return (
     <article className="movie-card">
       <div className="movie-poster">
+        <span className="movie-card-rating">
+          <Star size={15} fill="currentColor" aria-hidden="true" />
+          {movie.rating}
+        </span>
+
         {movie.posterUrl ? (
           <img src={movie.posterUrl} alt={movie.title} />
         ) : (
@@ -15,17 +22,20 @@ function MovieCard({ movie }) {
       </div>
 
       <div className="movie-card-body">
-        <h3>{movie.title}</h3>
+        <div className="movie-card-top">
+          <div className="movie-card-title-area">
+            <h3>{movie.title}</h3>
 
-        <p className="movie-card-meta">
-          {movie.year} · {movie.genre}
-        </p>
+            <p className="movie-card-meta">
+              {movie.year} · {movie.genre}
+            </p>
+          </div>
+        </div>
 
         <div className="movie-card-footer">
-          <span className="movie-card-rating">★ {movie.rating}</span>
-
           <Link to={`/movies/${movie.id}`} className="movie-card-link">
-            Details
+            <span>Details</span>
+            <ChevronRight size={17} aria-hidden="true" />
           </Link>
         </div>
       </div>
