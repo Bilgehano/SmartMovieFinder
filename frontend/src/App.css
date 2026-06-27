@@ -2,22 +2,14 @@
   --background-dark: #020917;
   --background-darker: #00030a;
 
-  --page-background:
+  --page-background: 
     linear-gradient(
       180deg,
-      rgba(1, 6, 20, 0) 0%,
-      rgba(1, 6, 20, 0.12) 16%,
-      rgba(1, 6, 20, 0.48) 48%,
-      rgba(0, 3, 10, 0.82) 76%,
-      rgba(0, 2, 8, 0.98) 100%
-    ),
-    linear-gradient(
-      90deg,
-      #071c39 0%,
-      #041229 12%,
-      #020917 60%,
-      #010614 100%
-    );
+    #010614 0%,
+    #00040d 28%,
+    #000208 62%,
+    #000104 100%
+    );  
 
   --accent: #7658ff;
   --accent-light: #a594ff;
@@ -30,6 +22,7 @@
   --panel-border: rgba(166, 190, 232, 0.18);
 
   --navbar-height: 120px;
+  --page-content-width: calc(100% - 300px);
 }
 
 html,

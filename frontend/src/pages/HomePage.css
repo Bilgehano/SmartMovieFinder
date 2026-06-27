@@ -1,18 +1,51 @@
 .home-page {
-  min-height: calc(100vh - 116px);
-  background-color: var(--background-dark);
-  padding: 32px 0 48px;
+  min-height: calc(100vh - var(--navbar-height));
+  padding: 0 0 48px;
   box-sizing: border-box;
 }
 
-.home-search-section {
-  display: flex;
-  justify-content: center;
-  margin-bottom: 28px;
+.home-dashboard-header {
+  width: var(--page-content-width);
+  margin: 0 auto;
+  background-color: #121a2a;
+  border-right: 1px solid rgba(166, 190, 232, 0.14);
+  border-bottom: 1px solid rgba(166, 190, 232, 0.18);
+  border-left: 1px solid rgba(166, 190, 232, 0.14);
+  border-radius: 0;
+  position: relative;
+  z-index: 20;
+  box-shadow:
+    0 0 34px rgba(43, 95, 175, 0.12),
+    0 18px 42px rgba(0, 0, 0, 0.2);
+}
+
+.home-dashboard-header-content {
+  width: 100%;
+  padding: 22px 28px 0;
+}
+
+.home-dashboard-intro {
+  max-width: 720px;
+}
+
+.home-dashboard-intro h1 {
+  margin: 0 0 8px;
+  color: #f8fbff;
+  font-size: 1.55rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+.home-dashboard-intro p {
+  margin: 0;
+  color: #aebbd0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  line-height: 1.5;
 }
 
 .home-content-shell {
-  width: calc(100% - 200px);
+  width: var(--page-content-width);
   margin: 0 auto;
 }
 
@@ -20,21 +53,33 @@
   width: 100%;
   min-height: 420px;
   padding: 32px;
-  background-color: #d9d9d9;
-  color: #111827;
+  background-color: #0b1b31;
+  color: var(--text-light);
+  border-right: 1px solid rgba(166, 190, 232, 0.14);
+  border-bottom: 1px solid rgba(166, 190, 232, 0.16);
+  border-left: 1px solid rgba(166, 190, 232, 0.14);
   border-radius: 0 0 10px 10px;
   box-sizing: border-box;
+  box-shadow:
+    0 28px 86px rgba(3, 27, 66, 0.3),
+    0 0 58px rgba(49, 105, 194, 0.1);
 }
 
 @media (max-width: 900px) {
+  .home-dashboard-header,
   .home-content-shell {
     width: calc(100% - 48px);
   }
 }
 
 @media (max-width: 560px) {
+  .home-dashboard-header,
   .home-content-shell {
     width: calc(100% - 24px);
+  }
+
+  .home-dashboard-header-content {
+    padding: 20px 18px 0;
   }
 
   .home-content-area {

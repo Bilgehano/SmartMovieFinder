@@ -7,7 +7,7 @@
 }
 
 .movie-detail-shell {
-  width: calc(100% - 200px);
+  width: var(--page-content-width);
   max-width: 1180px;
   margin: 0 auto;
 }

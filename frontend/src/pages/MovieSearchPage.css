@@ -13,7 +13,7 @@
 }
 
 .movie-search-content-shell {
-  width: calc(100% - 200px);
+  width: var(--page-content-width);
   margin: 0 auto;
   padding: 0;
   border-radius: 10px;

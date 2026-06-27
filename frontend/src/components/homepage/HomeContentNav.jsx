@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-import { fetchGenres } from "../api/movieApi";
-import { fetchFavoriteGenres } from "../api/userApi";
-import { getCurrentUserId } from "../api/userSession";
+import SearchBar from "../SearchBar";
+
+import { fetchGenres } from "../../api/movieApi";
+import { fetchFavoriteGenres } from "../../api/userApi";
+import { getCurrentUserId } from "../../api/userSession";
 
 import "./HomeContentNav.css";
 
@@ -44,7 +46,11 @@ function mapFavoriteGenresToOptions(favoriteGenres, availableGenres) {
     .filter(Boolean);
 }
 
-function HomeContentNav() {
+function HomeContentNav({
+  searchValue,
+  onSearchChange,
+  onSearchSubmit,
+}) {
   const navigate = useNavigate();
 
   const [favoriteGenreOptions, setFavoriteGenreOptions] = useState([]);
@@ -119,53 +125,86 @@ function HomeContentNav() {
 
   return (
     <nav className="movie-content-nav" aria-label="Movie content navigation">
-      <ul className="movie-content-menu">
+      <ul className="movie-content-menu movie-content-menu-left">
         <li className="movie-content-menu-item">
-          <button className="movie-content-menu-button">
+          <button type="button" className="movie-content-menu-button">
             Quick Access <span>▾</span>
           </button>
 
           <div className="movie-content-dropdown">
-            <button onClick={() => goToLibraryTab("all")}>
+            <button type="button" onClick={() => goToLibraryTab("all")}>
               My Library
             </button>
 
-            <button onClick={() => goToLibraryTab("watch-later")}>
+            <button
+              type="button"
+              onClick={() => goToLibraryTab("watch-later")}
+            >
               Watchlist
             </button>
 
-            <button onClick={() => goToLibraryTab("watched")}>
+            <button
+              type="button"
+              onClick={() => goToLibraryTab("watched")}
+            >
               Recently Watched
             </button>
           </div>
         </li>
+      </ul>
 
+      <div className="movie-content-menu-center">
+        <div className="movie-content-search">
+          <SearchBar
+            value={searchValue}
+            onChange={onSearchChange}
+            onSubmit={onSearchSubmit}
+            placeholder="Search for movies..."
+          />
+        </div>
+
+        <ul className="movie-content-menu movie-content-menu-explore">
+          <li className="movie-content-menu-item">
+            <button type="button" className="movie-content-menu-button">
+              Explore <span>▾</span>
+            </button>
+
+            <div className="movie-content-dropdown">
+              <button
+                type="button"
+                onClick={() => goToSearchSort("recommended")}
+              >
+                Recommended
+              </button>
+
+              <button
+                type="button"
+                onClick={() => goToSearchSort("popular")}
+              >
+                Popular Movies
+              </button>
+
+              <button
+                type="button"
+                onClick={() => goToSearchSort("top-rated")}
+              >
+                Top Rated
+              </button>
+
+              <button
+                type="button"
+                onClick={() => goToSearchSort("new-releases")}
+              >
+                New Releases
+              </button>
+            </div>
+          </li>
+        </ul>
+      </div>
+
+      <ul className="movie-content-menu movie-content-menu-right">
         <li className="movie-content-menu-item">
-          <button className="movie-content-menu-button">
-            Filter <span>▾</span>
-          </button>
-
-          <div className="movie-content-dropdown">
-            <button onClick={() => goToSearchSort("recommended")}>
-              Recommended
-            </button>
-
-            <button onClick={() => goToSearchSort("popular")}>
-              Popular Movies
-            </button>
-
-            <button onClick={() => goToSearchSort("top-rated")}>
-              Top Rated
-            </button>
-
-            <button onClick={() => goToSearchSort("new-releases")}>
-              New Releases
-            </button>
-          </div>
-        </li>
-
-        <li className="movie-content-menu-item">
-          <button className="movie-content-menu-button">
+          <button type="button" className="movie-content-menu-button">
             Favorite Genres <span>▾</span>
           </button>
 
@@ -196,6 +235,7 @@ function HomeContentNav() {
 
         <li className="movie-content-menu-item">
           <button
+            type="button"
             className="movie-content-menu-button"
             onClick={goToDiscover}
           >

@@ -1,7 +1,6 @@
 import { useState } from "react";
-import SearchBar from "../components/SearchBar";
-import HomeContentNav from "../components/HomeContentNav";
-import HomeMovieDashboard from "../components/HomeMovieDashboard";
+import HomeContentNav from "../components/homepage/HomeContentNav";
+import HomeMovieDashboard from "../components/homepage/HomeMovieDashboard";
 import "./HomePage.css";
 
 function HomePage() {
@@ -13,18 +12,26 @@ function HomePage() {
 
   return (
     <section className="home-page">
-      <div className="home-search-section">
-        <SearchBar
-          value={searchTerm}
-          onChange={setSearchTerm}
-          onSubmit={handleSearchSubmit}
-          placeholder="Search for movies..."
-        />
-      </div>
+      <section className="home-dashboard-header">
+        <div className="home-dashboard-header-content">
+          <div className="home-dashboard-intro">
+            <h1>Discover Movies</h1>
+
+            <p>
+              Explore trending movies, recommended movies, top rated movies
+              and your personal movie areas.
+            </p>
+          </div>
+
+          <HomeContentNav
+            searchValue={searchTerm}
+            onSearchChange={setSearchTerm}
+            onSearchSubmit={handleSearchSubmit}
+          />
+        </div>
+      </section>
 
       <section className="home-content-shell">
-        <HomeContentNav />
-
         <div className="home-content-area">
           <HomeMovieDashboard />
         </div>
