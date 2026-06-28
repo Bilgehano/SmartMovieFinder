@@ -28,10 +28,14 @@ function getGenreLabel(genreIds, genreMap) {
     return "Unknown Genre";
   }
 
-  const genreNames = String(genreIds)
-    .split(",")
-    .map((genreId) => genreId.trim())
-    .filter(Boolean)
+  const normalizedGenreIds = Array.isArray(genreIds)
+    ? genreIds
+    : String(genreIds)
+        .split(",")
+        .map((genreId) => genreId.trim())
+        .filter(Boolean);
+
+  const genreNames = normalizedGenreIds
     .map((genreId) => genreMap[String(genreId)])
     .filter(Boolean);
 
@@ -65,10 +69,8 @@ function createLibraryMovie(movie, genreMap) {
     year: getYear(movie.releaseDate),
     releaseDate: movie.releaseDate ?? "",
     genre: getGenreLabel(movie.genreIds, genreMap),
-    rating:
-      typeof movie.rating === "number"
-        ? movie.rating
-        : "N/A",
+    communityRating: "N/A",
+    userRating: null,
     posterUrl: getPosterUrl(movie.posterPath),
     description: "",
     status: [],
@@ -107,14 +109,10 @@ function mergeMovieData(
     movie.releaseDate ??
     currentMovie.releaseDate;
 
-  currentMovie.year = getYear(
-    currentMovie.releaseDate
-  );
+  currentMovie.year = getYear(currentMovie.releaseDate);
 
   if (movie.posterPath) {
-    currentMovie.posterUrl = getPosterUrl(
-      movie.posterPath
-    );
+    currentMovie.posterUrl = getPosterUrl(movie.posterPath);
   }
 
   if (movie.genreIds) {
@@ -124,8 +122,8 @@ function mergeMovieData(
     );
   }
 
-  if (typeof movie.rating === "number") {
-    currentMovie.rating = movie.rating;
+  if (status === "rated" && typeof movie.rating === "number") {
+    currentMovie.userRating = movie.rating;
   }
 
   currentMovie.addedAt = getLatestDate(
@@ -134,6 +132,44 @@ function mergeMovieData(
   );
 
   movieMap.set(movieKey, currentMovie);
+}
+
+function mergeTmdbDetails(movie, tmdbDetails, genreMap) {
+  if (!tmdbDetails) {
+    return movie;
+  }
+
+  return {
+    ...movie,
+    title: tmdbDetails.title ?? movie.title,
+    year: getYear(
+      tmdbDetails.release_date ??
+      tmdbDetails.releaseDate ??
+      movie.releaseDate
+    ),
+    releaseDate:
+      tmdbDetails.release_date ??
+      tmdbDetails.releaseDate ??
+      movie.releaseDate,
+    genre: getGenreLabel(
+      tmdbDetails.genre_ids ??
+      tmdbDetails.genreIds ??
+      tmdbDetails.genres?.map((genre) => genre.id),
+      genreMap
+    ),
+    rating:
+      typeof tmdbDetails.vote_average === "number"
+        ? Number(tmdbDetails.vote_average.toFixed(1))
+        : movie.rating,
+    posterUrl: getPosterUrl(
+      tmdbDetails.poster_path ??
+      tmdbDetails.posterPath
+    ) || movie.posterUrl,
+    description:
+      tmdbDetails.overview ??
+      tmdbDetails.description ??
+      movie.description,
+  };
 }
 
 export function mapUserLibraryData({
@@ -178,5 +214,19 @@ export function mapUserLibraryData({
     (firstMovie, secondMovie) =>
       new Date(secondMovie.addedAt || 0) -
       new Date(firstMovie.addedAt || 0)
+  );
+}
+
+export function enrichLibraryMoviesWithTmdbDetails(
+  libraryMovies,
+  tmdbDetailsById,
+  genreMap
+) {
+  return libraryMovies.map((movie) =>
+    mergeTmdbDetails(
+      movie,
+      tmdbDetailsById[String(movie.tmdbId)],
+      genreMap
+    )
   );
 }

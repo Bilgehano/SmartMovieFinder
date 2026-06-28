@@ -27,7 +27,7 @@ function UserRegistration() {
     }
 
     try {
-      const response = await fetch("http://193.197.230.150:8080/users/register", {
+      const response = await fetch("http://localhost:8080/users/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

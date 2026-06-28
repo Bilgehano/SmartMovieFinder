@@ -1,7 +1,10 @@
 import MovieCard from "../shared/MovieCard";
 import "./BrowseMovieGrid.css";
 
-export default function BrowseMovieGrid({ movies }) {
+export default function BrowseMovieGrid({
+  movies,
+  showUserRating = false,
+}) {
   if (!movies || movies.length === 0) {
     return (
       <section className="browse-empty-state">
@@ -15,7 +18,11 @@ export default function BrowseMovieGrid({ movies }) {
     <section className="browse-movie-grid-wrapper">
       <div className="browse-movie-grid">
         {movies.map((movie) => (
-          <MovieCard key={movie.id} movie={movie} />
+          <MovieCard
+            key={movie.id}
+            movie={movie}
+            showUserRating={showUserRating}
+          />
         ))}
       </div>
     </section>

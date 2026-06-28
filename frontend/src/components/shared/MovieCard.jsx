@@ -1,10 +1,12 @@
 import { Link } from "react-router-dom";
 import { ChevronRight, Star } from "lucide-react";
-
 import "./MovieCard.css";
 
-function MovieCard({ movie }) {
+function MovieCard({ movie, showUserRating = false }) {
   const posterLetter = movie.title ? movie.title.charAt(0) : "M";
+
+  const hasUserRating =
+    showUserRating && typeof movie.userRating === "number";
 
   return (
     <article className="movie-card">
@@ -18,6 +20,21 @@ function MovieCard({ movie }) {
           <img src={movie.posterUrl} alt={movie.title} />
         ) : (
           <span>{posterLetter}</span>
+        )}
+
+        {hasUserRating && (
+          <div className="movie-card-user-rating-overlay">
+            <span>Your Rating</span>
+
+            <strong>
+              <Star
+                size={17}
+                fill="currentColor"
+                aria-hidden="true"
+              />
+              {movie.userRating}
+            </strong>
+          </div>
         )}
       </div>
 

@@ -1,33 +1,66 @@
 .library-overview {
   display: flex;
-  gap: 12px;
   flex-wrap: wrap;
   justify-content: flex-end;
+  gap: 12px;
 }
 
 .library-overview-card {
   min-width: 110px;
   padding: 12px 14px;
-  border: 2px solid #111827;
+
+  border: 1px solid rgba(150, 174, 220, 0.24);
   border-radius: 8px;
-  background-color: #f4f4f5;
+
+  background: rgba(8, 19, 38, 0.42);
+
   text-align: center;
   box-sizing: border-box;
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.025),
+    0 0 8px rgba(55, 113, 214, 0.06);
+}
+
+.library-overview-card-total {
+  border-color: rgba(162, 138, 255, 0.5);
+
+  background: linear-gradient(
+    180deg,
+    rgba(48, 38, 101, 0.5),
+    rgba(10, 22, 43, 0.58)
+  );
+
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 0 12px rgba(118, 88, 255, 0.2),
+    0 0 24px rgba(55, 113, 214, 0.08);
 }
 
 .library-overview-card span {
   display: block;
   margin-bottom: 4px;
-  color: #111827;
+
+  color: #f2edff;
   font-size: 1.3rem;
   font-weight: 900;
+  line-height: 1.1;
+}
+
+.library-overview-card-total span {
+  color: #ffffff;
 }
 
 .library-overview-card p {
   margin: 0;
-  color: #374151;
+  color: #b8c6dc;
   font-size: 0.8rem;
-  font-weight: 900;
+  font-weight: 800;
+  line-height: 1.25;
+}
+
+.library-overview-card-total p {
+  color: #ded4ff;
 }
 
 @media (max-width: 1100px) {
