@@ -18,15 +18,20 @@ function getDetailPosition({
   itemIndex,
   itemCount,
 }) {
-  const detailDistance = 330;
-  const detailAngleStep = Math.PI / 6;
+  const detailDistance = 250;
+  const detailAngleStep = Math.PI / 4.5;
 
   const centeredIndex = itemIndex - (itemCount - 1) / 2;
-  const detailAngle = categoryAngle + centeredIndex * detailAngleStep;
+  const detailAngle =
+    categoryAngle + centeredIndex * detailAngleStep;
 
   return {
-    x: categoryPosition.x + Math.cos(detailAngle) * detailDistance,
-    y: categoryPosition.y + Math.sin(detailAngle) * detailDistance,
+    x:
+      categoryPosition.x +
+      Math.cos(detailAngle) * detailDistance,
+    y:
+      categoryPosition.y +
+      Math.sin(detailAngle) * detailDistance,
   };
 }
 
@@ -46,11 +51,14 @@ function getDetailItemData(item, categoryLabel) {
     label: item.label ?? "Unknown Movie",
     year: item.year,
     averageRating: item.averageRating,
-    subtitle: item.movieId ? "Click to open graph" : categoryLabel,
+    subtitle: item.movieId ? "Open graph" : categoryLabel,
   };
 }
 
-export function buildMovieGraphElements(graphData, expandedCategoryIds = []) {
+export function buildMovieGraphElements(
+  graphData,
+  expandedCategoryIds = []
+) {
   const nodes = [];
   const edges = [];
 
@@ -69,16 +77,21 @@ export function buildMovieGraphElements(graphData, expandedCategoryIds = []) {
       year: graphData.center.year,
       genre: graphData.center.genre,
       averageRating: graphData.center.averageRating,
-      subtitle: `Movie • ${graphData.center.year}`,
+      subtitle: `Movie · ${graphData.center.year}`,
     },
   });
 
-  const categories = graphData.categories.slice(0, MAX_CHILDREN_PER_NODE);
-  const categoryRadius = 380;
+  const categories = graphData.categories.slice(
+    0,
+    MAX_CHILDREN_PER_NODE
+  );
+
+  const categoryRadius = 285;
 
   categories.forEach((category, categoryIndex) => {
     const categoryAngle =
-      (2 * Math.PI * categoryIndex) / categories.length - Math.PI / 2;
+      (2 * Math.PI * categoryIndex) / categories.length -
+      Math.PI / 2;
 
     const categoryPosition = {
       x: Math.cos(categoryAngle) * categoryRadius,
@@ -115,7 +128,10 @@ export function buildMovieGraphElements(graphData, expandedCategoryIds = []) {
       return;
     }
 
-    const visibleItems = category.items.slice(0, MAX_CHILDREN_PER_NODE);
+    const visibleItems = category.items.slice(
+      0,
+      MAX_CHILDREN_PER_NODE
+    );
 
     visibleItems.forEach((item, itemIndex) => {
       const detailPosition = getDetailPosition({
@@ -125,7 +141,10 @@ export function buildMovieGraphElements(graphData, expandedCategoryIds = []) {
         itemCount: visibleItems.length,
       });
 
-      const detailItemData = getDetailItemData(item, category.label);
+      const detailItemData = getDetailItemData(
+        item,
+        category.label
+      );
 
       const detailNodeId = detailItemData.movieId
         ? `detail-${category.id}-${detailItemData.movieId}`
@@ -151,7 +170,8 @@ export function buildMovieGraphElements(graphData, expandedCategoryIds = []) {
           id: `${categoryNodeId}-${detailNodeId}`,
           source: categoryNodeId,
           target: detailNodeId,
-          className: "movie-graph-edge movie-graph-edge-detail",
+          className:
+            "movie-graph-edge movie-graph-edge-detail",
         })
       );
     });

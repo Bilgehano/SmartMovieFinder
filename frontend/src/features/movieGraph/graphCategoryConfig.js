@@ -12,16 +12,6 @@ export const graphCategoryConfig = [
   {
     id: "recommendations",
     label: "Recommendations",
-    description: "Personalized graph-based recommendations.",
-  },
-  {
-    id: "your-genre-picks",
-    label: "Your Genre Picks",
-    description: "Movies based on the user's genre preferences.",
-  },
-  {
-    id: "top-rated",
-    label: "Top Rated",
-    description: "Highly rated movies filtered for the user.",
+    description: "Personalized movie recommendations.",
   },
 ];

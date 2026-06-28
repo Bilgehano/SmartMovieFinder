@@ -104,8 +104,6 @@ export function mapBackendDataToMovieGraph({
   sameGenreMovies,
   similarMovies,
   recommendations,
-  genrePicks,
-  topRatedMovies,
 }) {
   const tmdbId =
     movieDetail.id ??
@@ -152,14 +150,6 @@ export function mapBackendDataToMovieGraph({
       ),
       recommendations: mapMoviesToGraphItems(
         recommendations,
-        tmdbId
-      ),
-      "your-genre-picks": mapMoviesToGraphItems(
-        genrePicks,
-        tmdbId
-      ),
-      "top-rated": mapMoviesToGraphItems(
-        topRatedMovies,
         tmdbId
       ),
     }),

@@ -9,15 +9,10 @@ import {
   fetchMoviesByGenre,
   fetchPopularMovies,
   fetchSimilarMovies,
-  fetchTopRatedMovies,
   searchMovies,
 } from "../api/movieApi";
 
-import {
-  fetchGenreBasedRecommendations,
-  fetchRecommendedMovies,
-  fetchTopRatedRecommendations,
-} from "../api/recommendationApi";
+import { fetchRecommendedMovies } from "../api/recommendationApi";
 
 import { getCurrentUserId } from "../api/userSession";
 
@@ -59,7 +54,10 @@ async function fetchGraphRecommendations(userId) {
   }
 
   try {
-    const recommendations = await fetchRecommendedMovies(userId, 5);
+    const recommendations = await fetchRecommendedMovies(
+      userId,
+      5
+    );
 
     if (hasMovies(recommendations)) {
       return recommendations;
@@ -72,50 +70,6 @@ async function fetchGraphRecommendations(userId) {
   }
 
   return fetchPopularMovies(2);
-}
-
-async function fetchGraphGenrePicks(userId, primaryGenreId) {
-  if (userId) {
-    try {
-      const genreRecommendations =
-        await fetchGenreBasedRecommendations(userId, 5);
-
-      if (hasMovies(genreRecommendations)) {
-        return genreRecommendations;
-      }
-    } catch (error) {
-      console.warn(
-        "Genre recommendations could not be loaded:",
-        error
-      );
-    }
-  }
-
-  if (!primaryGenreId) {
-    return [];
-  }
-
-  return fetchMoviesByGenre(primaryGenreId, 2);
-}
-
-async function fetchGraphTopRated(userId) {
-  if (userId) {
-    try {
-      const topRatedRecommendations =
-        await fetchTopRatedRecommendations(userId, 5);
-
-      if (hasMovies(topRatedRecommendations)) {
-        return topRatedRecommendations;
-      }
-    } catch (error) {
-      console.warn(
-        "User top-rated recommendations could not be loaded:",
-        error
-      );
-    }
-  }
-
-  return fetchTopRatedMovies(1);
 }
 
 function MovieGraphPage() {
@@ -152,9 +106,7 @@ function MovieGraphPage() {
         const [
           similarResult,
           sameGenreResult,
-          genrePicksResult,
           recommendationsResult,
-          topRatedResult,
         ] = await Promise.allSettled([
           fetchSimilarMovies(movieId, 5),
 
@@ -162,14 +114,7 @@ function MovieGraphPage() {
             ? fetchMoviesByGenre(primaryGenreId, 1)
             : [],
 
-          fetchGraphGenrePicks(
-            currentUserId,
-            primaryGenreId
-          ),
-
           fetchGraphRecommendations(currentUserId),
-
-          fetchGraphTopRated(currentUserId),
         ]);
 
         if (!isMounted) {
@@ -178,39 +123,17 @@ function MovieGraphPage() {
 
         const graphData = mapBackendDataToMovieGraph({
           movieDetail,
-
-          sameGenreMovies: getSettledValue(
-            sameGenreResult,
-            []
-          ),
-
-          similarMovies: getSettledValue(
-            similarResult,
-            []
-          ),
-
+          sameGenreMovies: getSettledValue(sameGenreResult, []),
+          similarMovies: getSettledValue(similarResult, []),
           recommendations: getSettledValue(
             recommendationsResult,
-            []
-          ),
-
-          genrePicks: getSettledValue(
-            genrePicksResult,
-            []
-          ),
-
-          topRatedMovies: getSettledValue(
-            topRatedResult,
             []
           ),
         });
 
         setCurrentGraphData(graphData);
       } catch (error) {
-        console.error(
-          "Failed to load movie graph:",
-          error
-        );
+        console.error("Failed to load movie graph:", error);
 
         if (!isMounted) {
           return;
@@ -238,9 +161,7 @@ function MovieGraphPage() {
     const searchTerm = value.trim();
 
     if (!searchTerm) {
-      setGraphSearchMessage(
-        "Please enter a movie title."
-      );
+      setGraphSearchMessage("Please enter a movie title.");
       return;
     }
 
@@ -249,14 +170,9 @@ function MovieGraphPage() {
     setGraphSearchMessage("");
 
     try {
-      const searchResponse = await searchMovies(
-        searchTerm,
-        1
-      );
+      const searchResponse = await searchMovies(searchTerm, 1);
 
-      const firstMovie = getFirstSearchResult(
-        searchResponse
-      );
+      const firstMovie = getFirstSearchResult(searchResponse);
 
       if (!firstMovie) {
         setGraphSearchMessage(
@@ -267,10 +183,7 @@ function MovieGraphPage() {
 
       navigate(`/movies/${firstMovie.id}/graph`);
     } catch (error) {
-      console.error(
-        "Failed to search movie graph:",
-        error
-      );
+      console.error("Failed to search movie graph:", error);
 
       setGraphSearchMessage(
         "Could not search for this movie graph."
@@ -289,56 +202,63 @@ function MovieGraphPage() {
 
   return (
     <main className="movie-graph-page">
-      <section className="movie-graph-search-section">
-        <SearchBar
-          value={searchInput}
-          onChange={setSearchInput}
-          onSubmit={handleGraphSearchSubmit}
-          placeholder="Search for a movie graph..."
-        />
-      </section>
+      <section className="movie-graph-header">
+        <div className="movie-graph-header-content">
+          <div className="movie-graph-header-top">
+            <div className="movie-graph-intro">
+              <span className="movie-graph-kicker">
+                Movie Mindmap
+              </span>
 
-      <section className="movie-graph-shell">
-        <div className="movie-graph-page-header">
-          <div>
-            <p className="movie-graph-kicker">
-              Movie Mindmap
-            </p>
+              <h1>{graphTitle}</h1>
 
-            <h1>{graphTitle}</h1>
-
-            <p>
-              Explore how this movie connects to genres,
-              similar movies, recommendations and top
-              rated movie areas.
-            </p>
-
-            {graphSearchMessage && (
-              <p className="movie-graph-search-message">
-                {graphSearchMessage}
+              <p>
+                Explore how this movie connects to movies from
+                the same genre, similar movies and recommendations.
               </p>
+            </div>
+
+            {backMovieId && (
+              <Link
+                className="movie-graph-back-link"
+                to={`/movies/${backMovieId}`}
+              >
+                Open Movie Details
+              </Link>
             )}
           </div>
 
-          {backMovieId && (
-            <Link
-              className="movie-graph-back-link"
-              to={`/movies/${backMovieId}`}
-            >
-              Open Movie Details
-            </Link>
+          <div className="movie-graph-header-search">
+            <SearchBar
+              value={searchInput}
+              onChange={setSearchInput}
+              onSubmit={handleGraphSearchSubmit}
+              placeholder="Search for a movie graph..."
+            />
+          </div>
+
+          <div className="movie-graph-header-divider" />
+
+          {graphSearchMessage && (
+            <p className="movie-graph-search-message">
+              {graphSearchMessage}
+            </p>
           )}
         </div>
+      </section>
 
+      <section className="movie-graph-shell">
         {errorMessage && (
           <div className="movie-graph-state-card movie-graph-state-error">
-            {errorMessage}
+            <h2>Graph could not be loaded</h2>
+            <p>{errorMessage}</p>
           </div>
         )}
 
         {isLoading && (
           <div className="movie-graph-state-card">
-            Loading movie graph...
+            <h2>Loading movie graph</h2>
+            <p>Please wait while the movie connections are loaded.</p>
           </div>
         )}
 
@@ -352,8 +272,11 @@ function MovieGraphPage() {
           !errorMessage &&
           !currentGraphData && (
             <div className="movie-graph-state-card">
-              Search for a movie to build a graph or open
-              the graph from a movie detail page.
+              <h2>Build a movie graph</h2>
+              <p>
+                Search for a movie above or open a graph from a
+                movie detail page.
+              </p>
             </div>
           )}
       </section>
