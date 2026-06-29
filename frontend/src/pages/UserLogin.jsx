@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import { buildApiUrl } from "../services/apiClient";
 import "./UserLogin.css";
 
 function UserLogin() {
@@ -16,7 +17,7 @@ function UserLogin() {
   setLoginError("");
 
   try {
-    const response = await fetch("http://193.197.230.150:8080/users/login", {
+    const response = await fetch(buildApiUrl("/users/login"), {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -44,7 +45,7 @@ function UserLogin() {
     localStorage.setItem("userId", userId);
 
     const genreResponse = await fetch(
-      `http://193.197.230.150:8080/users/${userId}/favorite-genres`
+      buildApiUrl(`/users/${userId}/favorite-genres`)
     );
 
     if (!genreResponse.ok) {

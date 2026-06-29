@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { buildApiUrl } from "../services/apiClient";
 import "./GenreSelection.css";
 
 function GenreSelection() {
@@ -64,7 +65,7 @@ function GenreSelection() {
     try {
       for (const genreId of selectedGenres) {
         await fetch(
-          `http://localhost:8080/users/${userId}/favorite-genre/${genreId}`,
+          buildApiUrl(`/users/${userId}/favorite-genre/${genreId}`),
           {
             method: "POST"
           }
