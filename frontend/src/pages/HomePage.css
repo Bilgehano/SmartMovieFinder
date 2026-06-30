@@ -52,15 +52,16 @@
 
 .MovieSelectionNote p {
   margin: 0;
-  font-size: 0.9rem;
+  font-size: 1.2rem;
   font-weight: 600;
-  color: #c7d3e8;
+  color: #b4260d;
   line-height: 1.4;
 }
 
 .MovieSelectionbuttons {
   display: flex;
   gap: 10px;
+  color: #08182c;
 }
 
 .MovieSelectionbuttons button {
