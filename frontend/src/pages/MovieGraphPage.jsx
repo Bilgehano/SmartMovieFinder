@@ -24,6 +24,10 @@ import {
 
 import "./MovieGraphPage.css";
 
+const MIN_SUGGESTION_LENGTH = 2;
+const MAX_SUGGESTIONS = 5;
+const SUGGESTION_DELAY_MS = 300;
+
 function getSettledValue(result, fallbackValue) {
   if (result.status === "fulfilled") {
     return result.value;
@@ -46,6 +50,28 @@ function normalizeMovieList(response) {
 
 function hasMovies(response) {
   return normalizeMovieList(response).length > 0;
+}
+
+function getSuggestionMovieId(movie) {
+  return movie?.id ?? movie?.tmdbId ?? movie?.movieId ?? null;
+}
+
+function getSuggestionTitle(movie) {
+  return (
+    movie?.title ||
+    movie?.name ||
+    movie?.label ||
+    "Unknown Movie"
+  );
+}
+
+function getSuggestionYear(movie) {
+  const releaseDate =
+    movie?.release_date ||
+    movie?.releaseDate ||
+    movie?.first_air_date;
+
+  return releaseDate ? String(releaseDate).slice(0, 4) : "Unknown";
 }
 
 async function fetchGraphRecommendations(userId) {
@@ -81,6 +107,12 @@ function MovieGraphPage() {
   const [graphSearchMessage, setGraphSearchMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+
+  const [graphSuggestions, setGraphSuggestions] = useState([]);
+  const [isSuggestionsLoading, setIsSuggestionsLoading] =
+    useState(false);
+  const [isSuggestionListOpen, setIsSuggestionListOpen] =
+    useState(false);
 
   useEffect(() => {
     let isMounted = true;
@@ -157,8 +189,64 @@ function MovieGraphPage() {
     };
   }, [movieId]);
 
+  useEffect(() => {
+    const trimmedSearchTerm = searchInput.trim();
+
+    if (trimmedSearchTerm.length < MIN_SUGGESTION_LENGTH) {
+      setGraphSuggestions([]);
+      setIsSuggestionsLoading(false);
+      setIsSuggestionListOpen(false);
+      return undefined;
+    }
+
+    let isCancelled = false;
+
+    setIsSuggestionsLoading(true);
+    setIsSuggestionListOpen(true);
+
+    const timeoutId = window.setTimeout(async () => {
+      try {
+        const searchResponse = await searchMovies(
+          trimmedSearchTerm,
+          1
+        );
+
+        if (isCancelled) {
+          return;
+        }
+
+        const suggestions = normalizeMovieList(searchResponse)
+          .filter((movie) => getSuggestionMovieId(movie))
+          .slice(0, MAX_SUGGESTIONS);
+
+        setGraphSuggestions(suggestions);
+      } catch (error) {
+        console.warn(
+          "Graph search suggestions could not be loaded:",
+          error
+        );
+
+        if (!isCancelled) {
+          setGraphSuggestions([]);
+        }
+      } finally {
+        if (!isCancelled) {
+          setIsSuggestionsLoading(false);
+        }
+      }
+    }, SUGGESTION_DELAY_MS);
+
+    return () => {
+      isCancelled = true;
+      window.clearTimeout(timeoutId);
+    };
+  }, [searchInput]);
+
   async function handleGraphSearchSubmit(value) {
     const searchTerm = value.trim();
+
+    setIsSuggestionListOpen(false);
+    setGraphSuggestions([]);
 
     if (!searchTerm) {
       setGraphSearchMessage("Please enter a movie title.");
@@ -193,12 +281,37 @@ function MovieGraphPage() {
     }
   }
 
+  function handleGraphSearchChange(value) {
+    setSearchInput(value);
+    setGraphSearchMessage("");
+  }
+
+  function handleSuggestionSelect(movie) {
+    const selectedMovieId = getSuggestionMovieId(movie);
+
+    if (!selectedMovieId) {
+      return;
+    }
+
+    setSearchInput(getSuggestionTitle(movie));
+    setGraphSuggestions([]);
+    setIsSuggestionListOpen(false);
+    setGraphSearchMessage("");
+
+    navigate(`/movies/${selectedMovieId}/graph`);
+  }
+
   const backMovieId =
     currentGraphData?.center?.movieId ?? movieId;
 
   const graphTitle = currentGraphData
     ? `${currentGraphData.center.label} Graph`
     : "Movie Graph";
+
+  const shouldShowSuggestions =
+    isSuggestionListOpen &&
+    searchInput.trim().length >= MIN_SUGGESTION_LENGTH &&
+    (isSuggestionsLoading || graphSuggestions.length > 0);
 
   return (
     <main className="movie-graph-page">
@@ -229,12 +342,54 @@ function MovieGraphPage() {
           </div>
 
           <div className="movie-graph-header-search">
-            <SearchBar
-              value={searchInput}
-              onChange={setSearchInput}
-              onSubmit={handleGraphSearchSubmit}
-              placeholder="Search for a movie graph..."
-            />
+            <div className="movie-graph-search-wrapper">
+              <SearchBar
+                value={searchInput}
+                onChange={handleGraphSearchChange}
+                onSubmit={handleGraphSearchSubmit}
+                placeholder="Search for a movie graph..."
+              />
+
+              {shouldShowSuggestions && (
+                <div
+                  className="movie-graph-suggestions"
+                  role="listbox"
+                  aria-label="Movie suggestions"
+                >
+                  {isSuggestionsLoading && (
+                    <div className="movie-graph-suggestion-status">
+                      Searching movies...
+                    </div>
+                  )}
+
+                  {!isSuggestionsLoading &&
+                    graphSuggestions.map((movie) => {
+                      const suggestionId =
+                        getSuggestionMovieId(movie);
+
+                      return (
+                        <button
+                          key={suggestionId}
+                          type="button"
+                          className="movie-graph-suggestion"
+                          onMouseDown={(event) => {
+                            event.preventDefault();
+                            handleSuggestionSelect(movie);
+                          }}
+                        >
+                          <span className="movie-graph-suggestion-title">
+                            {getSuggestionTitle(movie)}
+                          </span>
+
+                          <span className="movie-graph-suggestion-year">
+                            {getSuggestionYear(movie)}
+                          </span>
+                        </button>
+                      );
+                    })}
+                </div>
+              )}
+            </div>
           </div>
 
           <div className="movie-graph-header-divider" />

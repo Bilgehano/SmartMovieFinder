@@ -35,8 +35,8 @@
 }
 
 .movie-poster {
-  width: 195px;
-  min-width: 195px;
+  width: clamp(108px, 44%, 160px);
+  min-width: clamp(108px, 44%, 160px);
 
   align-self: stretch;
   position: relative;
@@ -157,7 +157,7 @@
   min-width: 0;
   flex: 1;
 
-  padding: 22px 22px 20px;
+  padding: 20px 18px 18px;
 
   display: flex;
   flex-direction: column;
@@ -168,7 +168,7 @@
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 14px;
+  gap: 12px;
 }
 
 .movie-card-title-area {
@@ -186,7 +186,7 @@
   -webkit-line-clamp: 2;
 
   color: #f8fbff;
-  font-size: 1.1rem;
+  font-size: clamp(0.9rem, 1vw, 1.1rem);
   font-weight: 800;
   line-height: 1.3;
 }
@@ -195,14 +195,14 @@
   margin: 0;
 
   color: #aebbd0;
-  font-size: 0.92rem;
+  font-size: clamp(0.78rem, 0.85vw, 0.92rem);
   font-weight: 650;
   line-height: 1.35;
 }
 
 .movie-card-footer {
-  margin-top: 26px;
-  padding-right: 4px;
+  margin-top: 20px;
+  padding-right: 2px;
   padding-bottom: 2px;
 
   display: flex;
@@ -210,8 +210,8 @@
 }
 
 .movie-card-link {
-  min-height: 42px;
-  padding: 0 22px;
+  min-height: 38px;
+  padding: 0 16px;
 
   display: inline-flex;
   align-items: center;
@@ -230,7 +230,7 @@
   );
 
   color: #f4f7ff;
-  font-size: 0.92rem;
+  font-size: 0.84rem;
   font-weight: 800;
   text-decoration: none;
 
@@ -270,46 +270,51 @@
   outline-offset: 3px;
 }
 
-@media (max-width: 900px) {
+/* Tablet: mehr Platz pro Card, dadurch wieder größere Poster */
+@media (max-width: 1300px) {
   .movie-card {
-    min-height: 225px;
+    min-height: 250px;
   }
 
   .movie-poster {
-    width: 160px;
-    min-width: 160px;
+    width: 42%;
+    min-width: 145px;
+    max-width: 190px;
   }
 
   .movie-card-body {
-    padding: 18px;
+    padding: 20px;
   }
 
-  .movie-card-user-rating-overlay {
-    min-height: 38px;
-    padding: 0 8px;
+  .movie-card-link {
+    min-height: 40px;
+    padding: 0 18px;
+    font-size: 0.88rem;
   }
 }
 
-@media (max-width: 560px) {
+/* Handy: eine breite Card pro Reihe */
+@media (max-width: 650px) {
   .movie-card {
-    min-height: 180px;
+    min-height: 205px;
   }
 
   .movie-poster {
-    width: 120px;
-    min-width: 120px;
+    width: 42%;
+    min-width: 125px;
+    max-width: 150px;
   }
 
   .movie-card-body {
-    padding: 14px;
+    padding: 16px;
   }
 
   .movie-card-body h3 {
-    font-size: 0.95rem;
+    font-size: 1rem;
   }
 
   .movie-card-meta {
-    font-size: 0.82rem;
+    font-size: 0.84rem;
   }
 
   .movie-card-rating {
@@ -340,9 +345,30 @@
   }
 
   .movie-card-link {
-    min-height: 34px;
-    padding: 0 13px;
+    min-height: 36px;
+    padding: 0 14px;
 
     font-size: 0.84rem;
+  }
+}
+
+@media (max-width: 390px) {
+  .movie-poster {
+    min-width: 116px;
+    max-width: 136px;
+  }
+
+  .movie-card-body {
+    padding: 13px;
+  }
+
+  .movie-card-body h3 {
+    font-size: 0.93rem;
+  }
+
+  .movie-card-link {
+    min-height: 34px;
+    padding: 0 12px;
+    font-size: 0.8rem;
   }
 }

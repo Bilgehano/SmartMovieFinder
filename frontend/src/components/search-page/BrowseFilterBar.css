@@ -1,5 +1,6 @@
 .browse-filter-section {
   width: 100%;
+  position: relative;
 }
 
 .browse-filter-section-header {
@@ -10,18 +11,16 @@
   margin-bottom: 12px;
 }
 
-.browse-filter-eyebrow {
-  color: #e3ecfb;
-  font-size: 0.98rem;
-  font-weight: 850;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
+.browse-filter-toggle,
 .browse-clear-link {
   min-width: 124px;
   min-height: 44px;
   padding: 0 17px;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
 
   border: 1px solid rgba(150, 174, 220, 0.3);
   border-radius: 8px;
@@ -29,10 +28,10 @@
   background: rgba(8, 19, 38, 0.5);
   color: #c6d3e8;
 
+  cursor: pointer;
   font-family: inherit;
   font-size: 0.88rem;
   font-weight: 800;
-  cursor: pointer;
 
   transition:
     transform 0.18s ease,
@@ -42,20 +41,19 @@
     box-shadow 0.18s ease;
 }
 
-.browse-clear-link:hover {
-  transform: translateY(-1px);
-  border-color: rgba(181, 155, 255, 0.62);
-  background: rgba(47, 34, 99, 0.46);
-  color: #f0ebff;
-
-  box-shadow:
-    0 0 0 1px rgba(177, 151, 255, 0.1),
-    0 0 16px rgba(118, 88, 255, 0.18);
+.browse-filter-toggle {
+  margin-right: auto;
+  color: #e3ecfb;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
 }
 
+.browse-filter-toggle:hover,
 .browse-clear-link:hover {
   transform: translateY(-1px);
+
   border-color: rgba(181, 155, 255, 0.72);
+
   background: rgba(58, 42, 120, 0.5);
   color: #f1ebff;
 
@@ -64,12 +62,20 @@
     0 0 18px rgba(118, 88, 255, 0.24);
 }
 
+.browse-filter-toggle:focus-visible,
 .browse-clear-link:focus-visible {
   outline: 2px solid rgba(190, 170, 255, 0.95);
   outline-offset: 3px;
 }
 
+.browse-filter-chevron-open {
+  transform: rotate(180deg);
+}
+
+/* Der Filter ist auf allen Größen zuerst geschlossen */
 .browse-filter-panel {
+  display: none;
+
   padding: 15px 16px 16px;
 
   border: 1px solid rgba(115, 142, 194, 0.16);
@@ -86,12 +92,8 @@
     0 10px 22px rgba(0, 0, 0, 0.12);
 }
 
-.browse-filter-section {
-  position: relative;
-}
-
-.browse-filter-section-header {
-  padding-right: 0;
+.browse-filter-panel-open {
+  display: block;
 }
 
 .browse-filter-bar {
@@ -224,11 +226,10 @@
 
   color: #ffffff;
 
+  cursor: pointer;
   font-family: inherit;
   font-size: 0.88rem;
   font-weight: 800;
-
-  cursor: pointer;
 
   transition:
     transform 0.18s ease,
@@ -270,9 +271,26 @@
 
 @media (max-width: 760px) {
   .browse-filter-section-header {
-    align-items: flex-start;
-    flex-direction: column;
-    gap: 10px;
+    gap: 12px;
+  }
+
+  .browse-filter-toggle,
+  .browse-clear-link {
+    width: 100%;
+    min-width: 0;
+    min-height: 52px;
+    padding: 0 10px;
+    font-size: 0.86rem;
+  }
+
+  .browse-filter-toggle {
+    margin-right: 0;
+    justify-content: space-between;
+    letter-spacing: 0.03em;
+  }
+
+  .browse-filter-panel {
+    padding: 18px;
   }
 
   .browse-filter-bar {
@@ -284,8 +302,28 @@
     width: 100%;
   }
 
+  .browse-filter-actions button {
+    min-height: 52px;
+  }
+
   .browse-year-validation-message {
     width: calc(100vw - 72px);
     max-width: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .browse-filter-section-header {
+    gap: 10px;
+  }
+
+  .browse-filter-toggle,
+  .browse-clear-link {
+    min-height: 48px;
+    font-size: 0.78rem;
+  }
+
+  .browse-filter-panel {
+    padding: 16px;
   }
 }

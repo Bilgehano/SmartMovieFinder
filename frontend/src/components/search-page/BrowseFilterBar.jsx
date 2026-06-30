@@ -1,3 +1,5 @@
+import { useState } from "react";
+import { ChevronDown } from "lucide-react";
 import "./BrowseFilterBar.css";
 
 const MIN_RELEASE_YEAR = 1888;
@@ -11,21 +13,56 @@ export default function BrowseFilterBar({
   onClearFilters,
   yearValidationMessage,
 }) {
+  const [isFiltersOpen, setIsFiltersOpen] = useState(false);
+
+  function toggleFilters() {
+    setIsFiltersOpen((currentValue) => !currentValue);
+  }
+
+  function handleApplyFilters() {
+    onApplyFilters();
+    setIsFiltersOpen(false);
+  }
+
+  function handleResetFilters() {
+    onClearFilters();
+    setIsFiltersOpen(false);
+  }
+
   return (
     <section className="browse-filter-section">
       <div className="browse-filter-section-header">
-        <span className="browse-filter-eyebrow">Filters</span>
+        <button
+          type="button"
+          className="browse-filter-toggle"
+          onClick={toggleFilters}
+          aria-expanded={isFiltersOpen}
+          aria-controls="browse-filter-panel"
+        >
+          <span>Filters</span>
+
+          <ChevronDown
+            size={18}
+            className={isFiltersOpen ? "browse-filter-chevron-open" : ""}
+            aria-hidden="true"
+          />
+        </button>
 
         <button
           type="button"
           className="browse-clear-link"
-          onClick={onClearFilters}
+          onClick={handleResetFilters}
         >
-          Reset filters
+          Reset Filters
         </button>
       </div>
 
-      <div className="browse-filter-panel">
+      <div
+        id="browse-filter-panel"
+        className={`browse-filter-panel ${
+          isFiltersOpen ? "browse-filter-panel-open" : ""
+        }`}
+      >
         <div className="browse-filter-bar">
           <div className="browse-filter-control">
             <label>Genre</label>
@@ -121,8 +158,8 @@ export default function BrowseFilterBar({
           </div>
 
           <div className="browse-filter-actions">
-            <button type="button" onClick={onApplyFilters}>
-              Apply filters
+            <button type="button" onClick={handleApplyFilters}>
+              Apply Filters
             </button>
           </div>
         </div>

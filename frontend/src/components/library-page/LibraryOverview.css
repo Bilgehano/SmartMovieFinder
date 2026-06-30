@@ -69,13 +69,46 @@
   }
 }
 
+/* Handy: immer vier kompakte Kacheln nebeneinander */
 @media (max-width: 700px) {
   .library-overview {
     width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
   }
 
   .library-overview-card {
-    flex: 1;
-    min-width: 120px;
+    min-width: 0;
+    padding: 11px 4px;
+  }
+
+  .library-overview-card span {
+    margin-bottom: 3px;
+    font-size: 1.05rem;
+  }
+
+  .library-overview-card p {
+    font-size: clamp(0.56rem, 2.4vw, 0.72rem);
+    line-height: 1.15;
+    overflow-wrap: anywhere;
+  }
+}
+
+@media (max-width: 390px) {
+  .library-overview {
+    gap: 6px;
+  }
+
+  .library-overview-card {
+    padding: 10px 3px;
+  }
+
+  .library-overview-card span {
+    font-size: 1rem;
+  }
+
+  .library-overview-card p {
+    font-size: 0.55rem;
   }
 }

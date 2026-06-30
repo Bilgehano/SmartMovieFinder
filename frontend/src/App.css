@@ -2,14 +2,14 @@
   --background-dark: #020917;
   --background-darker: #00030a;
 
-  --page-background: 
+  --page-background:
     linear-gradient(
       180deg,
-    #010614 0%,
-    #00040d 28%,
-    #000208 62%,
-    #000104 100%
-    );  
+      #010614 0%,
+      #00040d 28%,
+      #000208 62%,
+      #000104 100%
+    );
 
   --accent: #7658ff;
   --accent-light: #a594ff;
@@ -22,7 +22,26 @@
   --panel-border: rgba(166, 190, 232, 0.18);
 
   --navbar-height: 120px;
-  --page-content-width: calc(100% - 400px);
+
+  /*
+    Großer Bildschirm:
+    maximal 200px Rand links/rechts.
+
+    Mittlere Breite:
+    Rand wird automatisch kleiner.
+
+    Unter 1320px:
+    mindestens 24px Rand links/rechts.
+  */
+  --page-side-space: clamp(
+    24px,
+    calc((100vw - 1320px) / 2),
+    200px
+  );
+
+  --page-content-width: calc(
+    100% - var(--page-side-space) - var(--page-side-space)
+  );
 }
 
 html,
@@ -72,5 +91,17 @@ textarea {
 @media (max-width: 1320px) {
   :root {
     --navbar-height: 108px;
+  }
+}
+
+@media (max-width: 900px) {
+  :root {
+    --page-side-space: 18px;
+  }
+}
+
+@media (max-width: 560px) {
+  :root {
+    --page-side-space: 12px;
   }
 }

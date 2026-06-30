@@ -1,11 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  ChevronDown,
-  Compass,
-  Grid2X2,
-  Star,
-} from "lucide-react";
+import {ChevronDown, Compass, Grid2X2, Star,} from "lucide-react";
 
 import SearchBar from "../shared/SearchBar";
 
@@ -52,11 +47,7 @@ function mapFavoriteGenresToOptions(favoriteGenres, availableGenres) {
     .filter(Boolean);
 }
 
-function HomeContentNav({
-  searchValue,
-  onSearchChange,
-  onSearchSubmit,
-}) {
+function HomeContentNav({searchValue,onSearchChange,onSearchSubmit,}) {
   const navigate = useNavigate();
   const navigationRef = useRef(null);
 

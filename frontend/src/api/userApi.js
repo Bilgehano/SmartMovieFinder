@@ -73,19 +73,27 @@ function createJsonOptions(method, body) {
 }
 
 export async function fetchWatchLaterMovies(userId) {
-  return requestJson("/users/" + userId + "/watch-later");
+  return requestJson(
+    "/users/" + userId + "/watch-later"
+  );
 }
 
 export async function fetchWatchedMovies(userId) {
-  return requestJson("/users/" + userId + "/watched");
+  return requestJson(
+    "/users/" + userId + "/watched"
+  );
 }
 
 export async function fetchUserRatings(userId) {
-  return requestJson("/users/" + userId + "/ratings");
+  return requestJson(
+    "/users/" + userId + "/ratings"
+  );
 }
 
 export async function fetchFavoriteGenres(userId) {
-  return requestJson("/users/" + userId + "/favorite-genres");
+  return requestJson(
+    "/users/" + userId + "/favorite-genres"
+  );
 }
 
 export async function addWatchedMovie(userId, movie) {
@@ -96,9 +104,11 @@ export async function addWatchedMovie(userId, movie) {
 }
 
 export async function removeWatchedMovie(userId, tmdbId) {
-  return requestJson("/users/" + userId + "/watched/" + tmdbId, {
-    method: "DELETE",
-  });
+  return requestJson(
+    "/users/" + userId + "/watched/" + tmdbId, {
+      method: "DELETE",
+    }
+  );
 }
 
 export async function addWatchLaterMovie(userId, movie) {
@@ -109,9 +119,11 @@ export async function addWatchLaterMovie(userId, movie) {
 }
 
 export async function removeWatchLaterMovie(userId, tmdbId) {
-  return requestJson("/users/" + userId + "/watch-later/" + tmdbId, {
-    method: "DELETE",
-  });
+  return requestJson(
+    "/users/" + userId + "/watch-later/" + tmdbId, {
+      method: "DELETE",
+    }
+  );
 }
 
 export async function saveMovieRating(userId, movie, rating) {
@@ -122,9 +134,11 @@ export async function saveMovieRating(userId, movie, rating) {
 }
 
 export async function deleteMovieRating(userId, tmdbId) {
-  return requestJson("/users/" + userId + "/rate/" + tmdbId, {
-    method: "DELETE",
-  });
+  return requestJson(
+    "/users/" + userId + "/rate/" + tmdbId, {
+      method: "DELETE",
+    }
+  );
 }
 
 export async function isMovieInWatchLater(userId, tmdbId) {

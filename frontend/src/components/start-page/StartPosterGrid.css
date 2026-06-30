@@ -5,13 +5,14 @@
 
   position: absolute;
   z-index: 1;
+
   top: 46%;
   left: calc(
-    clamp(39%, 44vw, 48%) -
+    var(--split-top) -
     var(--poster-width) -
     var(--poster-gap)
   );
-  right: auto;
+
   transform: translateY(-50%);
 
   display: flex;
@@ -39,40 +40,74 @@
 
 @media (max-width: 1200px) {
   .start-poster-grid {
-    --poster-width: clamp(175px, 13vw, 230px);
+    --poster-width: clamp(165px, 19vw, 220px);
     --poster-height: calc(var(--poster-width) * 1.5);
-    --poster-gap: clamp(16px, 1.2vw, 24px);
+    --poster-gap: clamp(15px, 1.8vw, 22px);
 
-    left: calc(41% - var(--poster-width) - var(--poster-gap));
-    top: 46%;
-    opacity: 0.84;
+    left: calc(
+      var(--split-top) -
+      var(--poster-width) -
+      var(--poster-gap)
+    );
+
+    top: 47%;
+    opacity: 0.82;
   }
 }
 
 @media (max-width: 900px) {
   .start-poster-grid {
-    --poster-width: clamp(130px, 15vw, 175px);
+    --poster-width: clamp(138px, 18vw, 175px);
     --poster-height: calc(var(--poster-width) * 1.5);
-    --poster-gap: 16px;
+    --poster-gap: clamp(12px, 1.8vw, 17px);
 
-    left: calc(46% - var(--poster-width) - var(--poster-gap));
+    left: calc(
+      var(--split-top) -
+      var(--poster-width) -
+      var(--poster-gap)
+    );
+
     top: 47%;
-    opacity: 0.58;
+    opacity: 0.68;
   }
 }
 
-@media (max-width: 650px) {
+@media (max-width: 600px) {
   .start-poster-grid {
-    --poster-width: clamp(92px, 18vw, 125px);
+    --poster-width: clamp(118px, 28vw, 150px);
     --poster-height: calc(var(--poster-width) * 1.5);
-    --poster-gap: 12px;
+    --poster-gap: clamp(10px, 2.7vw, 15px);
 
-    left: calc(53% - var(--poster-width) - var(--poster-gap));
-    top: 48%;
-    opacity: 0.35;
+    left: calc(
+      var(--split-top) -
+      var(--poster-width) -
+      var(--poster-gap)
+    );
+
+    top: 45%;
+    opacity: 0.46;
+
+    filter: drop-shadow(0 14px 28px rgba(0, 0, 0, 0.32));
   }
 
   .start-poster-card__label {
     display: none;
+  }
+}
+
+@media (max-width: 420px) {
+  .start-poster-grid {
+    --poster-width: 118px;
+    --poster-height: calc(var(--poster-width) * 1.5);
+    --poster-gap: 10px;
+
+    left: calc(
+      var(--split-top) -
+      var(--poster-width) -
+      var(--poster-gap)
+    );
+
+    top: 45%;
+    opacity: 0.42;
   }
 }

@@ -8,7 +8,8 @@
   width: var(--page-content-width);
   margin: 0 auto;
   position: relative;
-  z-index: 20;
+  z-index: 100;
+  overflow: visible;
 
   background:
     radial-gradient(
@@ -130,10 +131,17 @@
   margin-top: 22px;
 }
 
-.movie-graph-header-search .search-bar {
+.movie-graph-search-wrapper {
   width: min(760px, 100%);
-  height: 52px;
   margin: 0 auto;
+  position: relative;
+  z-index: 200;
+}
+
+.movie-graph-header-search .search-bar {
+  width: 100%;
+  height: 52px;
+  margin: 0;
 
   background: rgba(6, 15, 30, 0.82);
   border-color: rgba(145, 118, 255, 0.42);
@@ -151,6 +159,98 @@
   box-shadow:
     0 0 0 3px rgba(118, 88, 255, 0.14),
     0 0 22px rgba(118, 88, 255, 0.16);
+}
+
+.movie-graph-suggestions {
+  position: absolute;
+  top: calc(100% + 8px);
+  right: 0;
+  left: 0;
+  z-index: 300;
+
+  overflow: hidden;
+
+  border: 1px solid rgba(159, 138, 255, 0.46);
+  border-radius: 11px;
+
+  background:
+    radial-gradient(
+      circle at 100% 0,
+      rgba(105, 80, 198, 0.12),
+      transparent 42%
+    ),
+    rgba(7, 17, 34, 0.98);
+
+  box-shadow:
+    0 18px 36px rgba(0, 0, 0, 0.44),
+    0 0 28px rgba(100, 76, 197, 0.14);
+}
+
+.movie-graph-suggestion,
+.movie-graph-suggestion-status {
+  width: 100%;
+  min-height: 50px;
+  padding: 0 16px;
+
+  display: flex;
+  align-items: center;
+}
+
+.movie-graph-suggestion {
+  justify-content: space-between;
+  gap: 16px;
+
+  border: none;
+  border-bottom: 1px solid rgba(145, 170, 215, 0.13);
+
+  background: transparent;
+  color: #edf4ff;
+
+  cursor: pointer;
+  font-family: inherit;
+  text-align: left;
+
+  transition:
+    background-color 0.16s ease,
+    color 0.16s ease;
+}
+
+.movie-graph-suggestion:last-child {
+  border-bottom: none;
+}
+
+.movie-graph-suggestion:hover,
+.movie-graph-suggestion:focus-visible {
+  background: rgba(95, 68, 181, 0.28);
+  color: #ffffff;
+}
+
+.movie-graph-suggestion:focus-visible {
+  outline: 2px solid rgba(193, 174, 255, 0.95);
+  outline-offset: -2px;
+}
+
+.movie-graph-suggestion-title {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.movie-graph-suggestion-year {
+  flex: 0 0 auto;
+  color: #b8c6dc;
+  font-size: 0.8rem;
+  font-weight: 750;
+}
+
+.movie-graph-suggestion-status {
+  color: #b8c6dc;
+  font-size: 0.86rem;
+  font-weight: 700;
 }
 
 .movie-graph-header-divider {
@@ -186,6 +286,8 @@
   width: var(--page-content-width);
   min-height: 620px;
   margin: 0 auto;
+  position: relative;
+  z-index: 1;
   overflow: hidden;
 
   background: linear-gradient(
@@ -306,6 +408,20 @@
 
   .movie-graph-header-search .search-bar {
     height: 48px;
+  }
+
+  .movie-graph-suggestion,
+  .movie-graph-suggestion-status {
+    min-height: 48px;
+    padding: 0 13px;
+  }
+
+  .movie-graph-suggestion-title {
+    font-size: 0.84rem;
+  }
+
+  .movie-graph-suggestion-year {
+    font-size: 0.76rem;
   }
 
   .movie-graph-header-divider {

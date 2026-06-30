@@ -50,10 +50,11 @@
   letter-spacing: -0.01em;
 }
 
+/* Desktop: immer vier gleich große Cards */
 .home-movie-row-grid {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 28px;
+  gap: clamp(16px, 1.5vw, 28px);
 }
 
 .home-movie-row-empty {
@@ -95,13 +96,15 @@
   line-height: 1.5;
 }
 
-@media (max-width: 1200px) {
+/* Tablet: zwei Cards pro Reihe */
+@media (max-width: 1300px) {
   .home-movie-row-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 24px;
   }
 }
 
+/* Handy: immer eine Card pro Reihe */
 @media (max-width: 650px) {
   .home-movie-row {
     margin-bottom: 48px;
@@ -112,8 +115,12 @@
     margin-bottom: 18px;
   }
 
+  .home-movie-row-title {
+    font-size: 1.2rem;
+  }
+
   .home-movie-row-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 18px;
   }
 

@@ -10,10 +10,7 @@ export async function fetchRecommendedMovies(userId, limit = 5) {
   );
 }
 
-export async function fetchGenreBasedRecommendations(
-  userId,
-  limit = 5
-) {
+export async function fetchGenreBasedRecommendations(userId, limit = 5) {
   const params = new URLSearchParams({
     limit: String(limit),
   });
@@ -23,10 +20,7 @@ export async function fetchGenreBasedRecommendations(
   );
 }
 
-export async function fetchTopRatedRecommendations(
-  userId,
-  limit = 5
-) {
+export async function fetchTopRatedRecommendations(userId, limit = 5) {
   const params = new URLSearchParams({
     limit: String(limit),
   });

@@ -290,6 +290,7 @@
   margin: 0 auto;
   overflow: hidden;
 
+  line-clamp: 2;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
 
@@ -340,7 +341,6 @@
   stroke: rgba(135, 166, 220, 0.44);
 }
 
-/* React Flow controls */
 .movie-graph-canvas .react-flow__controls {
   overflow: hidden;
 
@@ -378,7 +378,6 @@
   border-bottom: none;
 }
 
-/* Movie popup */
 .movie-graph-popup {
   position: absolute;
   top: 20px;
@@ -559,7 +558,7 @@
 
 @media (max-width: 560px) {
   .movie-graph-canvas {
-    height: 520px;
+    height: 620px;
   }
 
   .movie-graph-guide {

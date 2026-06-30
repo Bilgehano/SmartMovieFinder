@@ -4,6 +4,7 @@ import HomeMovieRow from "./HomeMovieRow";
 
 import {
   fetchGenres,
+  fetchMovieDetail,
   fetchPopularMovies,
   fetchTopRatedMovies,
   fetchTrendingMovies,
@@ -18,7 +19,10 @@ import {
 
 import { getCurrentUserId } from "../../api/userSession";
 
-import { createGenreMap } from "../../utils/movieMapper";
+import {
+  createGenreMap,
+  mapTmdbMovieDetail,
+} from "../../utils/movieMapper";
 import { mapUserLibraryData } from "../../utils/libraryMapper";
 
 import "./HomeMovieDashboard.css";
@@ -164,6 +168,59 @@ async function fetchRecommendedSection(userId) {
   return fetchPopularMovies(2);
 }
 
+function getTmdbMovieId(movie) {
+  return movie.tmdbId ?? movie.id ?? movie.movieId;
+}
+
+async function enrichPersonalMoviesWithTmdbDetails(
+  personalMovies,
+  genreMap
+) {
+  const movieResults = await Promise.allSettled(
+    personalMovies.map(async function (movie) {
+      const tmdbId = getTmdbMovieId(movie);
+
+      if (!tmdbId) {
+        return movie;
+      }
+
+      const movieDetail = await fetchMovieDetail(tmdbId);
+
+      const tmdbMovie = mapTmdbMovieDetail(
+        movieDetail,
+        genreMap
+      );
+
+      return {
+        ...movie,
+        id: tmdbMovie.id,
+        tmdbId: tmdbMovie.tmdbId,
+        title: tmdbMovie.title,
+        year: tmdbMovie.year,
+        genre: tmdbMovie.genre,
+        rating: tmdbMovie.rating,
+        description: tmdbMovie.description,
+        posterUrl: tmdbMovie.posterUrl || movie.posterUrl,
+        releaseDate: movie.releaseDate || "",
+      };
+    })
+  );
+
+  return movieResults.map(function (result, index) {
+    if (result.status === "fulfilled") {
+      return result.value;
+    }
+
+    console.warn(
+      "Could not enrich personal homepage movie:",
+      personalMovies[index]?.id,
+      result.reason
+    );
+
+    return personalMovies[index];
+  });
+}
+
 function HomeMovieDashboard() {
   const [sections, setSections] = useState({
     trending: [],
@@ -193,85 +250,107 @@ function HomeMovieDashboard() {
         ? fetchWatchLaterMovies(currentUserId)
         : Promise.resolve([]);
 
-      const [
-        trendingResult,
-        recommendedResult,
-        topRatedResult,
-        genresResult,
-        watchedResult,
-        watchLaterResult,
-      ] = await Promise.allSettled([
-        fetchTrendingMovies(),
-        fetchRecommendedSection(currentUserId),
-        fetchTopRatedMovies(1),
-        fetchGenres(),
-        watchedMoviesRequest,
-        watchLaterRequest,
-      ]);
+      try {
+        const [
+          trendingResult,
+          recommendedResult,
+          topRatedResult,
+          genresResult,
+          watchedResult,
+          watchLaterResult,
+        ] = await Promise.allSettled([
+          fetchTrendingMovies(),
+          fetchRecommendedSection(currentUserId),
+          fetchTopRatedMovies(1),
+          fetchGenres(),
+          watchedMoviesRequest,
+          watchLaterRequest,
+        ]);
 
-      if (!isMounted) {
-        return;
+        if (!isMounted) {
+          return;
+        }
+
+        const genres = getSettledValue(genresResult);
+        const watchedMovies = getSettledValue(watchedResult);
+        const watchLaterMovies = getSettledValue(watchLaterResult);
+
+        const genreMap = createGenreMap(genres);
+
+        const personalLibraryMovies = mapUserLibraryData({
+          watchedMovies,
+          watchLaterMovies,
+          ratings: [],
+          genreMap,
+        });
+
+        const enrichedPersonalMovies =
+          await enrichPersonalMoviesWithTmdbDetails(
+            personalLibraryMovies,
+            genreMap
+          );
+
+        if (!isMounted) {
+          return;
+        }
+
+        const recentlyWatchedMovies = enrichedPersonalMovies
+          .filter(function (movie) {
+            return movie.status.includes("watched");
+          })
+          .slice(0, HOMEPAGE_MOVIE_LIMIT);
+
+        const watchlistMovies = enrichedPersonalMovies
+          .filter(function (movie) {
+            return movie.status.includes("watch-later");
+          })
+          .slice(0, HOMEPAGE_MOVIE_LIMIT);
+
+        setSections({
+          trending: getMoviesFromResult(trendingResult),
+          recommended: getMoviesFromResult(recommendedResult),
+          topRated: getMoviesFromResult(topRatedResult),
+          recentlyWatched: recentlyWatchedMovies,
+          watchlist: watchlistMovies,
+        });
+
+        const relevantResults = currentUserId
+          ? [
+              trendingResult,
+              recommendedResult,
+              topRatedResult,
+              genresResult,
+              watchedResult,
+              watchLaterResult,
+            ]
+          : [
+              trendingResult,
+              recommendedResult,
+              topRatedResult,
+            ];
+
+        const hasFailedRequest = relevantResults.some(function (result) {
+          return result.status === "rejected";
+        });
+
+        if (hasFailedRequest) {
+          setErrorMessage(
+            "Some movie sections could not be loaded from the backend."
+          );
+        }
+      } catch (error) {
+        console.error("Failed to load homepage movies:", error);
+
+        if (isMounted) {
+          setErrorMessage(
+            "Some movie sections could not be loaded from the backend."
+          );
+        }
+      } finally {
+        if (isMounted) {
+          setIsLoading(false);
+        }
       }
-
-      const genres = getSettledValue(genresResult);
-      const watchedMovies = getSettledValue(watchedResult);
-      const watchLaterMovies = getSettledValue(watchLaterResult);
-
-      const genreMap = createGenreMap(genres);
-
-      const personalLibraryMovies = mapUserLibraryData({
-        watchedMovies,
-        watchLaterMovies,
-        ratings: [],
-        genreMap,
-      });
-
-      const recentlyWatchedMovies = personalLibraryMovies
-        .filter(function (movie) {
-          return movie.status.includes("watched");
-        })
-        .slice(0, HOMEPAGE_MOVIE_LIMIT);
-
-      const watchlistMovies = personalLibraryMovies
-        .filter(function (movie) {
-          return movie.status.includes("watch-later");
-        })
-        .slice(0, HOMEPAGE_MOVIE_LIMIT);
-
-      setSections({
-        trending: getMoviesFromResult(trendingResult),
-        recommended: getMoviesFromResult(recommendedResult),
-        topRated: getMoviesFromResult(topRatedResult),
-        recentlyWatched: recentlyWatchedMovies,
-        watchlist: watchlistMovies,
-      });
-
-      const relevantResults = currentUserId
-        ? [
-            trendingResult,
-            recommendedResult,
-            topRatedResult,
-            genresResult,
-            watchedResult,
-            watchLaterResult,
-          ]
-        : [
-            trendingResult,
-            recommendedResult,
-            topRatedResult,
-          ];
-
-      const hasFailedRequest = relevantResults.some(function (result) {
-        return result.status === "rejected";
-      });
-
-      if (hasFailedRequest) {
-        setErrorMessage(
-          "Some movie sections could not be loaded from the backend."
-        );
-      }
-
-      setIsLoading(false);
     }
 
     loadHomepageMovies();

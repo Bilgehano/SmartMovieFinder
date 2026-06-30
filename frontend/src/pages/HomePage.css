@@ -67,7 +67,7 @@
 .home-content-area {
   width: 100%;
   min-height: 420px;
-  padding: 32px;
+  padding: clamp(20px, 2.2vw, 32px);
 
   background: linear-gradient(
     180deg,
@@ -94,9 +94,8 @@
     padding-top: 12px;
   }
 
-  .home-dashboard-header,
-  .home-content-shell {
-    width: calc(100% - 48px);
+  .home-dashboard-header-content {
+    padding: 20px 22px 0;
   }
 }
 
@@ -105,16 +104,11 @@
     padding-top: 10px;
   }
 
-  .home-dashboard-header,
-  .home-content-shell {
-    width: calc(100% - 24px);
-  }
-
   .home-dashboard-header-content {
     padding: 20px 18px 0;
   }
 
   .home-content-area {
-    padding: 20px;
+    padding: 20px 18px;
   }
 }

@@ -2,10 +2,15 @@
   width: 100%;
   min-height: 94px;
   padding-top: 14px;
+
   display: grid;
-  grid-template-columns: minmax(260px, 1fr) auto minmax(260px, 1fr);
+  grid-template-columns:
+    minmax(170px, 0.8fr)
+    minmax(0, 2.5fr)
+    minmax(170px, 0.8fr);
   align-items: center;
-  gap: 22px;
+  gap: 18px;
+
   position: relative;
   z-index: 20;
 }
@@ -14,8 +19,10 @@
   height: 52px;
   margin: 0;
   padding: 0;
+
   display: flex;
   align-items: stretch;
+
   list-style: none;
 }
 
@@ -28,16 +35,21 @@
 }
 
 .movie-content-menu-center {
-  width: 940px;
+  width: 100%;
+  min-width: 0;
   height: 52px;
+
   display: flex;
   align-items: center;
   justify-content: center;
+
   gap: 0;
   padding: 3px;
+
   background: rgba(8, 16, 32, 0.94);
   border: 1px solid rgba(145, 118, 255, 0.36);
   border-radius: 13px;
+
   box-shadow:
     0 0 0 1px rgba(118, 88, 255, 0.08),
     0 0 24px rgba(89, 58, 184, 0.08);
@@ -45,13 +57,14 @@
 
 .movie-content-menu-center:focus-within {
   border-color: rgba(170, 145, 255, 0.88);
+
   box-shadow:
     0 0 0 3px rgba(118, 88, 255, 0.14),
     0 0 22px rgba(118, 88, 255, 0.18);
 }
 
 .movie-content-search {
-  width: 760px;
+  width: 100%;
   min-width: 0;
   height: 100%;
 }
@@ -66,37 +79,47 @@
 
 .movie-content-menu-item {
   position: relative;
-  min-width: 260px;
-  height: 100%;
-  flex: 0 0 auto;
   z-index: 30;
+
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+
+  flex: 1 1 auto;
 }
 
 .movie-content-menu-explore .movie-content-menu-item {
-  min-width: 190px;
+  min-width: 145px;
 }
 
 .movie-content-menu-button {
   width: 100%;
   height: 100%;
-  padding: 0 22px;
+  padding: 0 clamp(7px, 1vw, 18px);
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(5px, 0.7vw, 9px);
+
   border: 1px solid rgba(150, 174, 220, 0.24);
   border-radius: 10px;
+
   background: linear-gradient(
     180deg,
     rgba(18, 32, 57, 0.92),
     rgba(8, 18, 36, 0.92)
   );
+
   color: #f6f8ff;
-  font-size: 0.96rem;
-  font-weight: 800;
-  font-family: inherit;
+
   cursor: pointer;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
+  font-family: inherit;
+  font-size: clamp(0.66rem, 1vw, 0.9rem);
+  font-weight: 800;
+  text-decoration: none;
   white-space: nowrap;
+
   transition:
     transform 0.18s ease,
     background-color 0.18s ease,
@@ -110,13 +133,17 @@
 .movie-content-menu-item:hover .movie-content-menu-button,
 .movie-content-menu-item.active .movie-content-menu-button {
   transform: translateY(-1px);
+
   border-color: rgba(171, 145, 255, 0.82);
+
   background: linear-gradient(
     180deg,
     rgba(61, 43, 111, 0.84),
     rgba(25, 24, 58, 0.94)
   );
+
   color: #ffffff;
+
   box-shadow:
     0 0 0 1px rgba(166, 138, 255, 0.12),
     0 0 18px rgba(118, 88, 255, 0.2);
@@ -133,10 +160,16 @@
 }
 
 .movie-content-menu-button-label {
+  min-width: 0;
+
+  overflow: visible;
+  text-overflow: clip;
+
   line-height: 1;
 }
 
 .movie-content-menu-chevron {
+  flex: 0 0 auto;
   opacity: 0.9;
   transition: transform 0.18s ease;
 }
@@ -154,10 +187,12 @@
 .movie-content-menu-center .search-bar {
   width: 100%;
   height: 100%;
+
   border: none;
   border-radius: 9px 0 0 9px;
-  box-shadow: none;
+
   background: transparent;
+  box-shadow: none;
 }
 
 .movie-content-menu-center .search-bar:hover {
@@ -170,13 +205,15 @@
 }
 
 .movie-content-menu-center .search-input {
-  font-size: 0.96rem;
+  min-width: 0;
+  font-size: 0.9rem;
 }
 
 .movie-content-menu-explore .movie-content-menu-button {
   border: none;
   border-left: 1px solid rgba(166, 190, 232, 0.18);
   border-radius: 0 9px 9px 0;
+
   background: rgba(18, 33, 61, 0.92);
 }
 
@@ -194,18 +231,24 @@
   position: absolute;
   top: calc(100% - 4px);
   left: 0;
+
   width: 100%;
+
   display: none;
   flex-direction: column;
+
   overflow: hidden;
   z-index: 100;
+
   background: linear-gradient(
     180deg,
     rgba(22, 35, 61, 0.98),
     rgba(7, 16, 32, 0.98)
   );
+
   border: 1px solid rgba(161, 185, 230, 0.2);
   border-radius: 0 0 11px 11px;
+
   box-shadow:
     0 18px 38px rgba(0, 0, 0, 0.44),
     0 0 20px rgba(82, 55, 175, 0.1);
@@ -223,16 +266,20 @@
 
 .movie-content-dropdown button {
   width: 100%;
-  padding: 15px 18px;
+  padding: 14px 16px;
+
   border: none;
   border-bottom: 1px solid rgba(166, 190, 232, 0.1);
+
   background: transparent;
   color: #e9effc;
+
+  cursor: pointer;
   font-family: inherit;
-  font-size: 0.94rem;
+  font-size: 0.9rem;
   font-weight: 700;
   text-align: left;
-  cursor: pointer;
+
   transition:
     background-color 0.16s ease,
     color 0.16s ease;
@@ -256,75 +303,116 @@
   background: transparent;
 }
 
-@media (max-width: 1400px) {
-  .movie-content-menu-center {
-    width: 790px;
-  }
-
-  .movie-content-search {
-    width: 620px;
-  }
-
-  .movie-content-menu-item {
-    min-width: 220px;
-  }
-
-  .movie-content-menu-explore .movie-content-menu-item {
-    min-width: 170px;
-  }
-}
-
+/* Tablet: bleibt eine Reihe, aber mit weniger Abstand */
 @media (max-width: 1100px) {
-  .movie-content-menu-center {
-    width: 640px;
-  }
-
-  .movie-content-search {
-    width: 490px;
-  }
-
-  .movie-content-menu-item {
-    min-width: 180px;
+  .movie-content-nav {
+    grid-template-columns:
+      minmax(125px, 0.75fr)
+      minmax(0, 2.2fr)
+      minmax(125px, 0.75fr);
+    gap: 8px;
   }
 
   .movie-content-menu-explore .movie-content-menu-item {
-    min-width: 145px;
+    min-width: 96px;
   }
 
-  .movie-content-nav {
-    gap: 12px;
+  .movie-content-menu-center .search-input {
+    font-size: 0.8rem;
   }
 }
 
-@media (max-width: 900px) {
+/* Zwischenbreite: Buttons werden sichtbar kompakter */
+@media (max-width: 800px) {
+  .movie-content-menu-button {
+    padding: 0 7px;
+    gap: 5px;
+    font-size: clamp(0.62rem, 1.8vw, 0.78rem);
+  }
+
+  .movie-content-menu-explore .movie-content-menu-item {
+    min-width: 88px;
+  }
+
+  .movie-content-menu-chevron {
+    width: 13px;
+    height: 13px;
+  }
+}
+
+/* Handy: Suche oben, beide Dropdowns darunter */
+@media (max-width: 650px) {
   .movie-content-nav {
     min-height: auto;
     padding-top: 14px;
-    display: flex;
-    flex-direction: column;
-    align-items: stretch;
-    gap: 10px;
-    padding-bottom: 14px;
+    padding-bottom: 8px;
+
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-areas:
+      "search search"
+      "quick favorite";
+    gap: 14px;
   }
 
-  .movie-content-menu,
-  .movie-content-menu-left,
-  .movie-content-menu-right {
-    min-height: 52px;
+  .movie-content-menu {
+    width: 100%;
     height: 52px;
-    justify-content: flex-start;
+    min-height: 52px;
   }
 
-  .movie-content-menu-right {
-    flex-wrap: wrap;
+  .movie-content-menu-left {
+    grid-area: quick;
   }
 
   .movie-content-menu-center {
+    grid-area: search;
     width: 100%;
-    order: -1;
+    height: 54px;
   }
 
-  .movie-content-search {
+  .movie-content-menu-right {
+    grid-area: favorite;
+  }
+
+  .movie-content-menu-left,
+  .movie-content-menu-right {
+    justify-content: stretch;
+  }
+
+  .movie-content-menu-item {
     width: 100%;
+  }
+
+  .movie-content-menu-explore .movie-content-menu-item {
+    min-width: 102px;
+  }
+
+  .movie-content-menu-center .search-input {
+    font-size: 0.9rem;
+  }
+}
+
+/* Sehr kleine Handys */
+@media (max-width: 500px) {
+  .movie-content-menu-button {
+    padding: 0 5px;
+    gap: 4px;
+    font-size: clamp(0.58rem, 2.5vw, 0.72rem);
+  }
+
+  .movie-content-menu-chevron {
+    width: 12px;
+    height: 12px;
+  }
+}
+
+@media (max-width: 390px) {
+  .movie-content-nav {
+    gap: 10px;
+  }
+
+  .movie-content-menu-center .search-input {
+    font-size: 0.82rem;
   }
 }
