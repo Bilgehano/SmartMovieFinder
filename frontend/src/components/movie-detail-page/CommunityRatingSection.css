@@ -9,17 +9,15 @@
   border: 1px solid rgba(177, 151, 255, 0.52);
   border-radius: 12px;
 
-  background:
-    linear-gradient(
-      145deg,
-      rgba(77, 57, 157, 0.54),
-      rgba(34, 30, 87, 0.72)
-    );
+  background: linear-gradient(
+    145deg,
+    rgba(77, 57, 157, 0.54),
+    rgba(34, 30, 87, 0.72)
+  );
 
   text-align: center;
 
-  box-shadow:
-    0 0 18px rgba(118, 88, 255, 0.14);
+  box-shadow: 0 0 18px rgba(118, 88, 255, 0.14);
 }
 
 .movie-detail-average-rating span {
@@ -48,15 +46,13 @@
   border: 1px solid rgba(115, 142, 194, 0.22);
   border-radius: 14px;
 
-  background:
-    linear-gradient(
-      145deg,
-      rgba(16, 37, 65, 0.84),
-      rgba(9, 22, 42, 0.84)
-    );
+  background: linear-gradient(
+    145deg,
+    rgba(16, 37, 65, 0.84),
+    rgba(9, 22, 42, 0.84)
+  );
 
-  box-shadow:
-    inset 0 1px 0 rgba(255, 255, 255, 0.025);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.025);
 }
 
 .movie-detail-community-card-header {
@@ -110,6 +106,7 @@
 @media (max-width: 760px) {
   .movie-detail-average-rating {
     width: 100%;
+    box-sizing: border-box;
   }
 
   .movie-detail-community-grid {

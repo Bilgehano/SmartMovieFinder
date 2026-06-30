@@ -46,7 +46,6 @@
 
 .movie-detail-panel {
   padding: 42px;
-
   background: transparent;
   color: #f8fbff;
 }
@@ -88,8 +87,7 @@
     transparent 100%
   );
 
-  box-shadow:
-    0 0 10px rgba(118, 88, 255, 0.14);
+  box-shadow: 0 0 10px rgba(118, 88, 255, 0.14);
 }
 
 .movie-detail-extra-section {
@@ -131,7 +129,6 @@
 
 .movie-detail-section-header h2 {
   margin: 0 0 8px;
-
   color: #f4f8ff;
   font-size: 1.55rem;
   line-height: 1.1;
@@ -139,14 +136,12 @@
 
 .movie-detail-section-header p {
   margin: 0;
-
   color: #aebdd3;
   line-height: 1.5;
 }
 
 .movie-detail-empty {
   margin: 0 0 8px;
-
   color: #edf4ff;
   font-size: 1.2rem;
   font-weight: 900;

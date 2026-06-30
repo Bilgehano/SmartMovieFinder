@@ -1,3 +1,4 @@
+import { Trash2 } from "lucide-react";
 import "./MovieDetailSection.css";
 
 function MovieDetailSection({
@@ -5,12 +6,24 @@ function MovieDetailSection({
   watchStatus,
   isWatchLater,
   selectedRating,
+  savedRating,
   isUserActionSaving,
   onWatchStatusToggle,
   onWatchLaterToggle,
   onRatingSelect,
   onSaveRating,
+  onDeleteRating,
 }) {
+  const ratingButtonText = isUserActionSaving
+    ? "Saving..."
+    : !selectedRating
+      ? "Choose Rating first"
+      : savedRating === selectedRating
+        ? "Rated"
+        : savedRating
+          ? "Save new Rating"
+          : "Rate Movie";
+
   return (
     <>
       <div className="movie-detail-top">
@@ -112,8 +125,8 @@ function MovieDetailSection({
             </div>
 
             <div className="movie-detail-rating-options">
-              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(function (ratingValue) {
-                return (
+              {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map(
+                (ratingValue) => (
                   <button
                     key={ratingValue}
                     className={
@@ -122,30 +135,39 @@ function MovieDetailSection({
                         : "movie-detail-rating-box"
                     }
                     type="button"
-                    onClick={function () {
-                      onRatingSelect(ratingValue);
-                    }}
+                    onClick={() => onRatingSelect(ratingValue)}
                     disabled={isUserActionSaving}
-                    aria-label={"Rate movie with " + ratingValue + " out of 10"}
+                    aria-label={`Rate movie with ${ratingValue} out of 10`}
                   >
                     ★
                   </button>
-                );
-              })}
+                )
+              )}
             </div>
 
-            <button
-              className="movie-detail-primary-button"
-              type="button"
-              onClick={onSaveRating}
-              disabled={!selectedRating || isUserActionSaving}
-            >
-              {isUserActionSaving
-                ? "Saving..."
-                : selectedRating
-                  ? "Save Rating"
-                  : "Choose rating first"}
-            </button>
+            <div className="movie-detail-rating-actions">
+              <button
+                className="movie-detail-primary-button"
+                type="button"
+                onClick={onSaveRating}
+                disabled={!selectedRating || isUserActionSaving}
+              >
+                {ratingButtonText}
+              </button>
+
+              {savedRating && (
+                <button
+                  className="movie-detail-delete-rating-button"
+                  type="button"
+                  onClick={onDeleteRating}
+                  disabled={isUserActionSaving}
+                  aria-label="Delete Rating"
+                  title="Delete Rating"
+                >
+                  <Trash2 size={18} aria-hidden="true" />
+                </button>
+              )}
+            </div>
           </div>
         </section>
       </div>

@@ -16,11 +16,28 @@ function MovieDetailBar({ movieId, showSectionLinks = true }) {
       </Link>
 
       {showSectionLinks && (
-        <div className="movie-detail-page-bar-links">
-          <a href="#community-ratings">Ratings</a>
-          <a href="#movie-recommendations">Recommendations</a>
-          <Link to={`/movies/${movieId}/graph`}>Open Graph ↗</Link>
-        </div>
+        <>
+          <Link
+            className="movie-detail-page-bar-graph"
+            to={`/movies/${movieId}/graph`}
+          >
+            Open Graph ↗
+          </Link>
+
+          <a
+            className="movie-detail-page-bar-ratings"
+            href="#community-ratings"
+          >
+            Ratings
+          </a>
+
+          <a
+            className="movie-detail-page-bar-recommendations"
+            href="#movie-recommendations"
+          >
+            Recommendations
+          </a>
+        </>
       )}
     </nav>
   );

@@ -15,6 +15,13 @@ export default function BrowseFilterBar({
 }) {
   const [isFiltersOpen, setIsFiltersOpen] = useState(false);
 
+  const hasActiveFilters =
+    filters.genre !== "all" ||
+    filters.yearFrom !== "" ||
+    filters.yearTo !== "" ||
+    filters.rating !== "all" ||
+    filters.sortBy !== "relevance";
+
   function toggleFilters() {
     setIsFiltersOpen((currentValue) => !currentValue);
   }
@@ -50,7 +57,11 @@ export default function BrowseFilterBar({
 
         <button
           type="button"
-          className="browse-clear-link"
+          className={
+            hasActiveFilters
+              ? "browse-clear-link browse-clear-link-active"
+              : "browse-clear-link"
+          }
           onClick={handleResetFilters}
         >
           Reset Filters

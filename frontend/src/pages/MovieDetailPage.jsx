@@ -75,9 +75,9 @@ function isSameMovie(movie, userMovieItem) {
   const movieIds = getMovieIds(movie);
   const userMovieIds = getUserMovieIds(userMovieItem);
 
-  return movieIds.some(function (movieId) {
-    return userMovieIds.includes(movieId);
-  });
+  return movieIds.some((movieId) =>
+    userMovieIds.includes(movieId)
+  );
 }
 
 function findMatchingItem(items, movie) {
@@ -85,11 +85,7 @@ function findMatchingItem(items, movie) {
     return null;
   }
 
-  return (
-    items.find(function (item) {
-      return isSameMovie(movie, item);
-    }) || null
-  );
+  return items.find((item) => isSameMovie(movie, item)) || null;
 }
 
 function getRatingValue(ratingItem) {
@@ -105,11 +101,7 @@ function getRatingValue(ratingItem) {
 
   const numericRating = Number(rawRating);
 
-  if (!Number.isFinite(numericRating)) {
-    return null;
-  }
-
-  return numericRating;
+  return Number.isFinite(numericRating) ? numericRating : null;
 }
 
 function getMovieTmdbId(movie) {
@@ -185,7 +177,9 @@ function MovieDetailPage() {
         }
 
         const genres =
-          genresResult.status === "fulfilled" ? genresResult.value : [];
+          genresResult.status === "fulfilled"
+            ? genresResult.value
+            : [];
 
         const similarMoviesResponse =
           similarMoviesResult.status === "fulfilled"
@@ -225,7 +219,10 @@ function MovieDetailPage() {
           .slice(0, 4);
 
         const watchedItem = findMatchingItem(watchedMovies, mappedMovie);
-        const watchLaterItem = findMatchingItem(watchLaterMovies, mappedMovie);
+        const watchLaterItem = findMatchingItem(
+          watchLaterMovies,
+          mappedMovie
+        );
         const ratingItem = findMatchingItem(userRatings, mappedMovie);
         const existingRating = getRatingValue(ratingItem);
 
@@ -360,7 +357,6 @@ function MovieDetailPage() {
     try {
       await saveMovieRating(currentUserId, movie, selectedRating);
       setSavedRating(selectedRating);
-      setUserStatusMessage("");
     } catch (error) {
       console.error("Failed to save rating:", error);
       setUserStatusMessage("Could not save your rating.");
@@ -389,7 +385,6 @@ function MovieDetailPage() {
       await deleteMovieRating(currentUserId, tmdbId);
       setSelectedRating(null);
       setSavedRating(null);
-      setUserStatusMessage("");
     } catch (error) {
       console.error("Failed to delete rating:", error);
       setUserStatusMessage("Could not delete your rating.");
@@ -465,7 +460,10 @@ function MovieDetailPage() {
             />
 
             <section className="movie-detail-extra-section">
-              <CommunityRatingSection ratings={mockCommunityRatings} />
+              <CommunityRatingSection
+                ratings={mockCommunityRatings}
+                averageRating={movie.rating}
+              />
 
               <div className="movie-detail-sub-divider" />
 

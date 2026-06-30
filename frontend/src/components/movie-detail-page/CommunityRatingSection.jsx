@@ -1,21 +1,39 @@
 import "./CommunityRatingSection.css";
 
 function renderStars(rating) {
-  return Array.from({ length: 10 }, (_, index) => {
-    return index < rating ? "★" : "☆";
-  }).join("");
+  return Array.from({ length: 10 }, (_, index) =>
+    index < rating ? "★" : "☆"
+  ).join("");
 }
 
 function getAverageRating(ratings) {
-  if (!ratings.length) return "0.0";
+  if (!ratings.length) {
+    return "0.0";
+  }
 
-  const totalRating = ratings.reduce((sum, item) => sum + item.rating, 0);
+  const totalRating = ratings.reduce(
+    (sum, item) => sum + item.rating,
+    0
+  );
 
   return (totalRating / ratings.length).toFixed(1);
 }
 
-function CommunityRatingSection({ ratings }) {
-  const averageCommunityRating = getAverageRating(ratings);
+function formatAverageRating(value) {
+  const numericValue = Number(value);
+
+  if (!Number.isFinite(numericValue)) {
+    return null;
+  }
+
+  return numericValue.toFixed(1);
+}
+
+function CommunityRatingSection({ ratings, averageRating }) {
+  const tmdbAverageRating = formatAverageRating(averageRating);
+
+  const displayedAverageRating =
+    tmdbAverageRating ?? getAverageRating(ratings);
 
   return (
     <section
@@ -27,14 +45,14 @@ function CommunityRatingSection({ ratings }) {
           <p className="movie-detail-section-kicker">Community</p>
           <h2>Community Ratings</h2>
           <p>
-            See how other users rated this movie. Comments can be added later if
-            needed.
+            See how other users rated this movie. Comments can be
+            added later if needed.
           </p>
         </div>
 
         <div className="movie-detail-average-rating">
-          <span>{averageCommunityRating}/10</span>
-          <small>Average rating</small>
+          <span>{displayedAverageRating}/10</span>
+          <small>Average Rating</small>
         </div>
       </div>
 
@@ -43,7 +61,7 @@ function CommunityRatingSection({ ratings }) {
           <article className="movie-detail-community-card" key={item.id}>
             <div className="movie-detail-community-card-header">
               <strong>{item.username}</strong>
-              <span>{item.rating}/10  </span>
+              <span>{item.rating}/10</span>
             </div>
 
             <div className="movie-detail-community-stars">

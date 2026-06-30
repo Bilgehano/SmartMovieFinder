@@ -68,11 +68,41 @@
   outline-offset: 3px;
 }
 
+.browse-clear-link-active {
+  border-color: rgba(248, 113, 113, 0.72);
+
+  background: linear-gradient(
+    180deg,
+    rgba(127, 29, 29, 0.78),
+    rgba(69, 20, 30, 0.9)
+  );
+
+  color: #ffe4e6;
+
+  box-shadow:
+    0 0 0 1px rgba(248, 113, 113, 0.1),
+    0 0 16px rgba(248, 113, 113, 0.16);
+}
+
+.browse-clear-link-active:hover {
+  border-color: rgba(252, 165, 165, 0.92);
+
+  background: linear-gradient(
+    180deg,
+    rgba(153, 27, 27, 0.88),
+    rgba(89, 18, 31, 0.96)
+  );
+
+  color: #ffffff;
+
+  box-shadow:
+    0 0 20px rgba(248, 113, 113, 0.24);
+}
+
 .browse-filter-chevron-open {
   transform: rotate(180deg);
 }
 
-/* Der Filter ist auf allen Größen zuerst geschlossen */
 .browse-filter-panel {
   display: none;
 
