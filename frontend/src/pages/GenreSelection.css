@@ -100,6 +100,10 @@
 
 /* Mobile */
 @media (max-width: 768px) {
+  .GenreSelection {
+    padding: 20px 14px;
+  }
+
   .GenreSelection_card {
     padding: 32px 24px;
   }
@@ -110,5 +114,37 @@
 
   .GenreSelection_grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .GenreSelection {
+    padding: 14px 10px;
+  }
+
+  .GenreSelection_card {
+    padding: 22px 16px;
+    border-radius: 14px;
+  }
+
+  .GenreSelection_card h1 {
+    font-size: 1.65rem;
+  }
+
+  .GenreSelection_card p,
+  .hint,
+  .error-text {
+    font-size: 0.88rem;
+  }
+
+  .GenreSelection_grid {
+    margin-top: 24px;
+    gap: 12px;
+  }
+
+  .genre-btn,
+  .primary-button {
+    min-height: 46px;
+    font-size: 0.92rem;
   }
 }

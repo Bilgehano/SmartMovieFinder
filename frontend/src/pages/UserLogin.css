@@ -126,3 +126,49 @@
   color: #111827;
 }
 
+@media (max-width: 600px) {
+  .UserLogin {
+    padding: 16px 12px;
+  }
+
+  .UserLogin_card {
+    min-height: auto;
+    padding: 28px 18px;
+    border-radius: 14px;
+  }
+
+  .UserLogin_card h1 {
+    font-size: 2rem;
+  }
+
+  .UserLogin_card p {
+    font-size: 0.92rem;
+  }
+
+  .UserLogin-actions {
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 24px;
+  }
+
+  .login-button,
+  .signup-button {
+    width: 100%;
+    max-width: 420px;
+  }
+}
+
+@media (max-width: 390px) {
+  .UserLogin {
+    padding: 12px 10px;
+  }
+
+  .UserLogin_card {
+    padding: 22px 14px;
+  }
+
+  .UserLogin_card h1 {
+    font-size: 1.7rem;
+  }
+}
+

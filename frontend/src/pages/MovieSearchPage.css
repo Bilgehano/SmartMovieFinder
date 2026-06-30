@@ -214,6 +214,16 @@
     padding: 20px 18px;
   }
 
+  .movie-search-header-intro h1 {
+    font-size: 1.32rem;
+  }
+
+  .movie-search-header-intro p,
+  .movie-search-intro p {
+    font-size: 0.88rem;
+    line-height: 1.45;
+  }
+
   .movie-search-header-search .search-bar {
     height: 48px;
   }
@@ -234,5 +244,32 @@
   .movie-search-message {
     margin-right: 18px;
     margin-left: 18px;
+  }
+}
+
+@media (max-width: 390px) {
+  .movie-search-header,
+  .movie-search-content-shell {
+    width: calc(100% - 20px);
+  }
+
+  .movie-search-header-content {
+    padding: 18px 14px;
+  }
+
+  .movie-search-header-intro h1,
+  .movie-search-intro h2 {
+    font-size: 1.16rem;
+  }
+
+  .movie-search-intro {
+    margin: 0 14px;
+  }
+
+  .movie-search-message {
+    margin-right: 14px;
+    margin-left: 14px;
+    padding: 13px 14px;
+    font-size: 0.88rem;
   }
 }

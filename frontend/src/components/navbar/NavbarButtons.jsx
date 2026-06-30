@@ -28,6 +28,12 @@ const isLibrarySearchPage =
 location.pathname === "/library" && !isWatchlistPage;
 
 function handleLogout() {
+const shouldLogout = window.confirm("Are you sure you want to log out?");
+
+if (!shouldLogout) {
+return;
+}
+
 localStorage.removeItem("userId");
 localStorage.removeItem("username");
 localStorage.removeItem("email");

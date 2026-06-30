@@ -300,6 +300,7 @@
 @media (max-width: 900px) {
   .UserProfile {
     width: calc(100% - 48px);
+    padding: 18px 0 40px;
   }
 
   .stats-grid {
@@ -310,13 +311,45 @@
 @media (max-width: 560px) {
   .UserProfile {
     width: calc(100% - 24px);
+    padding-top: 12px;
   }
 
   .profile-card {
-    padding: 20px;
+    padding: 20px 16px;
+  }
+
+  .profile-card h1 {
+    font-size: 1.42rem;
+  }
+
+  .profile-card h2 {
+    font-size: 1.08rem;
+  }
+
+  .profile-card p,
+  .stat-box p {
+    font-size: 0.88rem;
   }
 
   .GenreSelection_grid {
     grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 390px) {
+  .UserProfile {
+    width: calc(100% - 20px);
+  }
+
+  .profile-card {
+    padding: 18px 14px;
+  }
+
+  .profile-card h1 {
+    font-size: 1.24rem;
+  }
+
+  .genre-list {
+    gap: 8px;
   }
 }

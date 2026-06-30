@@ -79,15 +79,16 @@
 @media (max-width: 1150px) {
   .app-navbar {
     min-height: auto;
-    padding: 18px 22px 0;
+    padding: 16px 18px 0;
 
     flex-direction: column;
     align-items: stretch;
-    gap: 16px;
+    gap: 14px;
   }
 
   .navbar-logo {
     align-self: flex-start;
+    max-width: 100%;
   }
 
   .navbar-brand-line {
@@ -97,27 +98,53 @@
 
 @media (max-width: 600px) {
   .app-navbar {
-    padding: 13px 12px 10px;
+    padding: 12px 12px 8px;
     gap: 10px;
   }
 
   .navbar-logo {
-    padding-left: 4px;
+    width: 100%;
+    padding-left: 0;
+  }
+
+  .navbar-brand {
+    width: 100%;
   }
 
   .navbar-brand-smart {
     margin-bottom: 2px;
-    font-size: 0.5rem;
-    letter-spacing: 0.18rem;
+    font-size: 0.54rem;
+    letter-spacing: 0.16rem;
   }
 
   .navbar-brand-line {
-    font-size: 1.35rem;
-    line-height: 0.76;
+    font-size: clamp(1.2rem, 6vw, 1.55rem);
+    line-height: 0.82;
   }
 
   .navbar-brand-tagline {
     margin-top: 3px;
+    font-size: 0.58rem;
+    line-height: 1.2;
+    max-width: 16rem;
+  }
+}
+
+@media (max-width: 390px) {
+  .app-navbar {
+    padding: 10px 10px 8px;
+  }
+
+  .navbar-brand-smart {
     font-size: 0.5rem;
+    letter-spacing: 0.12rem;
+  }
+
+  .navbar-brand-line {
+    font-size: 1.08rem;
+  }
+
+  .navbar-brand-tagline {
+    display: none;
   }
 }

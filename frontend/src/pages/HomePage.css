@@ -169,6 +169,16 @@
     padding-top: 12px;
   }
 
+  .homeMovieSelection {
+    padding: 12px;
+    align-items: flex-start;
+  }
+
+  .MovieSelectionNote {
+    width: calc(100% - 24px);
+    margin-top: 8px;
+  }
+
   .home-dashboard-header-content {
     padding: 20px 22px 0;
   }
@@ -179,11 +189,68 @@
     padding-top: 10px;
   }
 
+  .MovieSelectionNote {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 14px;
+    padding: 14px;
+  }
+
+  .MovieSelectionNote p {
+    font-size: 1rem;
+  }
+
+  .MovieSelectionbuttons {
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .MovieSelectionbuttons button {
+    flex: 1 1 0;
+    min-height: 42px;
+  }
+
   .home-dashboard-header-content {
     padding: 20px 18px 0;
   }
 
+  .home-dashboard-intro h1 {
+    font-size: 1.35rem;
+  }
+
+  .home-dashboard-intro p {
+    font-size: 0.88rem;
+    line-height: 1.45;
+  }
+
   .home-content-area {
     padding: 20px 18px;
+  }
+}
+
+@media (max-width: 390px) {
+  .homeMovieSelection {
+    padding: 10px;
+  }
+
+  .MovieSelectionNote {
+    width: calc(100% - 20px);
+    padding: 12px;
+  }
+
+  .home-dashboard-header-content {
+    padding: 18px 14px 0;
+  }
+
+  .home-dashboard-intro h1 {
+    font-size: 1.2rem;
+  }
+
+  .home-dashboard-intro p {
+    font-size: 0.82rem;
+  }
+
+  .home-content-area {
+    padding: 18px 14px;
   }
 }

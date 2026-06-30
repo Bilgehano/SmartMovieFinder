@@ -171,8 +171,30 @@
     font-size: 1.2rem;
   }
 
+  .MovieSelection_card > p {
+    font-size: 0.9rem;
+  }
+
   .movie-results,
   .favorite-movies {
     gap: 14px;
+  }
+}
+
+@media (max-width: 390px) {
+  .MovieSelection {
+    padding: 16px 10px 28px;
+  }
+
+  .MovieSelection_card {
+    padding: 16px 14px;
+  }
+
+  .MovieSelection_card h1 {
+    font-size: 1.34rem;
+  }
+
+  .MovieSelection_card h2 {
+    font-size: 1.05rem;
   }
 }

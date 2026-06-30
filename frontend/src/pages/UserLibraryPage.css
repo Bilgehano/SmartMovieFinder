@@ -229,6 +229,15 @@
     padding: 20px 18px 18px;
   }
 
+  .user-library-intro h1 {
+    font-size: 1.32rem;
+  }
+
+  .user-library-intro p {
+    font-size: 0.88rem;
+    line-height: 1.45;
+  }
+
   .user-library-header-search .search-bar {
     height: 48px;
   }
@@ -241,5 +250,31 @@
     min-height: 145px;
     margin: 22px 18px;
     padding: 22px 18px;
+  }
+}
+
+@media (max-width: 390px) {
+  .user-library-header,
+  .user-library-shell {
+    width: calc(100% - 20px);
+  }
+
+  .user-library-header-content {
+    padding: 18px 14px 16px;
+  }
+
+  .user-library-intro h1 {
+    font-size: 1.16rem;
+  }
+
+  .user-library-intro p,
+  .library-state-message,
+  .library-state-message p {
+    font-size: 0.82rem;
+  }
+
+  .library-state-message {
+    margin: 18px 14px;
+    padding: 18px 14px;
   }
 }

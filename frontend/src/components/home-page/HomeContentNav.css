@@ -5,9 +5,9 @@
 
   display: grid;
   grid-template-columns:
-    minmax(170px, 0.8fr)
-    minmax(0, 2.5fr)
-    minmax(170px, 0.8fr);
+    minmax(0, 1fr)
+    minmax(320px, 680px)
+    minmax(170px, 0.9fr);
   align-items: center;
   gap: 18px;
 
@@ -30,24 +30,23 @@
 
 .movie-content-menu-left,
 .movie-content-menu-center,
-.movie-content-menu-right {
+.movie-content-menu-right,
+.movie-content-nav-spacer {
   position: relative;
   z-index: 1;
   overflow: visible;
 }
 
-.movie-content-menu-left:has(.movie-content-menu-item.active),
-.movie-content-menu-center:has(.movie-content-menu-item.active),
+.movie-content-menu-center:has(.movie-content-menu-item.active) {
+  z-index: 500;
+}
+
 .movie-content-menu-right:has(.movie-content-menu-item.active) {
   z-index: 500;
 }
 
-.movie-content-menu-left {
-  justify-content: flex-start;
-}
-
-.movie-content-menu-right {
-  justify-content: flex-end;
+.movie-content-nav-spacer {
+  min-width: 0;
 }
 
 .movie-content-menu-center {
@@ -80,17 +79,18 @@
 }
 
 .movie-content-search {
-  width: 100%;
+  width: min(100%, 620px);
   min-width: 0;
   height: 100%;
+  margin: 0 auto;
 }
 
 .movie-content-search > * {
   width: 100%;
 }
 
-.movie-content-menu-explore {
-  height: 100%;
+.movie-content-menu-right {
+  justify-content: flex-end;
 }
 
 .movie-content-menu-item {
@@ -106,10 +106,6 @@
 
 .movie-content-menu-item.active {
   z-index: 600;
-}
-
-.movie-content-menu-explore .movie-content-menu-item {
-  min-width: 145px;
 }
 
 .movie-content-menu-button {
@@ -209,7 +205,7 @@
   height: 100%;
 
   border: none;
-  border-radius: 9px 0 0 9px;
+  border-radius: 9px;
 
   background: transparent;
   box-shadow: none;
@@ -227,24 +223,6 @@
 .movie-content-menu-center .search-input {
   min-width: 0;
   font-size: 0.9rem;
-}
-
-.movie-content-menu-explore .movie-content-menu-button {
-  border: none;
-  border-left: 1px solid rgba(166, 190, 232, 0.18);
-  border-radius: 0 9px 9px 0;
-
-  background: rgba(18, 33, 61, 0.92);
-}
-
-.movie-content-menu-explore
-  .movie-content-menu-item:hover
-  .movie-content-menu-button,
-.movie-content-menu-explore
-  .movie-content-menu-item.active
-  .movie-content-menu-button {
-  border-left-color: rgba(171, 145, 255, 0.7);
-  border-radius: 0 9px 0 0;
 }
 
 .movie-content-dropdown {
@@ -277,11 +255,6 @@
 .movie-content-menu-item:hover .movie-content-dropdown,
 .movie-content-menu-item.active .movie-content-dropdown {
   display: flex;
-}
-
-.movie-content-menu-right .movie-content-dropdown {
-  right: 0;
-  left: auto;
 }
 
 .movie-content-dropdown button {
@@ -326,14 +299,10 @@
 @media (max-width: 1100px) {
   .movie-content-nav {
     grid-template-columns:
-      minmax(125px, 0.75fr)
-      minmax(0, 2.2fr)
+      minmax(0, 0.45fr)
+      minmax(260px, 560px)
       minmax(125px, 0.75fr);
     gap: 8px;
-  }
-
-  .movie-content-menu-explore .movie-content-menu-item {
-    min-width: 96px;
   }
 
   .movie-content-menu-center .search-input {
@@ -346,10 +315,6 @@
     padding: 0 7px;
     gap: 5px;
     font-size: clamp(0.62rem, 1.8vw, 0.78rem);
-  }
-
-  .movie-content-menu-explore .movie-content-menu-item {
-    min-width: 88px;
   }
 
   .movie-content-menu-chevron {
@@ -365,11 +330,15 @@
     padding-bottom: 8px;
 
     display: grid;
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
-      "search search"
-      "quick favorite";
+      "search"
+      "quick";
     gap: 14px;
+  }
+
+  .movie-content-nav-spacer {
+    display: none;
   }
 
   .movie-content-menu {
@@ -378,7 +347,7 @@
     min-height: 52px;
   }
 
-  .movie-content-menu-left {
+  .movie-content-menu-right {
     grid-area: quick;
   }
 
@@ -388,21 +357,16 @@
     height: 54px;
   }
 
-  .movie-content-menu-right {
-    grid-area: favorite;
+  .movie-content-search {
+    width: min(100%, 460px);
   }
 
-  .movie-content-menu-left,
   .movie-content-menu-right {
     justify-content: stretch;
   }
 
   .movie-content-menu-item {
     width: 100%;
-  }
-
-  .movie-content-menu-explore .movie-content-menu-item {
-    min-width: 102px;
   }
 
   .movie-content-menu-center .search-input {

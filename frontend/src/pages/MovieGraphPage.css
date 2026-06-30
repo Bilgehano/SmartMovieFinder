@@ -406,6 +406,20 @@
     padding: 20px 18px 18px;
   }
 
+  .movie-graph-intro h1 {
+    font-size: 1.32rem;
+  }
+
+  .movie-graph-intro p {
+    font-size: 0.88rem;
+    line-height: 1.45;
+  }
+
+  .movie-graph-back-link {
+    width: 100%;
+    min-height: 44px;
+  }
+
   .movie-graph-header-search .search-bar {
     height: 48px;
   }
@@ -432,5 +446,34 @@
     min-height: 145px;
     margin: 22px 18px;
     padding: 22px 18px;
+  }
+}
+
+@media (max-width: 390px) {
+  .movie-graph-header,
+  .movie-graph-shell {
+    width: calc(100% - 20px);
+  }
+
+  .movie-graph-header-content {
+    padding: 18px 14px 16px;
+  }
+
+  .movie-graph-kicker {
+    font-size: 0.64rem;
+  }
+
+  .movie-graph-intro h1 {
+    font-size: 1.16rem;
+  }
+
+  .movie-graph-intro p,
+  .movie-graph-search-message {
+    font-size: 0.82rem;
+  }
+
+  .movie-graph-state-card {
+    margin: 18px 14px;
+    padding: 18px 14px;
   }
 }
