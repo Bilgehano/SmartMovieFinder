@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { buildApiUrl } from "../services/apiClient";
 import "./UserRegistration.css";
 
 function UserRegistration() {
@@ -27,7 +28,7 @@ function UserRegistration() {
     }
 
     try {
-      const response = await fetch("http://193.197.230.150:8080/users/register", {
+      const response = await fetch(buildApiUrl("/users/register"), {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

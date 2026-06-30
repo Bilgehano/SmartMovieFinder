@@ -8,6 +8,7 @@ backend/catalog-service/Dockerfile
 backend/recommendation-service/target/
 backend/recommendation-service/*.iml
 backend/recommendation-service/Dockerfile
+node_modules/
 **/target/
 **/.mvn/
 
