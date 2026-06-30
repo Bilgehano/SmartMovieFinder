@@ -12,6 +12,7 @@ import MovieDetailPage from "./pages/MovieDetailPage";
 import MovieSearchPage from "./pages/MovieSearchPage";
 import UserLibraryPage from "./pages/UserLibraryPage";
 import MovieGraphPage from "./pages/MovieGraphPage";
+import MovieSelection from "./pages/MovieSelection";
 
 function PlaceholderPage({ title }) {
   return (
@@ -32,6 +33,7 @@ function App() {
         <Route path="/userlogin" element={<UserLogin />} />
         <Route path="/userregistration" element={<UserRegistration />} />
         <Route path="/genreselection" element={<GenreSelection />} />
+        <Route path="/movieselection" element={<MovieSelection />} />
 
         {/* Pages with navbar */}
         <Route element={<AppLayout />}>

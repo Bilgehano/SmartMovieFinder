@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { buildApiUrl } from "../services/apiClient";
+import { addFavoriteGenre } from "../api/userApi";
 import "./GenreSelection.css";
 
 function GenreSelection() {
@@ -63,17 +63,13 @@ function GenreSelection() {
     setError("");
 
     try {
-      for (const genreId of selectedGenres) {
-        await fetch(
-          buildApiUrl(`/users/${userId}/favorite-genre/${genreId}`),
-          {
-            method: "POST"
-          }
-        );
-      }
+      await Promise.all(
+        selectedGenres.map((genreId) =>
+          addFavoriteGenre(userId, genreId)
+        )
+      );
 
       localStorage.setItem("isNewUser", "false");
-
       navigate("/homepage");
 
     } catch (err) {

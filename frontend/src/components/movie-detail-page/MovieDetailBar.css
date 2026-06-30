@@ -2,13 +2,22 @@
   width: 100%;
   min-height: 78px;
   padding: 0 26px;
-  background: rgba(16, 13, 30, 0.96);
-  color: var(--text-light);
-  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 24px;
+
+  background:
+    linear-gradient(
+      90deg,
+      rgba(8, 23, 45, 0.96),
+      rgba(6, 16, 32, 0.96)
+    );
+
+  color: #f8fbff;
+  border-bottom: 1px solid rgba(115, 142, 194, 0.16);
+  box-sizing: border-box;
 }
 
 .movie-detail-page-bar-simple {
@@ -18,17 +27,24 @@
 .movie-detail-page-bar-back {
   min-height: 42px;
   padding: 0 20px;
-  border-radius: 8px;
-  background: var(--panel-light);
-  color: #111827;
+
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  text-decoration: none;
+
+  border: 1px solid rgba(151, 178, 226, 0.32);
+  border-radius: 8px;
+
+  background: rgba(12, 30, 56, 0.72);
+  color: #dbe7fb;
+
   font-weight: 900;
+  text-decoration: none;
   white-space: nowrap;
+
   transition:
     transform 0.18s ease,
+    border-color 0.18s ease,
     background 0.18s ease,
     color 0.18s ease;
 }
@@ -37,7 +53,7 @@
   display: flex;
   align-items: center;
   justify-content: flex-end;
-  gap: 16px;
+  gap: 12px;
   flex-wrap: wrap;
 }
 
@@ -45,35 +61,54 @@
   min-width: 120px;
   min-height: 42px;
   padding: 0 18px;
-  border-radius: 8px;
-  background: var(--panel-light);
-  color: #111827;
-  border: none;
+
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  text-decoration: none;
+
+  border: 1px solid rgba(151, 178, 226, 0.3);
+  border-radius: 8px;
+
+  background: rgba(12, 30, 56, 0.72);
+  color: #c9d9f0;
+
   font-size: 0.9rem;
   font-weight: 900;
+  text-decoration: none;
+
   transition:
     transform 0.18s ease,
+    border-color 0.18s ease,
     background 0.18s ease,
-    color 0.18s ease;
+    color 0.18s ease,
+    box-shadow 0.18s ease;
 }
 
 .movie-detail-page-bar-back:hover,
 .movie-detail-page-bar-links a:hover {
-  background: var(--accent);
-  color: var(--text-light);
   transform: translateY(-1px);
+
+  border-color: rgba(181, 155, 255, 0.76);
+
+  background: linear-gradient(
+    180deg,
+    rgba(91, 66, 166, 0.94),
+    rgba(49, 37, 104, 0.98)
+  );
+
+  color: #ffffff;
+
+  box-shadow:
+    0 0 18px rgba(118, 88, 255, 0.2);
 }
 
 @media (max-width: 760px) {
   .movie-detail-page-bar {
     min-height: auto;
+    padding: 16px;
+
     flex-direction: column;
     align-items: stretch;
-    padding: 16px;
   }
 
   .movie-detail-page-bar-back {

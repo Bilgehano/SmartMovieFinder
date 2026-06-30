@@ -10,6 +10,7 @@ import {
 import {
   addWatchedMovie,
   addWatchLaterMovie,
+  deleteMovieRating,
   fetchUserRatings,
   fetchWatchedMovies,
   fetchWatchLaterMovies,
@@ -44,11 +45,7 @@ function getMovieIds(movie) {
     return [];
   }
 
-  return [
-    movie.id,
-    movie.tmdbId,
-    movie.movieId,
-  ]
+  return [movie.id, movie.tmdbId, movie.movieId]
     .map(normalizeId)
     .filter(Boolean);
 }
@@ -88,9 +85,11 @@ function findMatchingItem(items, movie) {
     return null;
   }
 
-  return items.find(function (item) {
-    return isSameMovie(movie, item);
-  }) || null;
+  return (
+    items.find(function (item) {
+      return isSameMovie(movie, item);
+    }) || null
+  );
 }
 
 function getRatingValue(ratingItem) {
@@ -127,6 +126,7 @@ function MovieDetailPage() {
   const [movie, setMovie] = useState(null);
   const [recommendedMovies, setRecommendedMovies] = useState([]);
   const [selectedRating, setSelectedRating] = useState(null);
+  const [savedRating, setSavedRating] = useState(null);
   const [watchStatus, setWatchStatus] = useState("Not watched");
   const [isWatchLater, setIsWatchLater] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -146,6 +146,7 @@ function MovieDetailPage() {
       setWatchStatus("Not watched");
       setIsWatchLater(false);
       setSelectedRating(null);
+      setSavedRating(null);
       setIsUserActionSaving(false);
 
       try {
@@ -237,6 +238,7 @@ function MovieDetailPage() {
         setWatchStatus(watchedItem ? "Watched" : "Not watched");
         setIsWatchLater(Boolean(watchLaterItem));
         setSelectedRating(existingRating);
+        setSavedRating(existingRating);
 
         if (!currentUserId) {
           setUserStatusMessage(
@@ -357,10 +359,40 @@ function MovieDetailPage() {
 
     try {
       await saveMovieRating(currentUserId, movie, selectedRating);
-      setUserStatusMessage("Rating saved.");
+      setSavedRating(selectedRating);
+      setUserStatusMessage("");
     } catch (error) {
       console.error("Failed to save rating:", error);
       setUserStatusMessage("Could not save your rating.");
+    } finally {
+      setIsUserActionSaving(false);
+    }
+  }
+
+  async function handleDeleteRating() {
+    if (!movie || !savedRating || isUserActionSaving) {
+      return;
+    }
+
+    const currentUserId = getCurrentUserId();
+    const tmdbId = getMovieTmdbId(movie);
+
+    if (!currentUserId || !tmdbId) {
+      setUserStatusMessage("Login is required to delete your rating.");
+      return;
+    }
+
+    setIsUserActionSaving(true);
+    setUserStatusMessage("");
+
+    try {
+      await deleteMovieRating(currentUserId, tmdbId);
+      setSelectedRating(null);
+      setSavedRating(null);
+      setUserStatusMessage("");
+    } catch (error) {
+      console.error("Failed to delete rating:", error);
+      setUserStatusMessage("Could not delete your rating.");
     } finally {
       setIsUserActionSaving(false);
     }
@@ -423,11 +455,13 @@ function MovieDetailPage() {
               watchStatus={watchStatus}
               isWatchLater={isWatchLater}
               selectedRating={selectedRating}
+              savedRating={savedRating}
               isUserActionSaving={isUserActionSaving}
               onWatchStatusToggle={handleWatchStatus}
               onWatchLaterToggle={handleWatchLaterStatus}
               onRatingSelect={setSelectedRating}
               onSaveRating={handleSaveRating}
+              onDeleteRating={handleDeleteRating}
             />
 
             <section className="movie-detail-extra-section">

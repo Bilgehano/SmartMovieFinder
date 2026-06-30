@@ -1,7 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import { buildApiUrl } from "../services/apiClient";
+import { loginUser, fetchFavoriteGenres } from "../api/userApi";
+import { getCurrentUserId } from "../api/userSession";
 import "./UserLogin.css";
 
 function UserLogin() {
@@ -13,64 +14,33 @@ function UserLogin() {
   const [loading, setLoading] = useState(false);
 
   const handleLogin = async () => {
-  setLoading(true);
-  setLoginError("");
+    setLoading(true);
+    setLoginError("");
 
-  try {
-    const response = await fetch(buildApiUrl("/users/login"), {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ username, password })
-    });
+      try {
+          const data = await loginUser(username, password);
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      console.log("Login failed", errorText);
+          const userId = data.id;
 
-      setLoginError("Username oder Passwort ist falsch");
-      return;
-    }
+          localStorage.setItem("username", data.username);
+          localStorage.setItem("email", data.email);
+          localStorage.setItem("userId", userId);
 
-    const data = await response.json();
-    console.log("LOGIN RESPONSE:", data);
-    console.log("USER ID:", data.id);
-    console.log("Login data:", data);
+          const genres = await fetchFavoriteGenres(userId);
 
-    const userId = data.id;
+         if (!genres || genres.length === 0) {
+            navigate("/genreselection");
+          } else {
+            navigate("/homepage");
+          }
 
-    localStorage.setItem("username", data.username);
-    localStorage.setItem("email", data.email);
-    localStorage.setItem("userId", userId);
-
-    const genreResponse = await fetch(
-      buildApiUrl(`/users/${userId}/favorite-genres`)
-    );
-
-    if (!genreResponse.ok) {
-      navigate("/genreselection");
-      return;
-    }
-
-    const genres = await genreResponse.json();
-
-    console.log("Genres:", genres);
-
-    if (!genres || genres.length === 0) {
-      navigate("/genreselection");
-    } else {
-      navigate("/homepage");
-    }
-
-  } catch (error) {
-    console.error("Login error:", error);
-    setLoginError("Serverfehler. Bitte später erneut versuchen.");
-
-  } finally {
-    setLoading(false);
-  }
-};
+        } catch (error) {
+          console.error("Login error:", error);
+          setLoginError("Username oder Passwort ist falsch oder Serverfehler.");
+        } finally {
+          setLoading(false);
+        }
+      };
 
 
   return (
