@@ -6,6 +6,7 @@ import SearchBar from "../components/shared/SearchBar";
 import MovieCard from "../components/shared/MovieCardSelection";
 
 import { fetchGenres, searchMovies } from "../api/movieApi";
+import { saveMovieRating } from "../api/userApi";
 import { createGenreMap, mapTmdbMovieResponse } from "../utils/movieMapper";
 
 function MovieSelection() {
@@ -82,7 +83,7 @@ function MovieSelection() {
     setFavoriteMovies((current) => [...current, movie]);
     setError("");
 
-    // UX: search schließen
+    
     setSearchResults([]);
     setSearchInput("");
   }
@@ -101,7 +102,7 @@ function MovieSelection() {
 
   async function handleSave() {
     if (favoriteMovies.length < 3) {
-      setError("Please select at least 3 movies.");
+      setError("Bitte wähle mindestens drei Filme.");
       return;
     }
 
@@ -111,19 +112,7 @@ function MovieSelection() {
     try {
       await Promise.all(
         favoriteMovies.map((movie) =>
-          fetch(`http://localhost:8080/users/${userId}/rate/5`, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              tmdbId: movie.id,
-              title: movie.title,
-              posterPath: movie.poster,
-              releaseDate: movie.year,
-              genre: movie.genre,
-            }),
-          })
+          saveMovieRating(userId, movie, 5)
         )
       );
 
@@ -139,14 +128,13 @@ function MovieSelection() {
   return (
     <main className="MovieSelection">
       <section className="MovieSelection_card">
-        <h1>Select your favorite movies</h1>
+        <h1>Hilf uns, deine Empfehlungen zu verbessern!</h1>
 
         <p>
-          Please choose at least 3 movies you like so we can generate better
-          recommendations.
+          Bitte wähle mind. 3 Filme, die dir besonders gefallen haben. Du kannst bis zu 5 Filme auswählen.
         </p>
 
-        {/* SEARCH */}
+        {/* suche */}
         <SearchBar
           value={searchInput}
           onChange={setSearchInput}
@@ -168,7 +156,7 @@ function MovieSelection() {
           ))}
         </div>
 
-        {/* FAVORITES */}
+        {/* favorite movies */}
         <h2>Selected Movies</h2>
 
         <div className="favorite-movies">
