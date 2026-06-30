@@ -159,3 +159,13 @@ export async function removeFavoriteGenre(userId, genreId) {
     method: "DELETE",
   });
 }
+
+export async function registerUser(username, email, password) {
+  return requestJson("/users/register", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ username, email, password }),
+  });
+}

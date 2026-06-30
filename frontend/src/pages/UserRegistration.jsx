@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { registerUser } from "../api/userApi";
 import "./UserRegistration.css";
 
 function UserRegistration() {
@@ -23,37 +24,19 @@ function UserRegistration() {
     if (!username || !email || !password) {
       setError("Bitte alle Felder ausfüllen");
       setLoading(false);
-    return;
+      return;
     }
 
     try {
-      const response = await fetch("http://193.197.230.150:8080/users/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          username,
-          email,
-          password,
-        }),
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText);
-      }
-
-      const data = await response.json();
-
+      const data = await registerUser(username, email, password);
       setMessage(`User ${data.username} erfolgreich registriert!`);
       setTimeout(() => {
         navigate("/userlogin");
       }, 800);
-
       setUsername("");
       setEmail("");
       setPassword("");
+
     } catch (err) {
       setError(err.message || "Registrierung fehlgeschlagen");
     } finally {
