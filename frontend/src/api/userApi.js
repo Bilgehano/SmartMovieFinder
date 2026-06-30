@@ -132,3 +132,30 @@ export async function isMovieInWatchLater(userId, tmdbId) {
     "/users/" + userId + "/watch-later/" + tmdbId + "/exists"
   );
 }
+export async function loginUser(username, password) {
+  return requestJson("/users/login", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ username, password }),
+  });
+}
+
+export async function deleteUser(userId) {
+  return requestJson("/users/" + userId, {
+    method: "DELETE",
+  });
+}
+
+export async function addFavoriteGenre(userId, genreId) {
+  return requestJson("/users/" + userId + "/favorite-genre/" + genreId, {
+    method: "POST",
+  });
+}
+
+export async function removeFavoriteGenre(userId, genreId) {
+  return requestJson("/users/" + userId + "/favorite-genre/" + genreId, {
+    method: "DELETE",
+  });
+}
