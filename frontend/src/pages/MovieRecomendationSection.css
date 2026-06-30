@@ -1,0 +1,22 @@
+.movie-detail-recommendations-section {
+  margin-top: 0;
+  scroll-margin-top: 140px;
+}
+
+.movie-detail-recommendation-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 28px;
+}
+
+@media (max-width: 1050px) {
+  .movie-detail-recommendation-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 480px) {
+  .movie-detail-recommendation-grid {
+    gap: 18px;
+  }
+}
