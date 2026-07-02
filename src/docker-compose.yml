@@ -1,3 +1,5 @@
+name: smartmoviefinder
+
 services:
   catalog-db:
     image: postgres:16

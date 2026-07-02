@@ -1,16 +1,11 @@
-# Backend
-backend/user-service/target/
-backend/user-service/*.iml
-backend/user-service/Dockerfile
-backend/catalog-service/target/
-backend/catalog-service/*.iml
-backend/catalog-service/Dockerfile
-backend/recommendation-service/target/
-backend/recommendation-service/*.iml
-backend/recommendation-service/Dockerfile
+# Build outputs
 node_modules/
+**/node_modules/
 **/target/
 **/.mvn/
+
+# Java / IDE files
+**/*.iml
 
 # IDE
 .idea/

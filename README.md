@@ -1,4 +1,42 @@
-## SmartMovieFinder Services
+# SmartMovieFinder Repository
+
+This repository now separates repository-level content from the runnable application.
+
+## Layout
+
+- `src/` contains the application source tree, Docker Compose stack, frontend, and backend services.
+- The repository root is reserved for documentation, planning notes, and other non-application files.
+
+## Common Commands
+
+Start the full stack:
+
+```bash
+cd src
+docker compose up --build
+```
+
+Build individual backend services:
+
+```bash
+cd src/backend/user-service
+./mvnw package
+```
+
+```bash
+cd src/backend/catalog-service
+./mvnw package
+```
+
+Frontend development:
+
+```bash
+cd src/frontend
+npm install
+npm run dev
+```
+
+Application-specific notes remain in `src/README.md`.## SmartMovieFinder Services
 
 The backend now runs as two Spring Boot services under `backend/`:
 
